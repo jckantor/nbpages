@@ -25,9 +25,14 @@ course, or other form of large project. It was inspired by the tools included wi
     |--- LICENSE-code.txt
     |--- LICENSE-text.txt
     |--- README.md
-    |--- tools/
-    |--- html/
-    |--- pdf/
+    |--- templates/
+         |--- nbviewer_url.txt          # nbviewer viewer base url
+         |--- notebook_header.txt
+         |--- page_title.txt
+         |--- page_url.txt
+         |--- README.md.jinja
+         |--- repository.txt
+         |--- repository_url.txt
 
 {% for line in readme_toc %}
 {{ line }}

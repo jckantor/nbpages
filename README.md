@@ -25,42 +25,47 @@ course, or other form of large project. It was inspired by the tools included wi
     |--- LICENSE-code.txt
     |--- LICENSE-text.txt
     |--- README.md
-    |--- tools/
-    |--- html/
-    |--- pdf/
+    |--- templates/
+         |--- nbviewer_url.txt          # nbviewer viewer base url
+         |--- notebook_header.txt
+         |--- page_title.txt
+         |--- page_url.txt
+         |--- README.md.jinja
+         |--- repository.txt
+         |--- repository_url.txt
 
 
-### [Table of Contents](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/toc.ipynb?flush=true)
+### [Table of Contents](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/toc.ipynb?flush=true)
 
-### [Keyword Index](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/index.ipynb?flush=true)
+### [Keyword Index](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/index.ipynb?flush=true)
 
 
-### [Appendix B. The Temperature Control Laboratory](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.00-TCLab.ipynb)
+### [Appendix B. The Temperature Control Laboratory](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.00-TCLab.ipynb)
 
-- [B.1 The TCLab Python Package](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.01-The-TCLab-Python-Package.ipynb)
+- [B.1 The TCLab Python Package](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.01-The-TCLab-Python-Package.ipynb)
 
-- [B.2 Relay Control](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.02-Relay-Control.ipynb)
+- [B.2 Relay Control](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.02-Relay-Control.ipynb)
 
-- [B.3 Step Testing](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.03-Step-Testing.ipynb)
+- [B.3 Step Testing](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.03-Step-Testing.ipynb)
 
-- [B.4 Fitting Step Test Data to Empirical Models](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.04-Fitting-Step-Test-Data-to-Empirical-Models.ipynb)
+- [B.4 Fitting Step Test Data to Empirical Models](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.04-Fitting-Step-Test-Data-to-Empirical-Models.ipynb)
 
-- [B.5 First Order Model for a Single Heater](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.05-First-Order-Model-for-a-Single-Heater.ipynb)
+- [B.5 First Order Model for a Single Heater](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.05-First-Order-Model-for-a-Single-Heater.ipynb)
 
-- [B.6 Two-Input, Two-Output Model](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.06-Two-Input-Two-Output-Model.ipynb)
+- [B.6 Two-Input, Two-Output Model](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.06-Two-Input-Two-Output-Model.ipynb)
 
-- [B.7 Two State Model for a Single Heater](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.07-Two-State-Model-for-a-Single-Heater.ipynb)
+- [B.7 Two State Model for a Single Heater](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.07-Two-State-Model-for-a-Single-Heater.ipynb)
 
-- [B.8 Four State Model](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.08-Four-State-Model.ipynb)
+- [B.8 Four State Model](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.08-Four-State-Model.ipynb)
 
-- [B.9 PID Control](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.09-PID_Control.ipynb)
+- [B.9 PID Control](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.09-PID_Control.ipynb)
 
-- [B.10 Lab Assignment: PID Control](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.10-Lab-Assignment-PID-Control.ipynb)
+- [B.10 Lab Assignment: PID Control](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.10-Lab-Assignment-PID-Control.ipynb)
 
-- [B.11 Coding Controllers with Python Generators](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.11-Coding-Controllers-with-Python-Generators.ipynb)
+- [B.11 Coding Controllers with Python Generators](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.11-Coding-Controllers-with-Python-Generators.ipynb)
 
-- [B.12 Open and Closed Loop Estimation](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.12-Open-and-Closed-Loop-Estimation.ipynb)
+- [B.12 Open and Closed Loop Estimation](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.12-Open-and-Closed-Loop-Estimation.ipynb)
 
-- [B.13 Simulation, Control, and Estimation using Pyomo](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.13-Optimization-Control-and-Estimation-using-Pyomo.ipynb)
+- [B.13 Simulation, Control, and Estimation using Pyomo](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.13-Optimization-Control-and-Estimation-using-Pyomo.ipynb)
 
-- [B.14 Simulation, Control, and Estimation using Pyomo](http://nbviewer.jupyter.org/github/jckantor/ND-Pyomo-Cookbook/blob/master/notebooks/B.14-Optimization-Control-and-Estimation-using-Pyomo-With-Windows-ipopt.ipynb)
+- [B.14 Simulation, Control, and Estimation using Pyomo](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/B.14-Optimization-Control-and-Estimation-using-Pyomo-With-Windows-ipopt.ipynb)

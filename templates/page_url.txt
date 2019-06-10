@@ -1,1 +1,1 @@
-http://jckantor.github.io/ND-Pyomo-Cookbook/
+http://jckantor.github.io/nbcollection/

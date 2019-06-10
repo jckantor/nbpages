@@ -7,7 +7,7 @@ from setuptools import setup
 
 setup(
     name = "nbcollection",
-    version = "0.0.2.dev0",
+    version = "0.0.2.dev2",
     description = "Tools to maintain a respository of Jupyter notebooks",
     author = "jckantor",
     author_email = "Kantor.1@nd.edu",

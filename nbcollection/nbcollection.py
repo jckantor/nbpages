@@ -8,57 +8,57 @@ import json
 
 from nbconvert import HTMLExporter
 import shutil
-from PyPDF2 import PdfFileMerger, PdfFileReader, PdfFileWriter
-
-# import directory specfic stings
-from configure import *
 
 from jinja2 import Environment, FileSystemLoader
 
+env = Environment(loader=FileSystemLoader('templates'))
 
-# Header on TOC page pointing back to github.io
+REPOSITORY = env.get_template('repository.txt').render()
+PAGE_TITLE = env.get_template('page_title.txt').render()
+PAGE_URL = env.get_template('page_url.txt').render()
+
+
+NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{REPOSITORY}/blob/master/notebooks/"
+
+# Header on TOC page ... link to page url
 TOC_HEADER = f"# [{PAGE_TITLE}]({PAGE_URL})"
 
-# location of remote notebook directory
-NBVIEWER_BASE_URL = f"http://nbviewer.jupyter.org/github/{GITHUB_USER}/{GITHUB_REPO}/blob/master/notebooks/"
-
 # Header point to Table of Contents page viewed on nbviewer
-README_TOC = f"### [Table of Contents]({NBVIEWER_BASE_URL}toc.ipynb?flush=true)"
-README_INDEX = f"### [Keyword Index]({NBVIEWER_BASE_URL}index.ipynb?flush=true)"
+README_TOC = f"### [Table of Contents]({NBVIEWER_URL}toc.ipynb?flush=true)"
+README_INDEX = f"### [Keyword Index]({NBVIEWER_URL}index.ipynb?flush=true)"
 
 # template for link to open notebooks in Google colaboratory
-COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_USER}/{GITHUB_REPO}' \
+COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{REPOSITORY}' \
              '/blob/master/notebooks/{notebook_filename}">' + \
              '<img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
              ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
 
-# location of the README.md file in the local repository
-README_FILE = os.path.join(os.path.dirname(__file__), '..', 'README.md')
+# location of notebook directory
+NOTEBOOK_DIR = os.path.join(os.getcwd(), 'notebooks/')
+
+# location of files in local repository
+README_FILE = os.path.join(os.getcwd(), 'README.md')
+TOC_FILE = os.path.join(NOTEBOOK_DIR, 'toc.md')
+TOC_NB = os.path.join(NOTEBOOK_DIR, 'toc.ipynb')
+INDEX_FILE = os.path.join(NOTEBOOK_DIR, 'index.md')
+INDEX_NB= os.path.join(NOTEBOOK_DIR, 'index.ipynb')
 
 # location of notebook directory in the local repository
-NOTEBOOK_DIR = os.path.join(os.path.dirname(__file__), '..', 'notebooks')
 #HTML_DIR = os.path.join(os.path.dirname(__file__), '..', 'html')
 #CUSTOM_CSS = os.path.join(os.path.dirname(__file__), 'custom.css')
 #if not os.path.exists(HTML_DIR):
 #    os.mkdir(HTML_DIR)
 #shutil.copy(CUSTOM_CSS, os.path.join(HTML_DIR, 'custom.css'))
 
-# location of the table of contents files in the local respository
-TOC_FILE = os.path.join(NOTEBOOK_DIR, 'toc.md')
-TOC_NB = os.path.join(NOTEBOOK_DIR, 'toc.ipynb')
-
-# location of the keyword index file
-INDEX_FILE = os.path.join(NOTEBOOK_DIR, 'index.md')
-INDEX_NB= os.path.join(NOTEBOOK_DIR, 'index.ipynb')
-
 # regular expression that matches notebook filenames to be included in the TOC
 REG = re.compile(r'(\d\d|[A-Z])\.(\d\d)-(.*)\.ipynb')
 
 # nav bar templates
+NAVBAR_TAG = "<!--NAVIGATION-->\n"
+
 PREV_TEMPLATE = "< [{title}]({url}) "
 CONTENTS = "| [Contents](toc.ipynb) | [Index](index.ipynb) |"
 NEXT_TEMPLATE = " [{title}]({url}) >"
-NAVBAR_TAG = "<!--NAVIGATION-->\n"
 
 
 class Nb:
@@ -80,7 +80,7 @@ class Nb:
         self.path = os.path.join(NOTEBOOK_DIR, filename)
         #self.html = os.path.join(HTML_DIR, filename.replace('.ipynb', '.html'))
         self.chapter, self.section, _ = REG.match(filename).groups()
-        self.url = os.path.join(NBVIEWER_BASE_URL, filename)
+        self.url = os.path.join(NBVIEWER_URL, filename)
         self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.content = nbformat.read(self.path, as_version=4)
         self.navbar = None
@@ -298,7 +298,6 @@ class NbHeader:
     NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 
     def __init__(self):
-        env = Environment(loader=FileSystemLoader('templates'))
         self.content = env.get_template('notebook_header.jinja').render()
         self.source = self.__class__.NOTEBOOK_HEADER_TAG + self.content
 
@@ -364,19 +363,12 @@ class NbCollection:
                     print("* Links", file=f)
                     for txt, url in nb.links:
                         print(f"    - [{txt}]({url})", file=f)
-        os.system(' '.join(['notedown', TOC_FILE, '>', TOC_NB]))
+        os.system(' '.join(['notedown', f'"{TOC_FILE}"', '>', f'"{TOC_NB}"']))
 
     def write_readme(self):
         readme_toc = [README_TOC] + [README_INDEX] + [nb.readme for nb in self.notebooks]
-        env = Environment(loader=FileSystemLoader('templates'))
-        content = env.get_template('README.md.jinja').render(readme_toc=readme_toc)
         with open(README_FILE, 'w') as f:
-            f.write(content)
-            print(content)
-        #    f.write(README_TOC + "\n")
-        #    f.write(README_INDEX)
-        #    f.write('\n'.join([nb.readme for nb in self.notebooks]))
-        #    f.write('\n' + README_FOOTER)
+            f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc))
 
     def write_html(self):
         for nb in self.notebooks:
@@ -397,7 +389,7 @@ class NbCollection:
                     f.write("* " + keyword + "\n")
                     for link in index[keyword]:
                         f.write("    - " + link + "\n" )
-            os.system(' '.join(['notedown', INDEX_FILE, ">", INDEX_NB]))
+            os.system(' '.join(['notedown', f'"{INDEX_FILE}"', ">", f'"{INDEX_NB}"']))
 
     def lint(self):
         for nb in self.notebooks:
