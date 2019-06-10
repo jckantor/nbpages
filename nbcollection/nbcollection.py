@@ -367,12 +367,16 @@ class NbCollection:
         os.system(' '.join(['notedown', TOC_FILE, '>', TOC_NB]))
 
     def write_readme(self):
+        readme_toc = [README_TOC] + [README_INDEX] + [nb.readme for nb in self.notebooks]
+        env = Environment(loader=FileSystemLoader('templates'))
+        content = env.get_template('README.md.jinja').render(readme_toc=readme_toc)
         with open(README_FILE, 'w') as f:
-            f.write(README_HEADER)
-            f.write(README_TOC + "\n")
-            f.write(README_INDEX)
-            f.write('\n'.join([nb.readme for nb in self.notebooks]))
-            f.write('\n' + README_FOOTER)
+            f.write(content)
+            print(content)
+        #    f.write(README_TOC + "\n")
+        #    f.write(README_INDEX)
+        #    f.write('\n'.join([nb.readme for nb in self.notebooks]))
+        #    f.write('\n' + README_FOOTER)
 
     def write_html(self):
         for nb in self.notebooks:
