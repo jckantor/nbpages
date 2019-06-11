@@ -17,7 +17,6 @@ REPOSITORY = env.get_template('repository.txt').render()
 PAGE_TITLE = env.get_template('page_title.txt').render()
 PAGE_URL = env.get_template('page_url.txt').render()
 
-
 NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{REPOSITORY}/blob/master/notebooks/"
 
 # Header on TOC page ... link to page url
@@ -55,7 +54,6 @@ REG = re.compile(r'(\d\d|[A-Z])\.(\d\d)-(.*)\.ipynb')
 
 # nav bar templates
 NAVBAR_TAG = "<!--NAVIGATION-->\n"
-
 PREV_TEMPLATE = "< [{title}]({url}) "
 CONTENTS = "| [Contents](toc.ipynb) | [Index](index.ipynb) |"
 NEXT_TEMPLATE = " [{title}]({url}) >"

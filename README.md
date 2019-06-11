@@ -1,3 +1,4 @@
+[//]: # (README.md is produced automatically by nbcollection. Edit templates/README.md.jinja instead.)
 # nbcollection
 
 nbcollection is a tool for managing a repository of Jupyter notebooks that comprise a book,
