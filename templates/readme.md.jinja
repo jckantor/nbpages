@@ -1,10 +1,16 @@
 [//]: # (README.md is produced automatically by nbcollection. Edit templates/README.md.jinja instead.)
 # {% include 'page_title.txt' %}
 
-{% include 'page_title.txt' %} is a tool for managing a repository of Jupyter notebooks that comprise a book,
-course, or other form of large project. It was inspired by the tools included with the
+{% include 'page_title.txt' %} provides a Python toolset for managing a github repository of Jupyter notebooks.
+It was inspired by the tools included with the
 [Python Data Science Handbook](https://github.com/jakevdp/PythonDataScienceHandbook) by
 [Jake Vanderplas](https://github.com/jakevdp).
+
+{% for line in readme_toc %}
+{{ line }}
+{% endfor %}
+
+## Installation
 
 ## Dependencies
 
@@ -35,6 +41,4 @@ course, or other form of large project. It was inspired by the tools included wi
          |--- repository.txt
          |--- repository_url.txt
 
-{% for line in readme_toc %}
-{{ line }}
-{% endfor %}
+
