@@ -1,53 +1,26 @@
-[//]: # (README.md is produced automatically by nbcollection. Edit templates/README.md.jinja instead.)
-# nbcollection
+[//]: # (The README.md is produced automatically by nbpages. Edit templates/README.md.jinja.)
+# nbpages
 
-nbcollection provides a Python toolset for managing a github repository of Jupyter notebooks.
+nbpages provides a Python toolset for managing a github repository of Jupyter notebooks.
 It was inspired by the tools included with the
 [Python Data Science Handbook](https://github.com/jakevdp/PythonDataScienceHandbook) by
 [Jake Vanderplas](https://github.com/jakevdp).
 
 
-### [Table of Contents](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/toc.ipynb?flush=true)
+### [Table of Contents](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/toc.ipynb?flush=true)
 
-### [Keyword Index](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/index.ipynb?flush=true)
-
-
-### [Chapter 1.0 Getting Started with nbcollection](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/01.00-Getting-Started-with-nbcollection.ipynb)
-
-- [1.1 Notebook Repository Layout](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/01.01-Notebook-Repository-Layout.ipynb)
+### [Keyword Index](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/index.ipynb?flush=true)
 
 
-### [Appendix A. Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/A.00-Style-Guide.ipynb)
+### [Chapter 1.0 Getting Started with nbcollection](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Getting-Started-with-nbcollection.ipynb)
+
+- [1.1 Notebook Repository Layout](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.01-Notebook-Repository-Layout.ipynb)
 
 
-## Installation
+### [Appendix A. Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/A.00-Style-Guide.ipynb)
+
 
 ## Dependencies
 
 * [notedown](https://github.com/aaren/notedown)
-
-## Notebook Repository Layout
-
-    My-Amazing-Course/
-    |
-    |--- notebooks/
-    |.   |--- figures/
-    |    |--- 00.00-Preface.ipyb
-    |    |--- 01.00-My-First-Chapter.ipynb
-    |    |--- 01.01-My-First-Chapter-First-Section.ipynb
-    |    |--- A.00-My-Appendix.ipynb
-    |
-    |--- _config.yml
-    |--- .gitignore
-    |--- LICENSE-code.txt
-    |--- LICENSE-text.txt
-    |--- README.md
-    |--- templates/
-         |--- nbviewer_url.txt          # nbviewer viewer base url
-         |--- notebook_header.txt
-         |--- page_title.txt
-         |--- page_url.txt
-         |--- README.md.jinja
-         |--- repository.txt
-         |--- repository_url.txt
 
