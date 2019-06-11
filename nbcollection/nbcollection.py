@@ -61,17 +61,17 @@ NEXT_TEMPLATE = " [{title}]({url}) >"
 
 class Nb:
 
-    # markdown link
-    MD_LINK = re.compile(r'(?:[^!]\[(.*?)\]\((.*?)\))')
+    # match markdown link returning txt and url groups
+    MD_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 
-    # markdown figure
-    MD_FIG = re.compile(r'(?:!\[(.*?)\]\((.*?)\))')
+    # match markdown figure returning txt and url groups
+    MD_FIG = re.compile(r'(?:!\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 
-    # html image tag
+    # match html image tag
     HTML_IMG = re.compile(r'<img[^>]*>')
 
-    # markdown header
-    MD_HEADER = re.compile(r"^#+")
+    # match markdown header
+    MD_HEADER = re.compile(r'(^|\n)(?P<level>#{1,6})(?P<header>.*?)#*(\n|$)')
 
     def __init__(self, filename):
         self.filename = filename
@@ -90,13 +90,15 @@ class Nb:
         """
         for cell in self.content.cells:
             if cell.cell_type == "markdown":
-                if cell.source.startswith('#'):
-                    return cell.source[1:].splitlines()[0].strip()
+                m = self.__class__.MD_HEADER.match(cell.source)
+                if m and len(m.group('level')) == 1:
+                    return m.group('header').strip()
+        return None
 
     @property
     def figs(self):
         """
-        list of all markdown figures
+        list of markdown figures
         """
         figs = []
         for cell in self.content.cells:
@@ -107,7 +109,7 @@ class Nb:
     @property
     def links(self):
         """
-        list of all markdown links
+        list of markdown links
         """
         links = []
         for cell in self.content.cells[2:-1]:
@@ -118,7 +120,7 @@ class Nb:
     @property
     def imgs(self):
         """
-        list of all html img tags
+        list of html img tags
         """
         imgs = []
         for cell in self.content.cells[2:-1]:
@@ -239,7 +241,7 @@ class Chapter(Nb):
         """
         formatted title with numbering
         """
-        return f"{int(self.chapter)}.{int(self.section)} {self.title}"
+        return f"Chapter {int(self.chapter)}.{int(self.section)} {self.title}"
 
     @property
     def toc(self):
@@ -282,7 +284,10 @@ class Section(Nb):
         """
         formatted title with numbering
         """
-        return f"{self.chapter}.{int(self.section)} {self.title}"
+        try:
+            return f"{int(self.chapter)}.{int(self.section)} {self.title}"
+        except:
+            return f"{self.chapter}.{int(self.section)} {self.title}"
 
     @property
     def toc(self):
@@ -301,7 +306,7 @@ class NbHeader:
 
     def write(self, nb):
         """
-        write a common header to a notebook file
+        write header to a notebook file
         :param nb: notebook object
         :return: None
         """
@@ -311,6 +316,7 @@ class NbHeader:
         else:
             print('- inserting header for {0}'.format(nb.filename))
             nb.content.cells.insert(0, new_markdown_cell(self.source))
+
         nbformat.write(nb.content, nb.path)
 
 

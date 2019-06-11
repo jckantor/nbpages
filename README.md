@@ -12,9 +12,12 @@ It was inspired by the tools included with the
 ### [Keyword Index](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/index.ipynb?flush=true)
 
 
-### [1.0 Getting Started with nbcollection](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/01.00-Getting-Started-with-nbcollection.ipynb)
+### [Chapter 1.0 Getting Started with nbcollection](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/01.00-Getting-Started-with-nbcollection.ipynb)
 
-- [01.1 Notebook Repository Layout](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/01.01-Notebook-Repository-Layout.ipynb)
+- [1.1 Notebook Repository Layout](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/01.01-Notebook-Repository-Layout.ipynb)
+
+
+### [Appendix A. Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbcollection/blob/master/notebooks/A.00-Style-Guide.ipynb)
 
 
 ## Installation
