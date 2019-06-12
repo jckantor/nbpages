@@ -7,6 +7,23 @@ inspired by the tools included with the
 [Python Data Science Handbook](https://github.com/jakevdp/PythonDataScienceHandbook) by
 [Jake Vanderplas](https://github.com/jakevdp).
 
+## Installation
+
+    pip install nbpages
+
+## Usage
+
+This package assumes you have already created one or more Jupyter notebooks in a `notebooks` subdirectory. The notebook
+file names must be prefaced by an 'dd.dd-' prefix indicating chapter and section numbering.  The direcortory should
+published as a github repository.
+
+To use, execute the command line
+
+    python nbpages
+
+from the top level directory of the notebook repository. The will create a directory containing configuration data and
+templates for a README.md file and notebook headers.
+
 {% for line in readme_toc %}
 {{ line }}
 {% endfor %}
