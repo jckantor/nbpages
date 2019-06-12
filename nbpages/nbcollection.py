@@ -1,58 +1,10 @@
-import os
 import re
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
 import itertools
-import copy
 import json
-import configparser
 
-from nbconvert import HTMLExporter
-import shutil
-
-# read configuration file
-config = configparser.ConfigParser()
-config.read('templates/config')
-REPOSITORY = config['NBPAGES']['repository']
-PAGE_TITLE = config['NBPAGES']['page_title']
-PAGE_URL = config['NBPAGES']['page_url']
-GITHUB_URL = config['NBPAGES']['github_url']
-
-from jinja2 import Environment, FileSystemLoader
-env = Environment(loader=FileSystemLoader('templates'))
-
-
-NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{REPOSITORY}/blob/master/notebooks/"
-
-# Header on TOC page ... link to page url
-TOC_HEADER = f"# [{PAGE_TITLE}]({PAGE_URL})"
-
-# Header point to Table of Contents page viewed on nbviewer
-README_TOC = f"### [Table of Contents]({NBVIEWER_URL}toc.ipynb?flush=true)"
-README_INDEX = f"### [Keyword Index]({NBVIEWER_URL}index.ipynb?flush=true)"
-
-# template for link to open notebooks in Google colaboratory
-COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{REPOSITORY}' \
-             '/blob/master/notebooks/{notebook_filename}">' + \
-             '<img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
-             ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
-
-# location of notebook directory
-NOTEBOOK_DIR = os.path.join(os.getcwd(), 'notebooks/')
-
-# location of files in local repository
-README_FILE = os.path.join(os.getcwd(), 'README.md')
-TOC_FILE = os.path.join(NOTEBOOK_DIR, 'toc.md')
-TOC_NB = os.path.join(NOTEBOOK_DIR, 'toc.ipynb')
-INDEX_FILE = os.path.join(NOTEBOOK_DIR, 'index.md')
-INDEX_NB= os.path.join(NOTEBOOK_DIR, 'index.ipynb')
-
-# nav bar templates
-NAVBAR_TAG = "<!--NAVIGATION-->\n"
-PREV_TEMPLATE = "< [{title}]({url}) "
-CONTENTS = "| [Contents](toc.ipynb) | [Index](index.ipynb) |"
-NEXT_TEMPLATE = " [{title}]({url}) >"
-
+from config import *
 
 class Nb:
 
@@ -71,7 +23,6 @@ class Nb:
     def __init__(self, filename, chapter, section):
         self.filename = filename
         self.path = os.path.join(NOTEBOOK_DIR, filename)
-        #self.html = os.path.join(HTML_DIR, filename.replace('.ipynb', '.html'))
         self.chapter = chapter
         self.section = section
         self.url = os.path.join(NBVIEWER_URL, filename)
@@ -324,6 +275,30 @@ class NbCollection:
                     self.notebooks.append(Appendix(filename, chapter, section))
         self.nbheader = NbHeader()
 
+    @property
+    def keyword_index(self):
+        """
+        keyword dictionary holding list of links to associated notebook headers.
+        """
+        index = {}
+        for nb in self.notebooks:
+            for word, links in nb.keyword_index.items():
+                for link in links:
+                    index.setdefault(word, []).append(link)
+        return index
+
+    def write_keyword_index(self):
+        keywords = sorted(self.keyword_index.keys(), key=str.lower)
+        if keywords:
+            with open(INDEX_FILE, 'w') as f:
+                print(TOC_HEADER + "\n## Keyword Index", file=f)
+                f.write("\n")
+                for keyword in keywords:
+                    f.write("* " + keyword + "\n")
+                    for link in self.keyword_index[keyword]:
+                        f.write("    - " + link + "\n")
+            os.system(' '.join(['notedown', f'"{INDEX_FILE}"', ">", f'"{INDEX_NB}"']))
+
     def write_headers(self):
         for nb in self.notebooks:
             self.nbheader.write(nb)
@@ -334,7 +309,7 @@ class NbCollection:
         for prev_nb, nb, next_nb in zip(itertools.chain([None], a), b, itertools.chain(c, [None])):
             nb.navbar = NAVBAR_TAG
             nb.navbar += PREV_TEMPLATE.format(title=prev_nb.title, url=prev_nb.url) if prev_nb else ''
-            nb.navbar += CONTENTS
+            nb.navbar += CONTENTS + INDEX if self.keyword_index else CONTENTS
             nb.navbar += NEXT_TEMPLATE.format(title=next_nb.title, url=next_nb.url) if next_nb else ''
             nb.navbar += nb.colab_link
             nb.write_navbar()
@@ -359,27 +334,6 @@ class NbCollection:
         readme_toc = [README_TOC] + [README_INDEX] + [nb.readme for nb in self.notebooks]
         with open(README_FILE, 'w') as f:
             f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc, page_title=PAGE_TITLE))
-
-    @property
-    def keyword_index(self):
-        index = {}
-        for nb in self.notebooks:
-            for word, links in nb.keyword_index.items():
-                for link in links:
-                    index.setdefault(word, []).append(link)
-        return index
-
-    def write_keyword_index(self):
-        keywords = sorted(self.keyword_index.keys(), key=str.lower)
-        if keywords:
-            with open(INDEX_FILE, 'w') as f:
-                print(TOC_HEADER + "\n## Keyword Index", file=f)
-                f.write("\n")
-                for keyword in keywords:
-                    f.write("* " + keyword + "\n")
-                    for link in self.keyword_index[keyword]:
-                        f.write("    - " + link + "\n" )
-            os.system(' '.join(['notedown', f'"{INDEX_FILE}"', ">", f'"{INDEX_NB}"']))
 
     def lint(self):
         for nb in self.notebooks:

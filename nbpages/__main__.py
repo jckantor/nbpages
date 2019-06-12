@@ -1,7 +1,6 @@
 
 from nbsetup import nbsetup
-from nbcollection import Nb, NbCollection
-
+from nbcollection import NbCollection
 
 def main():
     nbsetup()

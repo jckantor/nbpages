@@ -7,7 +7,7 @@ from setuptools import setup
 
 setup(
     name = "nbpages",
-    version = "0.0.1.dev2",
+    version = "0.0.1.dev3",
     description = "Tools to maintain a respository of Jupyter notebooks",
     author = "jckantor",
     author_email = "Kantor.1@nd.edu",
