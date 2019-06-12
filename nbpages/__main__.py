@@ -1,4 +1,7 @@
 from nbcollection import *
+from setup import *
+
+setup()
 
 notebooks = NbCollection()
 #notebooks.lint()

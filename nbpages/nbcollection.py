@@ -5,17 +5,21 @@ from nbformat.v4.nbbase import new_markdown_cell
 import itertools
 import copy
 import json
+import configparser
 
 from nbconvert import HTMLExporter
 import shutil
 
-from jinja2 import Environment, FileSystemLoader
+config = configparser.ConfigParser()
+config.read('templates/config')
+REPOSITORY = config['NBPAGES']['repository']
+PAGE_TITLE = config['NBPAGES']['page_title']
+PAGE_URL = config['NBPAGES']['page_url']
+GITHUB_URL = config['NBPAGES']['github_url']
 
+from jinja2 import Environment, FileSystemLoader
 env = Environment(loader=FileSystemLoader('templates'))
 
-REPOSITORY = env.get_template('repository.txt').render()
-PAGE_TITLE = env.get_template('page_title.txt').render()
-PAGE_URL = env.get_template('page_url.txt').render()
 
 NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{REPOSITORY}/blob/master/notebooks/"
 
@@ -52,7 +56,7 @@ INDEX_NB= os.path.join(NOTEBOOK_DIR, 'index.ipynb')
 # regular expression that matches notebook filenames to be included in the TOC
 REG = re.compile(r'(\d\d|[A-Z])\.(\d\d)-(.*)\.ipynb')
 
-# nav bar templates
+# nav bar templates_old
 NAVBAR_TAG = "<!--NAVIGATION-->\n"
 PREV_TEMPLATE = "< [{title}]({url}) "
 CONTENTS = "| [Contents](toc.ipynb) | [Index](index.ipynb) |"
@@ -301,7 +305,8 @@ class NbHeader:
     NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 
     def __init__(self):
-        self.content = env.get_template('notebook_header.jinja').render()
+        template = env.get_template('notebook_header.jinja')
+        self.content = template.render(page_title=PAGE_TITLE, page_url=PAGE_URL, github_url=GITHUB_URL)
         self.source = self.__class__.NOTEBOOK_HEADER_TAG + self.content
 
     def write(self, nb):
@@ -372,7 +377,7 @@ class NbCollection:
     def write_readme(self):
         readme_toc = [README_TOC] + [README_INDEX] + [nb.readme for nb in self.notebooks]
         with open(README_FILE, 'w') as f:
-            f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc))
+            f.write(env.get_template('README.md.jinja').render(page_title=PAGE_TITLE, readme_toc=readme_toc))
 
     def write_html(self):
         for nb in self.notebooks:

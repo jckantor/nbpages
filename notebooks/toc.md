@@ -1,4 +1,4 @@
-# [nbpages](http://jckantor.github.io/nbpages/)
+# [nbpages](https://jckantor,github.io/nbpages)
 
 
 ## [Chapter 1.0 Getting Started with nbcollection](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Getting-Started-with-nbcollection.ipynb)
