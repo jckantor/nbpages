@@ -47,7 +47,15 @@ TOC_NB = os.path.join(NOTEBOOK_DIR, 'toc.ipynb')
 INDEX_FILE = os.path.join(NOTEBOOK_DIR, 'index.md')
 INDEX_NB= os.path.join(NOTEBOOK_DIR, 'index.ipynb')
 
-# nav bar templates
+# location of notebook directory in the local repository
+#HTML_DIR = os.path.join(os.path.dirname(__file__), '..', 'html')
+#CUSTOM_CSS = os.path.join(os.path.dirname(__file__), 'custom.css')
+#if not os.path.exists(HTML_DIR):
+#    os.mkdir(HTML_DIR)
+#shutil.copy(CUSTOM_CSS, os.path.join(HTML_DIR, 'custom.css'))
+
+
+# nav bar templates_old
 NAVBAR_TAG = "<!--NAVIGATION-->\n"
 PREV_TEMPLATE = "< [{title}]({url}) "
 CONTENTS = "| [Contents](toc.ipynb) | [Index](index.ipynb) |"
@@ -190,6 +198,18 @@ class Nb:
             print(f"- inserting navbar for {self.filename}")
             self.content.cells.append(new_markdown_cell(source=self.navbar))
         nbformat.write(self.content, self.path)
+
+    def write_html(self):
+        print("writing", self.html)
+        html_exporter = HTMLExporter()
+        html_exporter.template_file = 'full'
+        # do a deeo copy to any chance of overwriting the original notebooks
+        content = copy.deepcopy(self.content)
+        content.cells = content.cells[2:-1]
+        content.cells[0].source = "# " + self.numbered_title
+        (body, resources) = html_exporter.from_notebook_node(content)
+        with open(self.html, 'w') as f:
+            f.write(body)
 
     def __gt__(self, nb):
         return self.filename > nb.filename
@@ -360,24 +380,24 @@ class NbCollection:
         with open(README_FILE, 'w') as f:
             f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc))
 
-    @property
+    def write_html(self):
+        for nb in self.notebooks:
+            nb.write_html()
+
     def keyword_index(self):
         index = {}
         for nb in self.notebooks:
             for word, links in nb.keyword_index.items():
                 for link in links:
                     index.setdefault(word, []).append(link)
-        return index
-
-    def write_keyword_index(self):
-        keywords = sorted(self.keyword_index.keys(), key=str.lower)
+        keywords = sorted(index.keys(), key=str.lower)
         if keywords:
             with open(INDEX_FILE, 'w') as f:
                 print(TOC_HEADER + "\n## Keyword Index", file=f)
                 f.write("\n")
                 for keyword in keywords:
                     f.write("* " + keyword + "\n")
-                    for link in self.keyword_index[keyword]:
+                    for link in index[keyword]:
                         f.write("    - " + link + "\n" )
             os.system(' '.join(['notedown', f'"{INDEX_FILE}"', ">", f'"{INDEX_NB}"']))
 

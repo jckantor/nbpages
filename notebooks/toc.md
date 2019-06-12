@@ -5,6 +5,9 @@
 
 ### [1.1 Notebook Repository Layout](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.01-Notebook-Repository-Layout.ipynb)
 
+### [1.2 Configuration](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.02-Configuration.ipynb)
+- [Minimal Configuration](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.02-Configuration.ipynb#Minimal-Configuration)
+
 
 ## [Appendix A. Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/A.00-Style-Guide.ipynb)
 - [Notebook naming and ancillary/generated files](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/A.00-Style-Guide.ipynb#Notebook-naming-and-ancillary/generated-files)

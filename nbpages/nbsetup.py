@@ -2,7 +2,7 @@ import os
 import configparser
 
 readme_template = """
-//]: # (The README.md is produced automatically by nbpages. Make changes by edittin templates/README.md.jinja.)
+[//]: # (The README.md is produced automatically by nbpages. Make changes by edittin templates/README.md.jinja.)
 # {{ page_title }}
 
 {% for line in readme_toc %}
@@ -36,7 +36,7 @@ def write_template_if_needed(value, template):
     else:
         print(f"- {fname} already exists")
 
-def setup():
+def nbsetup():
     """
     setup templates directory with default configuration and templates
     """
@@ -70,4 +70,4 @@ def setup():
 
 
 if __name__ == "__main__":
-    setup()
+    nbsetup()

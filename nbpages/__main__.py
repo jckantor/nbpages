@@ -1,15 +1,20 @@
-from nbcollection import *
-from setup import *
 
-setup()
+from nbsetup import nbsetup
+from nbcollection import Nb, NbCollection
 
-notebooks = NbCollection()
-#notebooks.lint()
-notebooks.write_headers()
-notebooks.write_navbars()
-notebooks.write_toc()
-notebooks.keyword_index()
-notebooks.write_readme()
+
+def main():
+    nbsetup()
+    notebooks = NbCollection()
+    #notebooks.lint()
+    notebooks.write_headers()
+    notebooks.write_navbars()
+    notebooks.write_toc()
+    notebooks.write_keyword_index()
+    notebooks.write_readme()
+
+if __name__ == '__main__':
+    main()
 
 
 
