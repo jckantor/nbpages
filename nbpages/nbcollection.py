@@ -358,7 +358,7 @@ class NbCollection:
     def write_readme(self):
         readme_toc = [README_TOC] + [README_INDEX] + [nb.readme for nb in self.notebooks]
         with open(README_FILE, 'w') as f:
-            f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc))
+            f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc, page_title=PAGE_TITLE))
 
     @property
     def keyword_index(self):
