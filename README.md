@@ -1,6 +1,11 @@
 
 [//]: # (The README.md is produced automatically by nbpages. Make changes by edittin templates/README.md.jinja.)
-# 
+# nbpages
+
+nbpages provides a Python toolset for managing a github repository of Jupyter notebooks. The project was
+inspired by the tools included with the
+[Python Data Science Handbook](https://github.com/jakevdp/PythonDataScienceHandbook) by
+[Jake Vanderplas](https://github.com/jakevdp).
 
 
 ### [Table of Contents](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/toc.ipynb?flush=true)
