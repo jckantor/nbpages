@@ -7,7 +7,7 @@ from setuptools import setup
 
 setup(
     name = "nbpages",
-    version = "0.0.1.dev5",
+    version = "0.0.1.dev6",
     packages=["nbpages", ],
     entry_points = {
         'console_scripts': [
