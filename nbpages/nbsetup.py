@@ -46,7 +46,7 @@ def nbsetup():
 
     # create default templates/config if needed
     if not os.path.isfile("templates/config"):
-        print(f"- creating default yemplates/config from .git/config")
+        print(f"- creating default templates/config from .git/config")
         assert os.path.exists('.git'), ".git not found. Create a github repository."
 
         git_config = configparser.ConfigParser()
