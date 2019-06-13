@@ -8,16 +8,16 @@ from config import *
 
 class Nb:
 
-    # match markdown link returning txt and url groups
+    # markdown link returning txt and url groups
     MD_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 
-    # match markdown figure returning txt and url groups
+    # markdown figure returning txt and url groups
     MD_FIG = re.compile(r'(?:!\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 
-    # match html image tag
+    # html image tag
     HTML_IMG = re.compile(r'<img[^>]*>')
 
-    # match markdown header
+    # markdown header
     MD_HEADER = re.compile(r'(^|\n)(?P<level>#{1,6})(?P<header>.*?)#*(\n|$)')
 
     def __init__(self, filename, chapter, section):
@@ -236,6 +236,7 @@ class NbHeader:
     NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 
     def __init__(self):
+        env = Environment(loader=FileSystemLoader('templates'))
         template = env.get_template('notebook_header.jinja')
         self.content = template.render(page_title=PAGE_TITLE, page_url=PAGE_URL, github_url=GITHUB_URL)
         self.source = self.__class__.NOTEBOOK_HEADER_TAG + self.content
@@ -244,7 +245,6 @@ class NbHeader:
         """
         write header to a notebook file
         :param nb: notebook object
-        :return: None
         """
         if nb.content.cells[0].source.startswith(self.__class__.NOTEBOOK_HEADER_TAG):
             print('- amending header for {0}'.format(nb.filename))
@@ -274,18 +274,20 @@ class NbCollection:
                 else:
                     self.notebooks.append(Appendix(filename, chapter, section))
         self.nbheader = NbHeader()
+        self._keyword_index = {}
 
     @property
     def keyword_index(self):
         """
         keyword dictionary holding list of links to associated notebook headers.
         """
-        index = {}
-        for nb in self.notebooks:
-            for word, links in nb.keyword_index.items():
-                for link in links:
-                    index.setdefault(word, []).append(link)
-        return index
+        # use self._keyword_index to cache results
+        if not self._keyword_index:
+            for nb in self.notebooks:
+                for word, links in nb.keyword_index.items():
+                    for link in links:
+                        self._keyword_index.setdefault(word, []).append(link)
+        return self._keyword_index
 
     def write_keyword_index(self):
         keywords = sorted(self.keyword_index.keys(), key=str.lower)
@@ -332,6 +334,7 @@ class NbCollection:
 
     def write_readme(self):
         readme_toc = [README_TOC] + [README_INDEX] + [nb.readme for nb in self.notebooks]
+        env = Environment(loader=FileSystemLoader('templates'))
         with open(README_FILE, 'w') as f:
             f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc, page_title=PAGE_TITLE))
 
