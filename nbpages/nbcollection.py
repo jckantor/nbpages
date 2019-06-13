@@ -268,7 +268,7 @@ class NbCollection:
                 if section not in "00":
                     self.notebooks.append(Section(filename, chapter, section))
                 elif chapter in "00":
-                    self.notebooks.append(Fronmatter(filename, chapter, section))
+                    self.notebooks.append(FrontMatter(filename, chapter, section))
                 elif chapter.isdigit():
                     self.notebooks.append(Chapter(filename, chapter, section))
                 else:
