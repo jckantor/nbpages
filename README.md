@@ -13,7 +13,7 @@ inspired by the tools included with the
 
 ## Initial Setup
 
-This package assumes you have created a github repository containing one or more Jupyter notebooks (*.ipynb) in a
+This package assumes you have created a public github repository containing one or more Jupyter notebooks (*.ipynb) in a
 subdirectory named `notebooks`. The initial setup is performed with the command
 
     nbpages --setup
