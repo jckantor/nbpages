@@ -11,6 +11,10 @@ inspired by the tools included with the
 
     pip install nbpages
 
+To upgrade a previously installed version to the latest version
+
+    pip install nbpages --upgrade
+
 ## Initial Setup
 
 This package assumes you have created a public github repository containing one or more Jupyter notebooks (*.ipynb) in a
