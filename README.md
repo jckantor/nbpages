@@ -11,30 +11,39 @@ inspired by the tools included with the
 
     pip install nbpages
 
-## Usage
+## Initial Setup
 
-This package assumes you have created a github repository containing one or more Jupyter notebooks in a
-subdirectory named `notebooks`. Notebook files end with a `.ipynb` suffix and begin with a `nn.mm-` prefix where
-`nn` refers to the chapter number or, if a letter, to an Appendix.  `mm` refers to the section number. Section `00`
- the chapter title and any prefatory material.
+This package assumes you have created a github repository containing one or more Jupyter notebooks (*.ipynb) in a
+subdirectory named `notebooks`. The initial setup is performed with the command
+
+    python nbpages --setup
+
+This creates a directory named `templates` if needed with configuration data found in the `.git` subdirectory. If not
+already present, Jinja templates `README.md.jinja` and `notebook_header.jinja` are created. These templates should be
+edited as required.
+
+## Normal Usage
+
+Notebooks filenames are prefixed with `nn.mm-` where`nn` refers to the chapter number or, if a letter, to an Appendix.
+mm` refers to the section number. Section `00` the chapter title and any prefatory material.
 
 To use, execute the command line
 
     python nbpages
 
-from the top level directory of the notebook repository. The initial use of this command will:
+from the top level directory of the notebook repository. The command will add or amend headers and navigation bars in
+all notebooks, and create a table of contents and a keyword index accessible from README.md and the navigation bars.
 
-1. Create a directory named `templates` with configuration data found in the `.git` subdirectory, and jinja
-templates for a README.md file and notebook headers. The templates may be edited and include any variable from
-the configuration file.
-2. Create `README.md` using the template `README.md.jinja`. The default template includes a formatted list of all
-notebooks in the respository.
-3. Add headers and navigation bars in all notebooks. The headers can be modified by the editing
-`notebook_header.jinja` template.
-4. Create a table of contents and a keyword index accessible from README.md and the navigation bars.
+## Utilities
 
-Subsequent use of this command updates REAEM.md, the table of contents, notebook headers, navigation bars, and
-the keyword index.
+To help achieve a consistent style over a collection of notebooks, use the command
+
+    python nbpages --lint
+
+to locate some forms of notebook 'lint'.  A current list of additional features can be found
+
+    python nbpages --help
+
 
 
 ### [Table of Contents](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/toc.ipynb?flush=true)
