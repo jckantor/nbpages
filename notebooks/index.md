@@ -1,4 +1,4 @@
-# [nbpages](https://jckantor,github.io/nbpages)
+# [nbpages](https://jckantor.github.io/nbpages)
 ## Keyword Index
 
 * configuration
