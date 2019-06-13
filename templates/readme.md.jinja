@@ -13,10 +13,10 @@ inspired by the tools included with the
 
 ## Usage
 
-This package assumes you have already created a github repository containing one or more Jupyter notebooks in a
-subdirectory named `notebooks`. The notebook files end with a `.ipynb` suffix, and begin with a `nn.mm-` prefix.
-`nn` refers to the chapter number or, if a letter, to an Appendix.  `mm` refers to section number. Section `00`
-includes the chapter title and any prefatory material.
+This package assumes you have created a github repository containing one or more Jupyter notebooks in a
+subdirectory named `notebooks`. Notebook files end with a `.ipynb` suffix and begin with a `nn.mm-` prefix where
+`nn` refers to the chapter number or, if a letter, to an Appendix.  `mm` refers to the section number. Section `00`
+ the chapter title and any prefatory material.
 
 To use, execute the command line
 
@@ -32,6 +32,9 @@ notebooks in the respository.
 3. Add headers and navigation bars in all notebooks. The headers can be modified by the editing
 `notebook_header.jinja` template.
 4. Create a table of contents and a keyword index accessible from README.md and the navigation bars.
+
+Subsequent use of this command updates REAEM.md, the table of contents, notebook headers, navigation bars, and
+the keyword index.
 
 {% for line in readme_toc %}
 {{ line }}
