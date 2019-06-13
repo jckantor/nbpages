@@ -60,7 +60,7 @@ def nbsetup():
         config['NBPAGES'] = {'github_url': github_url,
                              'repository': '/'.join([github_user, page_title]),
                              'page_title': page_title,
-                             'page_url': f"https://{github_user},github.io/{page_title}"
+                             'page_url': f"https://{github_user}.github.io/{page_title}"
                              }
         with open('templates/config', 'w') as f:
             print("- writing templates/config")
