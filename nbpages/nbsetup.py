@@ -17,9 +17,7 @@ content is available [on Github]({{ github_url }}).*
 
 
 def make_dir_if_needed(name):
-    """
-    create new directory if not present, and verify
-    """
+    """Create new directory if not present, and verify that it exists."""
     if not os.path.exists(name):
         print(f"- creating {name} directory")
         os.mkdir(name)
@@ -28,6 +26,7 @@ def make_dir_if_needed(name):
     assert os.path.exists(name), f"{name} directory not found in current working directory"
 
 def write_template_if_needed(value, template):
+    """Create template file if needed, and verify that it exists."""
     fname = f"templates/{template}"
     if not os.path.isfile(fname):
         with open(fname, 'w') as f:
@@ -37,9 +36,8 @@ def write_template_if_needed(value, template):
         print(f"- {fname} already exists")
 
 def nbsetup():
-    """
-    setup templates directory with default configuration and templates
-    """
+    """Setup directory if needed with default configuration and templates."""
+    make_dir_if_needed("notebooks")
     make_dir_if_needed("templates")
     write_template_if_needed(notebook_header_template, 'notebook_header.jinja')
     write_template_if_needed(readme_template, 'README.md.jinja')

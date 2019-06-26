@@ -26,7 +26,7 @@ def main():
         return
 
     if not os.path.exists('notebooks'):
-        print("notebooks directory wasn't found.")
+        print("notebooks directory wasn't found. Run 'nbpages --setup' to create notebooks directory.")
         return
 
     from .nbcollection import NbCollection

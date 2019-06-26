@@ -277,15 +277,16 @@ class NbCollection:
 
     def write_navbars(self):
         """Insert navigation bars into a collection of notebooks."""
-        a, b, c = itertools.tee(self.notebooks, 3)
-        next (c)
-        for prev_nb, nb, next_nb in zip(itertools.chain([None], a), b, itertools.chain(c, [None])):
-            nb.navbar = NAVBAR_TAG
-            nb.navbar += PREV_TEMPLATE.format(title=prev_nb.title, url=prev_nb.url) if prev_nb else ''
-            nb.navbar += CONTENTS + INDEX if self.keyword_index else CONTENTS
-            nb.navbar += NEXT_TEMPLATE.format(title=next_nb.title, url=next_nb.url) if next_nb else ''
-            nb.navbar += nb.colab_link
-            nb.write_navbar()
+        if self.notebooks:
+            a, b, c = itertools.tee(self.notebooks, 3)
+            next (c)
+            for prev_nb, nb, next_nb in zip(itertools.chain([None], a), b, itertools.chain(c, [None])):
+                nb.navbar = NAVBAR_TAG
+                nb.navbar += PREV_TEMPLATE.format(title=prev_nb.title, url=prev_nb.url) if prev_nb else ''
+                nb.navbar += CONTENTS + INDEX if self.keyword_index else CONTENTS
+                nb.navbar += NEXT_TEMPLATE.format(title=next_nb.title, url=next_nb.url) if next_nb else ''
+                nb.navbar += nb.colab_link
+                nb.write_navbar()
 
     def write_toc(self):
         """Write table of contents file for a collection of notebooks."""
