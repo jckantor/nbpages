@@ -14,7 +14,7 @@ args = parser.parse_args()
 def main():
 
     if not os.path.exists('.git'):
-        print(".git directory wasn't found. Create repository and run 'nbpages --setup'")
+        print(".git directory wasn't found. Create repository first and then run 'nbpages --setup'")
         return
 
     if args.setup:
@@ -22,7 +22,7 @@ def main():
         return
 
     if not os.path.exists('templates'):
-        print("templates directory wasn't found. Run 'nbpages --setup'")
+        print("templates directory wasn't found. Run 'nbpages --setup' to create templates directory.")
         return
 
     if not os.path.exists('notebooks'):

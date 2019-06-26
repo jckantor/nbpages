@@ -32,9 +32,7 @@ class Nb:
 
     @property
     def title(self):
-        """
-        notebook title obtained from the first level one header
-        """
+        """Return the tile of a notebook obtained from the first level one header."""
         for cell in self.content.cells:
             if cell.cell_type == "markdown":
                 m = self.__class__.MD_HEADER.match(cell.source)
@@ -44,9 +42,7 @@ class Nb:
 
     @property
     def figs(self):
-        """
-        list of markdown figures
-        """
+        """Return a list of markdown figures appearing in a notebook."""
         figs = []
         for cell in self.content.cells:
             if cell.cell_type == "markdown":
@@ -55,9 +51,7 @@ class Nb:
 
     @property
     def links(self):
-        """
-        list of markdown links
-        """
+        """Return a list of markdown links appearing in a notebook."""
         links = []
         for cell in self.content.cells[2:-1]:
             if cell.cell_type == "markdown":
@@ -66,9 +60,7 @@ class Nb:
 
     @property
     def imgs(self):
-        """
-        list of html img tags
-        """
+        """Return a list of html img tags appearing in a notebook."""
         imgs = []
         for cell in self.content.cells[2:-1]:
             if cell.cell_type == "markdown":
@@ -77,23 +69,17 @@ class Nb:
 
     @property
     def link(self):
-        """
-        markdown link to html view
-        """
+        """Return a markdown link to the public html view of a notebook."""
         return f"[{self.numbered_title}]({self.url})"
 
     @property
     def readme(self):
-        """
-        formatted entry for this notebook in the repository readme file
-        """
+        """Return formatted entry for this notebook in the repository readme file."""
         return "\n### " + self.link
 
     @property
     def toc(self):
-        """
-        formmatted list of markdown links to cells starting with a markdown header
-        """
+        """Return formmatted list of markdown links to cells starting with a markdown header."""
         toc = []
         header_cells = (cell for cell in self.content.cells if cell.cell_type == "markdown" and cell.source.startswith("##"))
         for header_cell in header_cells:
@@ -105,6 +91,7 @@ class Nb:
 
     @property
     def keyword_index(self):
+        "Return keyword index and links for a notebook."
         index = dict()
         headercells = (cell for cell in self.content.cells if cell.cell_type == "markdown" and cell.source.startswith("#"))
         for headercell in headercells:
@@ -119,6 +106,7 @@ class Nb:
 
     @property
     def orphan_headers(self):
+        """"Return a list of orphan headers in a notebook."""
         orphans = []
         for cell in self.content.cells[2:-1]:
             if cell.cell_type == "markdown":
@@ -128,6 +116,7 @@ class Nb:
         return orphans
 
     def write_navbar(self):
+        """Insert navigation bar into a notebook."""
         if self.content.cells[1].source.startswith(NAVBAR_TAG):
             print(f"- amending navbar for {self.filename}")
             self.content.cells[1].source = self.navbar
@@ -155,13 +144,12 @@ class FrontMatter(Nb):
 
     @property
     def numbered_title(self):
-        """
-        formatted title with numbering
-        """
+        """Return formatted title with numbering for a notebook."""
         return f"{self.title}"
 
     @property
     def toc(self):
+        """Return table of contents entry for a notebook."""
         toc = Nb.toc.fget(self)
         toc.insert(0, "\n## " + self.link)
         return toc
@@ -173,13 +161,12 @@ class Chapter(Nb):
 
     @property
     def numbered_title(self):
-        """
-        formatted title with numbering
-        """
+        """Return formatted title with numbering for a notebook."""
         return f"Chapter {int(self.chapter)}.{int(self.section)} {self.title}"
 
     @property
     def toc(self):
+        """Return table of contents entry for a notebook."""
         toc = Nb.toc.fget(self)
         toc.insert(0, "\n## " + self.link)
         return toc
@@ -191,13 +178,12 @@ class Appendix(Nb):
 
     @property
     def numbered_title(self):
-        """
-        formatted title with numbering
-        """
+        """Return formatted title with numbering for a notebook."""
         return f"Appendix {self.chapter}. {self.title}"
 
     @property
     def toc(self):
+        """Return table of contents entry for a notebook."""
         toc =  Nb.toc.fget(self)
         toc.insert(0, "\n## " + self.link)
         return toc
@@ -209,16 +195,12 @@ class Section(Nb):
 
     @property
     def readme(self):
-        """
-        formatted entry for this notebook in the repository readme file
-        """
+        """Return formatted entry for this notebook in the repository readme file."""
         return "- " + self.link
 
     @property
     def numbered_title(self):
-        """
-        formatted title with numbering
-        """
+        """Return formatted title with numbering for a notebook."""
         try:
             return f"{int(self.chapter)}.{int(self.section)} {self.title}"
         except:
@@ -226,6 +208,7 @@ class Section(Nb):
 
     @property
     def toc(self):
+        """Return table of contents entry for a notebook."""
         toc =  Nb.toc.fget(self)
         toc.insert(0, "### " + self.link)
         return toc
@@ -243,7 +226,7 @@ class NbHeader:
 
     def write(self, nb):
         """
-        write header to a notebook file
+        Write header to a notebook file.
         :param nb: notebook object
         """
         if nb.content.cells[0].source.startswith(self.__class__.NOTEBOOK_HEADER_TAG):
@@ -278,9 +261,7 @@ class NbCollection:
 
     @property
     def keyword_index(self):
-        """
-        keyword dictionary holding list of links to associated notebook headers.
-        """
+        """Return keyword dictionary with list of links for a collection of notebooks."""
         # use self._keyword_index to cache results
         if not self._keyword_index:
             for nb in self.notebooks:
@@ -289,23 +270,13 @@ class NbCollection:
                         self._keyword_index.setdefault(word, []).append(link)
         return self._keyword_index
 
-    def write_keyword_index(self):
-        keywords = sorted(self.keyword_index.keys(), key=str.lower)
-        if keywords:
-            with open(INDEX_FILE, 'w') as f:
-                print(TOC_HEADER + "\n## Keyword Index", file=f)
-                f.write("\n")
-                for keyword in keywords:
-                    f.write("* " + keyword + "\n")
-                    for link in self.keyword_index[keyword]:
-                        f.write("    - " + link + "\n")
-            os.system(' '.join(['notedown', f'"{INDEX_FILE}"', ">", f'"{INDEX_NB}"']))
-
     def write_headers(self):
+        """Insert a common header into a collection of notebooks."""
         for nb in self.notebooks:
             self.nbheader.write(nb)
 
     def write_navbars(self):
+        """Insert navigation bars into a collection of notebooks."""
         a, b, c = itertools.tee(self.notebooks, 3)
         next (c)
         for prev_nb, nb, next_nb in zip(itertools.chain([None], a), b, itertools.chain(c, [None])):
@@ -317,6 +288,8 @@ class NbCollection:
             nb.write_navbar()
 
     def write_toc(self):
+        """Write table of contents file for a collection of notebooks."""
+        print("- writing table of contents file")
         with open(TOC_FILE, 'w') as f:
             print(TOC_HEADER, file=f)
             for nb in self.notebooks:
@@ -332,13 +305,30 @@ class NbCollection:
                         print(f"    - [{txt}]({url})", file=f)
         os.system(' '.join(['notedown', f'"{TOC_FILE}"', '>', f'"{TOC_NB}"']))
 
+    def write_keyword_index(self):
+        """Write keyword index file for a collection of notebooks."""
+        keywords = sorted(self.keyword_index.keys(), key=str.lower)
+        if keywords:
+            print("- writing keyword index file")
+            with open(INDEX_FILE, 'w') as f:
+                print(TOC_HEADER + "\n## Keyword Index", file=f)
+                f.write("\n")
+                for keyword in keywords:
+                    f.write("* " + keyword + "\n")
+                    for link in self.keyword_index[keyword]:
+                        f.write("    - " + link + "\n")
+            os.system(' '.join(['notedown', f'"{INDEX_FILE}"', ">", f'"{INDEX_NB}"']))
+
     def write_readme(self):
+        """Write README.md based on the jinja template templates/readme.md.jinja."""
+        print("- writing README.md")
         readme_toc = [README_TOC] + [README_INDEX] + [nb.readme for nb in self.notebooks]
         env = Environment(loader=FileSystemLoader('templates'))
         with open(README_FILE, 'w') as f:
             f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc, page_title=PAGE_TITLE))
 
     def lint(self):
+        """Search for and report style issues in a collection of notebooks."""
         for nb in self.notebooks:
             if nb.imgs:
                 print("\n", nb.filename)
@@ -350,7 +340,6 @@ class NbCollection:
                     print(orphan)
 
     def metadata(self):
-        """print metadata for all notebooks"""
+        """Print metadata for a collection of notebooks."""
         for nb in self.notebooks:
             print(json.dumps(nb.content['metadata'], sort_keys=True, indent=4))
-

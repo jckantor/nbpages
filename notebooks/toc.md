@@ -6,12 +6,13 @@
 - [Notebook title and headers](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Notebook-title-and-headers)
     - [Title](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Title)
     - [Subheadings](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Subheadings)
+    - [Orphan headings](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Orphan-headings)
     - [Keywords](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Keywords)
-- [External Files](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#External-Files)
+- [External files](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#External-files)
     - [Figures](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Figures)
     - [Data](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Data)
-- [Design for Portability](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Design-for-Portability)
-    - [Installations and Imports](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Installations-and-Imports)
+- [Design for portability](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Design-for-portability)
+    - [Installations and imports](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Installations-and-imports)
     - [Markdown](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Markdown)
 - [Further reading](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb#Further-reading)
 * Figures
@@ -26,6 +27,3 @@
 ## [Chapter 1.0 Getting Started with nbcollection](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Getting-Started-with-nbcollection.ipynb)
 
 ### [1.1 Notebook Repository Layout](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.01-Notebook-Repository-Layout.ipynb)
-
-### [1.2 Configuration](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.02-Configuration.ipynb)
-- [Minimal Configuration](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.02-Configuration.ipynb#Minimal-Configuration)
