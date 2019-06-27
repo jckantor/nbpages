@@ -18,7 +18,8 @@ To upgrade a previously installed version to the latest version
 ## Setup
 
 The `nbpages` package assumes you have created a public github repository containing one or more Jupyter notebooks in a
-subdirectory named `notebooks`. The notebooks must be committed to a github repository before proceeding.
+subdirectory named `notebooks`. The notebooks must be committed to a github repository before proceeding. Setup up
+a github pages using the repository settings menu.
 
 `nbpages` orders notebooks into a chapter/section heirarchy using a filename prefix. Included filenames must have an
 `nn.mm-` prefix where`nn` refers to the chapter number or, if a letter, to an Appendix.
