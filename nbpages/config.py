@@ -15,6 +15,7 @@ NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{REPOSITORY}/blob/master/not
 
 # Header on TOC page ... link to page url
 TOC_HEADER = f"# [{PAGE_TITLE}]({PAGE_URL})"
+INDEX_HEADER = f"# [{PAGE_TITLE}]({PAGE_URL})"
 
 # Header point to Table of Contents page viewed on nbviewer
 README_TOC = f"### [Table of Contents]({NBVIEWER_URL}toc.ipynb?flush=true)"

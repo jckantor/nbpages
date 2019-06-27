@@ -309,10 +309,11 @@ class NbCollection:
     def write_keyword_index(self):
         """Write keyword index file for a collection of notebooks."""
         keywords = sorted(self.keyword_index.keys(), key=str.lower)
-        if keywords:
-            print("- writing keyword index file")
-            with open(INDEX_FILE, 'w') as f:
-                print(TOC_HEADER + "\n## Keyword Index", file=f)
+        print("- writing keyword index file")
+        with open(INDEX_FILE, 'w') as f:
+            print(INDEX_HEADER, file=f)
+            if keywords:
+                print("\n## Keyword Index", file=f)
                 f.write("\n")
                 for keyword in keywords:
                     f.write("* " + keyword + "\n")
