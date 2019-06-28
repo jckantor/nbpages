@@ -319,12 +319,14 @@ class NbCollection:
                     f.write("* " + keyword + "\n")
                     for link in self.keyword_index[keyword]:
                         f.write("    - " + link + "\n")
-            os.system(' '.join(['notedown', f'"{INDEX_FILE}"', ">", f'"{INDEX_NB}"']))
+        os.system(' '.join(['notedown', f'"{INDEX_FILE}"', ">", f'"{INDEX_NB}"']))
 
     def write_readme(self):
-        """Write README.md based on the jinja template templates/readme.md.jinja."""
+        """Write README.md using readme.md.jinja."""
         print("- writing README.md")
-        readme_toc = [README_TOC] + [README_INDEX] + [nb.readme for nb in self.notebooks]
+        readme_toc = [README_TOC] if self.notebooks else []
+        readme_toc += [README_INDEX] if self.keyword_index.keys() else []
+        readme_toc += [nb.readme for nb in self.notebooks]
         env = Environment(loader=FileSystemLoader('templates'))
         with open(README_FILE, 'w') as f:
             f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc, page_title=PAGE_TITLE))
