@@ -40,7 +40,7 @@ using a filename prefix. Filenames have an `nn.mm-` prefix where`nn` refers to t
 an Appendix. The digits `mm` refers to the section number. Section `00` is reserved to hold the chapter title and
 any introductory material. The notebooks must also have the usual `.ipynb` suffix.
 
-## Normal Usage
+## Normal usage
 
 Following setup, the normal use of `nbpages` is to execute the command line
 
@@ -73,8 +73,3 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 
 
 ### [Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/00.00-Style-Guide.ipynb)
-
-
-### [Chapter 1.0 Getting Started with nbcollection](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Getting-Started-with-nbcollection.ipynb)
-
-- [1.1 Notebook Repository Layout](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.01-Notebook-Repository-Layout.ipynb)

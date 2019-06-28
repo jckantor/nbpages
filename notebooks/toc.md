@@ -22,8 +22,3 @@
     - [Jupyter notebook best practices and style guide](https://github.com/chrisvoncsefalvay/jupyter-best-practices)
     - [Dataquest: An In-Depth Style Guide for Data Science Projects](https://www.dataquest.io/blog/data-science-project-style-guide/)
     - [ESRI: Coding Standards for Jupyter Notebook](https://www.esri.com/about/newsroom/arcuser/coding-standards-for-jupyter-notebook/)
-
-
-## [Chapter 1.0 Getting Started with nbcollection](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Getting-Started-with-nbcollection.ipynb)
-
-### [1.1 Notebook Repository Layout](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.01-Notebook-Repository-Layout.ipynb)
