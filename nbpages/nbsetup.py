@@ -39,6 +39,7 @@ def write_template_if_needed(template_content, template_filename):
 
 def nbsetup():
     """Setup directory if needed with default configuration and templates."""
+    assert os.path.exists('.git'), ".git subdirectory not found. "
     if os.path.isfile("README.md"):
         print("- moving README.md to README.md.bak")
         os.rename("README.md", "README.md.bak")
@@ -50,7 +51,6 @@ def nbsetup():
     # create default templates/config if needed
     if not os.path.isfile("templates/config"):
         print(f"- creating default templates/config from .git/config")
-        assert os.path.exists('.git'), ".git not found. Create a github repository."
 
         git_config = configparser.ConfigParser(strict=False)
         git_config.read('.git/config')
