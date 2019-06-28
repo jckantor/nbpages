@@ -28,7 +28,7 @@
 * Links
     - [CBE 20255 Introduction to Chemical Engineering Analysis](http://jckantor.github.io/CBE20255/)
     - [CBE 30338 Chemical Process Control](http://jckantor.github.io/CBE30338/)
-    - [CBE 40455 Process Operations](CBE 40455 Process Operations)
+    - [CBE 40455 Process Operations](http://jckantor.github.io/CBE40455/)
     - [ND Pyomo Cookbook](https://jckantor.github.io/ND-Pyomo-Cookbook/)
     - [nbpages](https://jckantor.github.io/nbpages/)
     - [Controlling Natural Watersheds](https://jckantor.github.io/Controlling-Natural-Watersheds/)
