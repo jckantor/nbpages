@@ -3,6 +3,7 @@ from setuptools import setup
     python setup.py check
     python setup.py sdist
     twine upload dist/*
+    then update version number in the development branch
 """
 
 setup(
