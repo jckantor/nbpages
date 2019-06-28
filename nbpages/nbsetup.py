@@ -16,27 +16,32 @@ content is available [on Github]({{ github_url }}).*
 """
 
 
-def make_dir_if_needed(name):
+def make_dir_if_needed(dir_name):
     """Create new directory if not present, and verify that it exists."""
-    if not os.path.exists(name):
-        print(f"- creating {name} directory")
-        os.mkdir(name)
+    if not os.path.exists(dir_name):
+        print(f"- creating {dir_name} directory")
+        os.mkdir(dir_name)
     else:
-        print(f"- {name} directory already exists")
-    assert os.path.exists(name), f"{name} directory not found in current working directory"
+        print(f"- {dir_name} directory already exists")
+    assert os.path.exists(dir_name), f"{dir_name} directory not found in current working directory"
 
-def write_template_if_needed(value, template):
+
+def write_template_if_needed(template_content, template_filename):
     """Create template file if needed, and verify that it exists."""
-    fname = f"templates/{template}"
+    fname = f"templates/{template_filename}"
     if not os.path.isfile(fname):
         with open(fname, 'w') as f:
             print(f"- writing {fname}")
-            f.write(value)
+            f.write(template_content)
     else:
         print(f"- {fname} already exists")
 
+
 def nbsetup():
     """Setup directory if needed with default configuration and templates."""
+    if os.path.isfile("README.md"):
+        print("- moving README.md to README.md.bak")
+        os.rename("README.md", "README.md.bak")
     make_dir_if_needed("notebooks")
     make_dir_if_needed("templates")
     write_template_if_needed(notebook_header_template, 'notebook_header.jinja')
@@ -47,7 +52,7 @@ def nbsetup():
         print(f"- creating default templates/config from .git/config")
         assert os.path.exists('.git'), ".git not found. Create a github repository."
 
-        git_config = configparser.ConfigParser()
+        git_config = configparser.ConfigParser(strict=False)
         git_config.read('.git/config')
 
         github_url = git_config['remote "origin"']['url']
