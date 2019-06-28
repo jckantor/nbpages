@@ -327,9 +327,10 @@ class NbCollection:
         readme_toc = [README_TOC] if self.notebooks else []
         readme_toc += [README_INDEX] if self.keyword_index.keys() else []
         readme_toc += [nb.readme for nb in self.notebooks]
+        print(readme_toc)
         env = Environment(loader=FileSystemLoader('templates'))
         with open(README_FILE, 'w') as f:
-            f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc, page_title=PAGE_TITLE))
+            f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc, page_title=PAGE_TITLE, github_url=GITHUB_URL))
 
     def lint(self):
         """Search for and report style issues in a collection of notebooks."""
