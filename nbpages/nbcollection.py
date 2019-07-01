@@ -32,6 +32,7 @@ class Nb:
         self.section = section
         self.url = os.path.join(NBVIEWER_URL, filename)
         self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
+        self.download_link = DOWNLOAD_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.content = nbformat.read(self.path, as_version=4)
         self.navbar = None
 
@@ -291,7 +292,7 @@ class NbCollection:
                 nb.navbar += PREV_TEMPLATE.format(title=prev_nb.title, url=prev_nb.url) if prev_nb else ''
                 nb.navbar += CONTENTS + INDEX if self.keyword_index else CONTENTS
                 nb.navbar += NEXT_TEMPLATE.format(title=next_nb.title, url=next_nb.url) if next_nb else ''
-                nb.navbar += nb.colab_link
+                nb.navbar += nb.colab_link + nb.download_link
                 nb.write_navbar()
 
     def write_html(self):

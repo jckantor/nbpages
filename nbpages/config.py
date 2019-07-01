@@ -27,6 +27,12 @@ COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{REPOSITORY}
              '<img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
              ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
 
+# template for link to open notebooks in Google colaboratory
+DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{REPOSITORY}' \
+             '/master/notebooks/{notebook_filename}">' + \
+             '<img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
+             ' alt="Download" title="Download Notebook"></a>'
+
 # location of notebook directory
 NOTEBOOK_DIR = os.path.join(os.getcwd(), 'notebooks/')
 
