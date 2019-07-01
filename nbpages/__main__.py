@@ -8,6 +8,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--setup", help="create templates directory", action="store_true")
 parser.add_argument("--lint", help="report any notebook lint", action="store_true")
 parser.add_argument("--metadata", help="display notebook metadata", action="store_true")
+parser.add_argument("--html", help="write static html", action="store_true")
 
 args = parser.parse_args()
 
@@ -44,6 +45,10 @@ def main():
     notebooks.write_toc()
     notebooks.write_keyword_index()
     notebooks.write_readme()
+
+    if args.html:
+        notebooks.write_html()
+
 
 if __name__ == "__main__":
     main()

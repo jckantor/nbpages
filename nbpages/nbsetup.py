@@ -45,6 +45,7 @@ def nbsetup():
         os.rename("README.md", "README.md.bak")
     make_dir_if_needed("notebooks")
     make_dir_if_needed("templates")
+    make_dir_if_needed("html")
     write_template_if_needed(notebook_header_template, 'notebook_header.jinja')
     write_template_if_needed(readme_template, 'README.md.jinja')
 

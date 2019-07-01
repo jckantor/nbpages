@@ -3,11 +3,16 @@ import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
 import itertools
 import json
+import os
 
 from .config import *
 
-class Nb:
+from nbconvert import HTMLExporter
+html_exporter = HTMLExporter()
+html_exporter.template_file = 'full'
 
+class Nb:
+    # TO DO: Add html url as a property, and use to construct
     # markdown link returning txt and url groups
     MD_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 
@@ -29,6 +34,7 @@ class Nb:
         self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.content = nbformat.read(self.path, as_version=4)
         self.navbar = None
+
 
     @property
     def title(self):
@@ -59,13 +65,13 @@ class Nb:
         return links
 
     @property
-    def imgs(self):
+    def img_tags(self):
         """Return a list of html img tags appearing in a notebook."""
-        imgs = []
+        img_tags = []
         for cell in self.content.cells[2:-1]:
             if cell.cell_type == "markdown":
-                imgs.extend(self.__class__.HTML_IMG.findall(cell.source))
-        return imgs
+                img_tags.extend(self.__class__.HTML_IMG.findall(cell.source))
+        return img_tags
 
     @property
     def link(self):
@@ -91,7 +97,7 @@ class Nb:
 
     @property
     def keyword_index(self):
-        "Return keyword index and links for a notebook."
+        """Return keyword index and links for a notebook."""
         index = dict()
         headercells = (cell for cell in self.content.cells if cell.cell_type == "markdown" and cell.source.startswith("#"))
         for headercell in headercells:
@@ -288,8 +294,19 @@ class NbCollection:
                 nb.navbar += nb.colab_link
                 nb.write_navbar()
 
+    def write_html(self):
+        """Write html files for a collection of notebooks."""
+        for nb in self.notebooks:
+            (body, resources) = html_exporter.from_notebook_node(nb.content)
+            html_filename = os.path.splitext(nb.filename)[0] + ".html"
+            html_path = os.path.join("html", html_filename)
+            print(f"- writing {html_path}")
+            with open(html_path, 'w') as f:
+                f.write(body)
+
     def write_toc(self):
         """Write table of contents file for a collection of notebooks."""
+        # TO DO: write to html directory
         print("- writing table of contents file")
         with open(TOC_FILE, 'w') as f:
             print(TOC_HEADER, file=f)
@@ -308,6 +325,7 @@ class NbCollection:
 
     def write_keyword_index(self):
         """Write keyword index file for a collection of notebooks."""
+        # TO DO: write to html directory
         keywords = sorted(self.keyword_index.keys(), key=str.lower)
         print("- writing keyword index file")
         with open(INDEX_FILE, 'w') as f:
@@ -332,16 +350,14 @@ class NbCollection:
             f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc, page_title=PAGE_TITLE, github_url=GITHUB_URL))
 
     def lint(self):
-        """Search for and report style issues in a collection of notebooks."""
+        """Report style issues in a collection of notebooks."""
         for nb in self.notebooks:
-            if nb.imgs:
+            if nb.img_tags:
                 print("\n", nb.filename)
-                for img in nb.imgs:
-                    print(img)
+                print(*nb.img_tags, sep="\n")
             if nb.orphan_headers:
                 print("\nOrphan headers in ", nb.filename)
-                for orphan in nb.orphan_headers:
-                    print(orphan)
+                print(*nb.orphan_headers, sep="\n")
 
     def metadata(self):
         """Print metadata for a collection of notebooks."""
