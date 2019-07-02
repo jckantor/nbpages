@@ -12,7 +12,7 @@ PAGE_URL = config['NBPAGES']['page_url']
 GITHUB_URL = config['NBPAGES']['github_url']
 
 NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{REPOSITORY}/blob/master/notebooks/"
-
+HTML_URL = f""
 
 # Header on TOC page ... link to page url
 TOC_HEADER = f"# [{PAGE_TITLE}]({PAGE_URL})"
@@ -34,11 +34,11 @@ DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{REPOSITORY}' + 
              '<img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
              ' alt="Download" title="Download Notebook"></a>'
 
-# location of notebook directory
+# directory locations
 NOTEBOOK_DIR = os.path.join(os.getcwd(), 'notebooks/')
 HTML_DIR = os.path.join(os.getcwd(), 'html')
 
-# location of files in local repository
+# file locations in local repository
 README_FILE = os.path.join(os.getcwd(), 'README.md')
 TOC_FILE = os.path.join(HTML_DIR, 'toc.md')
 TOC_NB = os.path.join(HTML_DIR, 'toc.ipynb')

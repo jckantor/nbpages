@@ -14,6 +14,7 @@
 - [Design for portability](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb#Design-for-portability)
     - [Installations and imports](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb#Installations-and-imports)
     - [Markdown](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb#Markdown)
+    - [Mathematics](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb#Mathematics)
 - [Further reading](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb#Further-reading)
 * Figures
     - []()
