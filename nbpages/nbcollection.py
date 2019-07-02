@@ -292,7 +292,8 @@ class NbCollection:
                 nb.navbar += PREV_TEMPLATE.format(title=prev_nb.title, url=prev_nb.url) if prev_nb else ''
                 nb.navbar += CONTENTS + INDEX if self.keyword_index else CONTENTS
                 nb.navbar += NEXT_TEMPLATE.format(title=next_nb.title, url=next_nb.url) if next_nb else ''
-                nb.navbar += nb.colab_link + nb.download_link
+                nb.navbar += nb.colab_link
+                nb.navbar += nb.download_link
                 nb.write_navbar()
 
     def write_html(self):

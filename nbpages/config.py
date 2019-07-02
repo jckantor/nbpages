@@ -13,6 +13,7 @@ GITHUB_URL = config['NBPAGES']['github_url']
 
 NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{REPOSITORY}/blob/master/notebooks/"
 
+
 # Header on TOC page ... link to page url
 TOC_HEADER = f"# [{PAGE_TITLE}]({PAGE_URL})"
 INDEX_HEADER = f"# [{PAGE_TITLE}]({PAGE_URL})"
@@ -22,26 +23,27 @@ README_TOC = f"### [Table of Contents]({NBVIEWER_URL}toc.ipynb?flush=true)"
 README_INDEX = f"### [Keyword Index]({NBVIEWER_URL}index.ipynb?flush=true)"
 
 # template for link to open notebooks in Google colaboratory
-COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{REPOSITORY}' \
+COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{REPOSITORY}' + \
              '/blob/master/notebooks/{notebook_filename}">' + \
              '<img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
              ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
 
 # template for link to open notebooks in Google colaboratory
-DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{REPOSITORY}' \
+DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{REPOSITORY}' + \
              '/master/notebooks/{notebook_filename}">' + \
              '<img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
              ' alt="Download" title="Download Notebook"></a>'
 
 # location of notebook directory
 NOTEBOOK_DIR = os.path.join(os.getcwd(), 'notebooks/')
+HTML_DIR = os.path.join(os.getcwd(), 'html')
 
 # location of files in local repository
 README_FILE = os.path.join(os.getcwd(), 'README.md')
-TOC_FILE = os.path.join(NOTEBOOK_DIR, 'toc.md')
-TOC_NB = os.path.join(NOTEBOOK_DIR, 'toc.ipynb')
-INDEX_FILE = os.path.join(NOTEBOOK_DIR, 'index.md')
-INDEX_NB= os.path.join(NOTEBOOK_DIR, 'index.ipynb')
+TOC_FILE = os.path.join(HTML_DIR, 'toc.md')
+TOC_NB = os.path.join(HTML_DIR, 'toc.ipynb')
+INDEX_FILE = os.path.join(HTML_DIR, 'index.md')
+INDEX_NB= os.path.join(HTML_DIR, 'index.ipynb')
 
 # nav bar templates
 NAVBAR_TAG = "<!--NAVIGATION-->\n"
