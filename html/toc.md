@@ -1,7 +1,7 @@
 # [nbpages](https://jckantor.github.io/nbpages)
 
 
-## [Chapter 1.0 Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb)
+## [Chapter 1.0 Style Guide](html/01.00-Style-Guide.html)
 - [Notebook naming and ancillary/generated files](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb#Notebook-naming-and-ancillary/generated-files)
 - [Notebook title and headers](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb#Notebook-title-and-headers)
     - [Title](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb#Title)
@@ -25,7 +25,7 @@
     - [ESRI: Coding Standards for Jupyter Notebook](https://www.esri.com/about/newsroom/arcuser/coding-standards-for-jupyter-notebook/)
 
 
-## [Chapter 2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/02.00-Examples.ipynb)
+## [Chapter 2.0 Examples](html/02.00-Examples.html)
 * Links
     - [CBE 20255 Introduction to Chemical Engineering Analysis](http://jckantor.github.io/CBE20255/)
     - [CBE 30338 Chemical Process Control](http://jckantor.github.io/CBE30338/)

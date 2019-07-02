@@ -31,6 +31,8 @@ class Nb:
         self.chapter = chapter
         self.section = section
         self.url = os.path.join(NBVIEWER_URL, filename)
+        self.html = os.path.join("html", os.path.splitext(filename)[0] + ".html")
+        print(self.html)
         self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.download_link = DOWNLOAD_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.content = nbformat.read(self.path, as_version=4)
@@ -77,7 +79,7 @@ class Nb:
     @property
     def link(self):
         """Return a markdown link to the public html view of a notebook."""
-        return f"[{self.numbered_title}]({self.url})"
+        return f"[{self.numbered_title}]({self.html})"
 
     @property
     def readme(self):

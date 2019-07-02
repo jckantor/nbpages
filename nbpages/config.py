@@ -12,7 +12,6 @@ PAGE_URL = config['NBPAGES']['page_url']
 GITHUB_URL = config['NBPAGES']['github_url']
 
 NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{REPOSITORY}/blob/master/notebooks/"
-HTML_URL = f""
 
 # Header on TOC page ... link to page url
 TOC_HEADER = f"# [{PAGE_TITLE}]({PAGE_URL})"
