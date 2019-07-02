@@ -3,7 +3,7 @@
 
 # nbpages
 
-[Style](html/01.00-Style-Guide.ipynb)
+[Style](html/01.00-Style-Guide.html)
 
 nbpages is a command line tool for managing a collection of Jupyter notebooks published on
 [Github Pages](https://pages.github.com/). This project was inspired by the tools included with the
