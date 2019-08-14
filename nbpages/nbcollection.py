@@ -264,7 +264,10 @@ class NbCollection:
     def write_navbars(self):
         """Insert navigation bars into a collection of notebooks."""
         a, b, c = itertools.tee(self.notebooks, 3)
-        next (c)
+        try:
+            next (c)
+        except StopIteration:
+            return
         for prev_nb, nb, next_nb in zip(itertools.chain([None], a), b, itertools.chain(c, [None])):
             navbar = NAVBAR_TAG
             navbar += PREV_TEMPLATE.format(title=prev_nb.title, url=prev_nb.url) if prev_nb else ''
@@ -298,7 +301,6 @@ class NbCollection:
 
     def write_toc(self):
         """Write table of contents file for a collection of notebooks."""
-        # TO DO: write to html directory
         print("- writing table of contents file")
         with open(TOC_FILE, 'w') as f:
             print(TOC_HEADER, file=f)

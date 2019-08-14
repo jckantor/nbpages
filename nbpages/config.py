@@ -37,7 +37,7 @@ DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{REPOSITORY}' + 
 NOTEBOOK_DIR = os.path.join(os.getcwd(), 'notebooks/')
 HTML_DIR = os.path.join(os.getcwd(), 'html')
 
-# file locations in local repository
+# file locations
 README_FILE = os.path.join(os.getcwd(), 'README.md')
 TOC_FILE = os.path.join(HTML_DIR, 'toc.md')
 TOC_NB = os.path.join(HTML_DIR, 'toc.ipynb')
