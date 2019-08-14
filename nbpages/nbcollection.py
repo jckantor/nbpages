@@ -12,18 +12,11 @@ html_exporter = HTMLExporter()
 html_exporter.template_file = 'full'
 
 class Nb:
-    # TO DO: Add html url as a property, and use to construct
-    # markdown link returning txt and url groups
-    MD_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
-
-    # markdown figure returning txt and url groups
-    MD_FIG = re.compile(r'(?:!\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
-
-    # html image tag
+    # regular expressions
     HTML_IMG = re.compile(r'<img[^>]*>')
-
-    # markdown header
-    MD_HEADER = re.compile(r'(^|\n)(?P<level>#{1,6})(?P<header>.*?)#*(\n|$)')
+    MARKDOWN_FIG = re.compile(r'(?:!\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
+    MARKDOWN_HEADER = re.compile(r'(^|\n)(?P<level>#{1,6})(?P<header>.*?)#*(\n|$)')
+    MARKDOWN_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 
     def __init__(self, filename, chapter, section):
         self.filename = filename
@@ -31,45 +24,42 @@ class Nb:
         self.chapter = chapter
         self.section = section
         self.url = os.path.join(NBVIEWER_URL, filename)
-        self.html = os.path.join("html", os.path.splitext(filename)[0] + ".html")
-        print(self.html)
+        self.html = os.path.join("html", os.path.basename(filename) + ".html")
         self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.download_link = DOWNLOAD_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.content = nbformat.read(self.path, as_version=4)
-        self.navbar = None
-
 
     @property
     def title(self):
         """Return the tile of a notebook obtained from the first level one header."""
         for cell in self.content.cells:
             if cell.cell_type == "markdown":
-                m = self.__class__.MD_HEADER.match(cell.source)
+                m = self.__class__.MARKDOWN_HEADER.match(cell.source)
                 if m and len(m.group('level')) == 1:
                     return m.group('header').strip()
         return None
 
     @property
-    def figs(self):
-        """Return a list of markdown figures appearing in a notebook."""
+    def markdown_figs(self):
+        """Return a list of markdown figures appearing in this notebook."""
         figs = []
         for cell in self.content.cells:
             if cell.cell_type == "markdown":
-                figs.extend(self.__class__.MD_FIG.findall(cell.source))
+                figs.extend(self.__class__.MARKDOWN_FIG.findall(cell.source))
         return figs
 
     @property
-    def links(self):
-        """Return a list of markdown links appearing in a notebook."""
+    def markdown_links(self):
+        """Return a list of markdown links appearing in this notebook."""
         links = []
         for cell in self.content.cells[2:-1]:
             if cell.cell_type == "markdown":
-                links.extend(self.__class__.MD_LINK.findall(cell.source))
+                links.extend(self.__class__.MARKDOWN_LINK.findall(cell.source))
         return links
 
     @property
     def img_tags(self):
-        """Return a list of html img tags appearing in a notebook."""
+        """Return a list of html img tags appearing in this notebook."""
         img_tags = []
         for cell in self.content.cells[2:-1]:
             if cell.cell_type == "markdown":
@@ -78,7 +68,12 @@ class Nb:
 
     @property
     def link(self):
-        """Return a markdown link to the public html view of a notebook."""
+        """Return a markdown link to the public html view of this notebook."""
+        return f"[{self.numbered_title}]({self.url})"
+
+    @property
+    def html_link(self):
+        """Return a markdown link to the  html view of this notebook."""
         return f"[{self.numbered_title}]({self.html})"
 
     @property
@@ -88,7 +83,7 @@ class Nb:
 
     @property
     def toc(self):
-        """Return formmatted list of markdown links to cells starting with a markdown header."""
+        """Return formatted list of markdown links to cells starting with a markdown header."""
         toc = []
         header_cells = (cell for cell in self.content.cells if cell.cell_type == "markdown" and cell.source.startswith("##"))
         for header_cell in header_cells:
@@ -120,25 +115,9 @@ class Nb:
         for cell in self.content.cells[2:-1]:
             if cell.cell_type == "markdown":
                  for line in cell.source.splitlines()[1:]:
-                     if self.__class__.MD_HEADER.match(line):
+                     if self.__class__.MARKDOWN_HEADER.match(line):
                          orphans.append(line)
         return orphans
-
-    def write_navbar(self):
-        """Insert navigation bar into a notebook."""
-        if self.content.cells[1].source.startswith(NAVBAR_TAG):
-            print(f"- amending navbar for {self.filename}")
-            self.content.cells[1].source = self.navbar
-        else:
-            print(f"- inserting navbar for {self.filename}")
-            self.content.cells.insert(1, new_markdown_cell(source=self.navbar))
-        if self.content.cells[-1].source.startswith(NAVBAR_TAG):
-            print(f"- amending navbar for {self.filename}")
-            self.content.cells[-1].source = self.navbar
-        else:
-            print(f"- inserting navbar for {self.filename}")
-            self.content.cells.append(new_markdown_cell(source=self.navbar))
-        nbformat.write(self.content, self.path)
 
     def __gt__(self, nb):
         return self.filename > nb.filename
@@ -235,8 +214,7 @@ class NbHeader:
 
     def write(self, nb):
         """
-        Write header to a notebook file.
-        :param nb: notebook object
+        Write header to a local notebook file.
         """
         if nb.content.cells[0].source.startswith(self.__class__.NOTEBOOK_HEADER_TAG):
             print('- amending header for {0}'.format(nb.filename))
@@ -244,7 +222,6 @@ class NbHeader:
         else:
             print('- inserting header for {0}'.format(nb.filename))
             nb.content.cells.insert(0, new_markdown_cell(self.source))
-
         nbformat.write(nb.content, nb.path)
 
 
@@ -286,17 +263,28 @@ class NbCollection:
 
     def write_navbars(self):
         """Insert navigation bars into a collection of notebooks."""
-        if self.notebooks:
-            a, b, c = itertools.tee(self.notebooks, 3)
-            next (c)
-            for prev_nb, nb, next_nb in zip(itertools.chain([None], a), b, itertools.chain(c, [None])):
-                nb.navbar = NAVBAR_TAG
-                nb.navbar += PREV_TEMPLATE.format(title=prev_nb.title, url=prev_nb.url) if prev_nb else ''
-                nb.navbar += CONTENTS + INDEX if self.keyword_index else CONTENTS
-                nb.navbar += NEXT_TEMPLATE.format(title=next_nb.title, url=next_nb.url) if next_nb else ''
-                nb.navbar += nb.colab_link
-                nb.navbar += nb.download_link
-                nb.write_navbar()
+        a, b, c = itertools.tee(self.notebooks, 3)
+        next (c)
+        for prev_nb, nb, next_nb in zip(itertools.chain([None], a), b, itertools.chain(c, [None])):
+            navbar = NAVBAR_TAG
+            navbar += PREV_TEMPLATE.format(title=prev_nb.title, url=prev_nb.url) if prev_nb else ''
+            navbar += CONTENTS + INDEX if self.keyword_index else CONTENTS
+            navbar += NEXT_TEMPLATE.format(title=next_nb.title, url=next_nb.url) if next_nb else ''
+            navbar += nb.colab_link
+            navbar += nb.download_link
+            if nb.content.cells[1].source.startswith(NAVBAR_TAG):
+                print(f"- amending navbar for {nb.filename}")
+                nb.content.cells[1].source = navbar
+            else:
+                print(f"- inserting navbar for {nb.filename}")
+                nb.content.cells.insert(1, new_markdown_cell(source=navbar))
+            if nb.content.cells[-1].source.startswith(NAVBAR_TAG):
+                print(f"- amending navbar for {nb.filename}")
+                nb.content.cells[-1].source = navbar
+            else:
+                print(f"- inserting navbar for {nb.filename}")
+                nb.content.cells.append(new_markdown_cell(source=navbar))
+            nbformat.write(nb.content, nb.path)
 
     def write_html(self):
         """Write html files for a collection of notebooks."""
@@ -317,13 +305,13 @@ class NbCollection:
             for nb in self.notebooks:
                 f.write('\n')
                 f.write('\n'.join(nb.toc) + '\n')
-                if nb.figs:
-                    print("* Figures", file=f)
-                    for txt, url in nb.figs:
+                if nb.markdown_figs:
+                    print("* Markdown Figures", file=f)
+                    for txt, url in nb.markdown_figs:
                         print("    - [{0}]({1})".format(txt if txt else url, url), file=f)
-                if nb.links:
-                    print("* Links", file=f)
-                    for txt, url in nb.links:
+                if nb.markdown_links:
+                    print("* Markdown Links", file=f)
+                    for txt, url in nb.markdown_links:
                         print(f"    - [{txt}]({url})", file=f)
         os.system(' '.join(['notedown', f'"{TOC_FILE}"', '>', f'"{TOC_NB}"']))
 

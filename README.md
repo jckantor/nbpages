@@ -72,7 +72,7 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 ### [Keyword Index](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/index.ipynb?flush=true)
 
 
-### [Chapter 1.0 Style Guide](html/01.00-Style-Guide.html)
+### [Chapter 1.0 Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb)
 
 
-### [Chapter 2.0 Examples](html/02.00-Examples.html)
+### [Chapter 2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/02.00-Examples.ipynb)
