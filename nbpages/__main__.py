@@ -3,6 +3,7 @@ import os
 import argparse
 
 from .nbsetup import nbsetup
+from .nbcollection import NbCollection
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--setup", help="create templates directory", action="store_true")
@@ -30,12 +31,14 @@ def main():
         print("notebooks directory wasn't found. Run 'nbpages --setup' to create notebooks directory.")
         return
 
-    from .nbcollection import NbCollection
-
     notebooks = NbCollection()
+
+    # report notebook lint
     if args.lint:
         notebooks.lint()
         return
+
+    # report notebook metadata
     if args.metadata:
         notebooks.metadata()
         return
