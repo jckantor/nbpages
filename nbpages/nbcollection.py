@@ -13,25 +13,51 @@ html_exporter.template_file = 'full'
 
 class Nb:
     # regular expressions
+
+    # html image tag
     HTML_IMG = re.compile(r'<img[^>]*>')
+
+    # markdown figure tag -- return text and url
     MARKDOWN_FIG = re.compile(r'(?:!\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
+
+    # markdown header -- return level and header text
     MARKDOWN_HEADER = re.compile(r'(^|\n)(?P<level>#{1,6})(?P<header>.*?)#*(\n|$)')
+
+    # markdown link -- return text and url
     MARKDOWN_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 
     def __init__(self, filename, chapter, section):
+
+        # file name
         self.filename = filename
+
+        # full file name with path
         self.path = os.path.join(NOTEBOOK_DIR, filename)
+
+        # chapter
         self.chapter = chapter
+
+        # section
         self.section = section
+
+        # nbviewer/github url
         self.url = os.path.join(NBVIEWER_URL, filename)
+
+        # file name with html suffix
         self.html = os.path.join("html", os.path.basename(filename) + ".html")
+
+        # url to open notebook on colab
         self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
+
+        # url to download notebook from github
         self.download_link = DOWNLOAD_LINK.format(notebook_filename=os.path.basename(self.filename))
+
+        # read notebook content
         self.content = nbformat.read(self.path, as_version=4)
 
     @property
     def title(self):
-        """Return the tile of a notebook obtained from the first level one header."""
+        """Return notebook title by extracting the first level one header."""
         for cell in self.content.cells:
             if cell.cell_type == "markdown":
                 m = self.__class__.MARKDOWN_HEADER.match(cell.source)
@@ -107,6 +133,16 @@ class Nb:
                 for word in keywordline.split(':')[1].split(','):
                     index.setdefault(word.strip(), []).append(f"[{txt}]({url})")
         return index
+
+    @property
+    def tags(self):
+        """Return cell tags"""
+        tags = set()
+        for cell in self.content.cells[2:-1]:
+            if 'tags' in cell.metadata.keys():
+                if cell.metadata['tags']:
+                    tags.update(cell.metadata['tags'])
+        return tags
 
     @property
     def orphan_headers(self):
@@ -299,6 +335,13 @@ class NbCollection:
             with open(html_path, 'w') as f:
                 f.write(body)
 
+    def write_tag_index(self):
+        self.tag_index = dict()
+        for nb in self.notebooks:
+            for tag in nb.tags:
+                self.tag_index.setdefault(tag, []).append(nb.filename)
+        print(self.tag_index)
+
     def write_toc(self):
         """Write table of contents file for a collection of notebooks."""
         print("- writing table of contents file")
@@ -315,6 +358,9 @@ class NbCollection:
                     print("* Markdown Links", file=f)
                     for txt, url in nb.markdown_links:
                         print(f"    - [{txt}]({url})", file=f)
+                if nb.tags:
+                    print("* Tags: ", file=f, end='')
+                    print(", ".join([tag for tag in nb.tags]), file=f)
         os.system(' '.join(['notedown', f'"{TOC_FILE}"', '>', f'"{TOC_NB}"']))
 
     def write_keyword_index(self):

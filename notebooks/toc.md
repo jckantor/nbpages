@@ -23,6 +23,7 @@
     - [Jupyter notebook best practices and style guide](https://github.com/chrisvoncsefalvay/jupyter-best-practices)
     - [Dataquest: An In-Depth Style Guide for Data Science Projects](https://www.dataquest.io/blog/data-science-project-style-guide/)
     - [ESRI: Coding Standards for Jupyter Notebook](https://www.esri.com/about/newsroom/arcuser/coding-standards-for-jupyter-notebook/)
+* Tags: mathematics
 
 
 ## [Chapter 2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/02.00-Examples.ipynb)
@@ -33,3 +34,4 @@
     - [ND Pyomo Cookbook](https://jckantor.github.io/ND-Pyomo-Cookbook/)
     - [nbpages](https://jckantor.github.io/nbpages/)
     - [Controlling Natural Watersheds](https://jckantor.github.io/Controlling-Natural-Watersheds/)
+* Tags: mathematics, exercise, solution

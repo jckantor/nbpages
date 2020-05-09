@@ -10,6 +10,7 @@ parser.add_argument("--setup", help="create templates directory", action="store_
 parser.add_argument("--lint", help="report any notebook lint", action="store_true")
 parser.add_argument("--metadata", help="display notebook metadata", action="store_true")
 parser.add_argument("--html", help="write static html", action="store_true")
+parser.add_argument("--tags", help="display notebook tags", action="store_true")
 
 args = parser.parse_args()
 
@@ -41,6 +42,11 @@ def main():
     # report notebook metadata
     if args.metadata:
         notebooks.metadata()
+        return
+
+    # report notebook tags
+    if args.tags:
+        notebooks.write_tag_index()
         return
 
     notebooks.write_headers()
