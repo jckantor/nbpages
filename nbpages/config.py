@@ -27,7 +27,7 @@ PAGE_TITLE = config['NBPAGES']['page_title']
 PAGE_URL = config['NBPAGES']['page_url']
 GITHUB_URL = config['NBPAGES']['github_url']
 
-### USE CONFIGURATION INFORMATION TO CREATE STRING CONSTANTS
+### CREATE STRING CONSTANTS
 
 # nbviewer/github url
 NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{REPOSITORY}/blob/master/notebooks/"
@@ -40,7 +40,7 @@ INDEX_HEADER = f"# [{PAGE_TITLE}]({PAGE_URL})"
 README_TOC = f"### [Table of Contents]({NBVIEWER_URL}toc.ipynb?flush=true)"
 README_INDEX = f"### [Keyword Index]({NBVIEWER_URL}index.ipynb?flush=true)"
 
-### USE CONFIGURATION INFORMATION TO CREATE STRING TEMPLATES
+### CREATE STRING TEMPLATES
 
 # link template to open notebooks in Google colaboratory
 COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{REPOSITORY}' + \
