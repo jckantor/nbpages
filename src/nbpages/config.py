@@ -31,7 +31,7 @@ git_config.read(os.path.join(".git", "config"))
 GITHUB_URL = git_config['remote "origin"']['url']
 GITHUB_USER = GITHUB_URL.rsplit('/')[-2]
 PAGE_TITLE = GITHUB_URL.rsplit('/')[-1].split('.')[0]
-GITHUB_REPOSITORY = f"{GITHUB_USER}/{PAGE_TITLE}",
+GITHUB_REPOSITORY = f"{GITHUB_USER}/{PAGE_TITLE}"
 GITHUB_PAGE_URL = f"https://{GITHUB_USER}.github.io/{PAGE_TITLE}"
 
 ### CREATE STRING CONSTANTS

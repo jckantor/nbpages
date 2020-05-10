@@ -67,12 +67,12 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 [//]: # (The following template code is used to insert a list of notebook links.)
 
 
-### [Table of Contents](http://nbviewer.jupyter.org/github/('jckantor/nbpages',)/blob/master/notebooks/toc.ipynb?flush=true)
+### [Table of Contents](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/toc.ipynb?flush=true)
 
-### [Keyword Index](http://nbviewer.jupyter.org/github/('jckantor/nbpages',)/blob/master/notebooks/index.ipynb?flush=true)
-
-
-### [Chapter 1.0 1.0 Style Guide](http://nbviewer.jupyter.org/github/('jckantor/nbpages',)/blob/master/notebooks/01.00-Style-Guide.ipynb)
+### [Keyword Index](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/index.ipynb?flush=true)
 
 
-### [Chapter 2.0 2.0 Examples](http://nbviewer.jupyter.org/github/('jckantor/nbpages',)/blob/master/notebooks/02.00-Examples.ipynb)
+### [Chapter 1.0 1.0 Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb)
+
+
+### [Chapter 2.0 2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/02.00-Examples.ipynb)
