@@ -4,6 +4,8 @@ from nbformat.v4.nbbase import new_markdown_cell
 import itertools
 import json
 import os
+from jinja2 import Environment, FileSystemLoader
+
 
 from .config import *
 
@@ -12,48 +14,54 @@ html_exporter = HTMLExporter()
 html_exporter.template_file = 'full'
 
 class Nb:
-    # regular expressions
-
-    # html image tag
     HTML_IMG = re.compile(r'<img[^>]*>')
-
-    # markdown figure tag -- return text and url
     MARKDOWN_FIG = re.compile(r'(?:!\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
-
-    # markdown header -- return level and header text
     MARKDOWN_HEADER = re.compile(r'(^|\n)(?P<level>#{1,6})(?P<header>.*?)#*(\n|$)')
-
-    # markdown link -- return text and url
     MARKDOWN_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 
     def __init__(self, filename, chapter, section):
-
-        # file name
         self.filename = filename
-
-        # full file name with path
-        self.path = os.path.join(NOTEBOOK_DIR, filename)
-
-        # chapter
+        self.path_src = os.path.join(NOTEBOOK_SRC, filename)
+        self.path_dst = os.path.join(NOTEBOOK_DST, filename)
         self.chapter = chapter
-
-        # section
         self.section = section
-
-        # nbviewer/github url
         self.url = os.path.join(NBVIEWER_URL, filename)
-
-        # file name with html suffix
         self.html = os.path.join("html", os.path.basename(filename) + ".html")
-
-        # url to open notebook on colab
         self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
-
-        # url to download notebook from github
         self.download_link = DOWNLOAD_LINK.format(notebook_filename=os.path.basename(self.filename))
+        self.content = nbformat.read(self.path_src, as_version=4)
+        self.add_section_numbering()
 
-        # read notebook content
-        self.content = nbformat.read(self.path, as_version=4)
+    def add_section_numbering(self):
+        for cell in self.content.cells:
+            cell.metadata["nbpages"] = {}
+        level = 0
+        h = [0] * 6
+        try:
+            section = f"{int(self.chapter)}.{int(self.section)}"
+        except:
+            section = f"{self.chapter}.{int(self.section)}"
+        for cell in self.content.cells:
+            m = self.__class__.MARKDOWN_HEADER.match(cell.source)
+            if m:
+                next_level = len(m.group('level'))
+                if next_level >= level:
+                    h[next_level - 1] += 1
+                    level = next_level
+                else:
+                    h[next_level - 1] += 1
+                    h[next_level:] = [0] * (6-next_level)
+                sec_num = section
+                for j in h[1:]:
+                    if j > 0:
+                        sec_num += f".{int(j)}"
+                section_header = sec_num + m.group("header")
+                start = m.start("header")
+                end = m.end("header")
+                cell.source = cell.source[:start] + " " + section_header + cell.source[end:]
+                print(section_header)
+            cell.metadata["nbpages"]["level"] = level
+            cell.metadata["nbpages"]["section"] = section_header
 
     @property
     def title(self):
@@ -138,7 +146,7 @@ class Nb:
     def tags(self):
         """Return cell tags"""
         tags = set()
-        for cell in self.content.cells[2:-1]:
+        for cell in self.content.cells:
             if 'tags' in cell.metadata.keys():
                 if cell.metadata['tags']:
                     tags.update(cell.metadata['tags'])
@@ -240,32 +248,30 @@ class Section(Nb):
 
 class NbHeader:
 
-    NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
-
     def __init__(self):
-        env = Environment(loader=FileSystemLoader('templates'))
+        env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
         template = env.get_template('notebook_header.jinja')
-        self.content = template.render(page_title=PAGE_TITLE, page_url=PAGE_URL, github_url=GITHUB_URL)
-        self.source = self.__class__.NOTEBOOK_HEADER_TAG + self.content
+        self.content = template.render(page_title=PAGE_TITLE, page_url=GITHUB_PAGE_URL, github_url=GITHUB_URL)
+        self.source = NOTEBOOK_HEADER_TAG + self.content
 
     def write(self, nb):
         """
         Write header to a local notebook file.
         """
-        if nb.content.cells[0].source.startswith(self.__class__.NOTEBOOK_HEADER_TAG):
+        if nb.content.cells[0].source.startswith(NOTEBOOK_HEADER_TAG):
             print('- amending header for {0}'.format(nb.filename))
             nb.content.cells[0].source = self.source
         else:
             print('- inserting header for {0}'.format(nb.filename))
             nb.content.cells.insert(0, new_markdown_cell(self.source))
-        nbformat.write(nb.content, nb.path)
+        nbformat.write(nb.content, nb.path_dst)
 
 
 class NbCollection:
     # regular expression that matches notebook filenames to be included in the TOC
     REG = re.compile(r'(\d\d|[A-Z])\.(\d\d)-(.*)\.ipynb')
 
-    def __init__(self, dir=NOTEBOOK_DIR):
+    def __init__(self, dir=NOTEBOOK_SRC):
         self.notebooks = []
         for filename in sorted(os.listdir(dir)):
             if self.__class__.REG.match(filename):
@@ -323,7 +329,7 @@ class NbCollection:
             else:
                 print(f"- inserting navbar for {nb.filename}")
                 nb.content.cells.append(new_markdown_cell(source=navbar))
-            nbformat.write(nb.content, nb.path)
+            nbformat.write(nb.content, nb.path_dst)
 
     def write_html(self):
         """Write html files for a collection of notebooks."""
@@ -345,7 +351,7 @@ class NbCollection:
     def write_toc(self):
         """Write table of contents file for a collection of notebooks."""
         print("- writing table of contents file")
-        with open(TOC_FILE, 'w') as f:
+        with open(TOC_MD, 'w') as f:
             print(TOC_HEADER, file=f)
             for nb in self.notebooks:
                 f.write('\n')
@@ -361,14 +367,13 @@ class NbCollection:
                 if nb.tags:
                     print("* Tags: ", file=f, end='')
                     print(", ".join([tag for tag in nb.tags]), file=f)
-        os.system(' '.join(['notedown', f'"{TOC_FILE}"', '>', f'"{TOC_NB}"']))
+        os.system(' '.join(['notedown', f'"{TOC_MD}"', '>', f'"{TOC_NB}"']))
 
     def write_keyword_index(self):
         """Write keyword index file for a collection of notebooks."""
-        # TO DO: write to html directory
         keywords = sorted(self.keyword_index.keys(), key=str.lower)
         print("- writing keyword index file")
-        with open(INDEX_FILE, 'w') as f:
+        with open(INDEX_MD, 'w') as f:
             print(INDEX_HEADER, file=f)
             if keywords:
                 print("\n## Keyword Index", file=f)
@@ -377,7 +382,7 @@ class NbCollection:
                     f.write("* " + keyword + "\n")
                     for link in self.keyword_index[keyword]:
                         f.write("    - " + link + "\n")
-        os.system(' '.join(['notedown', f'"{INDEX_FILE}"', ">", f'"{INDEX_NB}"']))
+        os.system(' '.join(['notedown', f'"{INDEX_MD}"', ">", f'"{INDEX_NB}"']))
 
     def write_readme(self):
         """Write README.md using readme.md.jinja."""
@@ -385,9 +390,10 @@ class NbCollection:
         readme_toc = [README_TOC] if self.notebooks else []
         readme_toc += [README_INDEX] if self.keyword_index.keys() else []
         readme_toc += [nb.readme for nb in self.notebooks]
-        env = Environment(loader=FileSystemLoader('templates'))
-        with open(README_FILE, 'w') as f:
-            f.write(env.get_template('README.md.jinja').render(readme_toc=readme_toc, page_title=PAGE_TITLE, github_url=GITHUB_URL))
+        env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
+        with open(README_MD, 'w') as f:
+            f.write(env.get_template('README.md.jinja').render(
+                readme_toc=readme_toc, page_title=PAGE_TITLE, github_url=GITHUB_URL))
 
     def lint(self):
         """Report style issues in a collection of notebooks."""

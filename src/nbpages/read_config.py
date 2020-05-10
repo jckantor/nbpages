@@ -5,21 +5,24 @@ from jinja2 import Environment, FileSystemLoader
 ### LOCAL DIRECTORY AND FILE LOCATIONS
 
 # directory locations
+CONFIG_DIR = os.path.join(os.getcwd(), 'config')
 NOTEBOOK_DIR = os.path.join(os.getcwd(), 'notebooks/')
-HTML_DIR = os.path.join(os.getcwd(), 'html')
+HTML_DIR = os.path.join(os.getcwd(), 'html'
 
 # file locations
-README_FILE = os.path.join(os.getcwd(), 'README.md')
-TOC_FILE = os.path.join(NOTEBOOK_DIR, 'toc.md')
+CONFIG_FILE = os.path.join(CONFIG_DIR, "config")
+README_MD = os.path.join(os.getcwd(), 'README.md')
+TOC_MD = os.path.join(NOTEBOOK_DIR, 'toc.md')
 TOC_NB = os.path.join(NOTEBOOK_DIR, 'toc.ipynb')
-INDEX_FILE = os.path.join(NOTEBOOK_DIR, 'index.md')
+INDEX_MD = os.path.join(NOTEBOOK_DIR, 'index.md')
 INDEX_NB= os.path.join(NOTEBOOK_DIR, 'index.ipynb')
 
 ### READ CONFIGURATION FILE
 
 # read configuration file
+assert os.path.exists(CONFIG_FILE), CONFIG_FILE + " not found. "
 config = configparser.ConfigParser()
-config.read('templates/config')
+config.read(CONFIG_FILE)
 
 # extract configuration information
 REPOSITORY = config['NBPAGES']['repository']
@@ -28,6 +31,9 @@ PAGE_URL = config['NBPAGES']['page_url']
 GITHUB_URL = config['NBPAGES']['github_url']
 
 ### CREATE STRING CONSTANTS
+
+# tags
+NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 
 # nbviewer/github url
 NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{REPOSITORY}/blob/master/notebooks/"

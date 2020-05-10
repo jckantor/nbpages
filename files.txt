@@ -1,1 +1,0 @@
-/Users/jeff/anaconda3/lib/python3.7/site-packages/nbpages-0.0.1.dev5-py3.7.egg
