@@ -34,4 +34,4 @@
     - [ND Pyomo Cookbook](https://jckantor.github.io/ND-Pyomo-Cookbook/)
     - [nbpages](https://jckantor.github.io/nbpages/)
     - [Controlling Natural Watersheds](https://jckantor.github.io/Controlling-Natural-Watersheds/)
-* Tags: hi::world, exercise, solution, mathematics
+* Tags: hi::world, mathematics, exercise, solution

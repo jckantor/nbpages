@@ -56,12 +56,14 @@ class Nb:
                     if j > 0:
                         sec_num += f".{int(j)}"
                 section_header = sec_num + m.group("header")
+                header = section_header.strip().split()
+                url = '#'.join([self.url, '-'.join(header)])
                 start = m.start("header")
                 end = m.end("header")
                 cell.source = cell.source[:start] + " " + section_header + cell.source[end:]
-                print(section_header)
             cell.metadata["nbpages"]["level"] = level
             cell.metadata["nbpages"]["section"] = section_header
+            cell.metadata["nbpages"]["link"] = f"[{section_header}]({url})"
 
     @property
     def title(self):
@@ -145,11 +147,11 @@ class Nb:
     @property
     def tags(self):
         """Return cell tags"""
-        tags = set()
+        tags = dict()
         for cell in self.content.cells:
             if 'tags' in cell.metadata.keys():
-                if cell.metadata['tags']:
-                    tags.update(cell.metadata['tags'])
+                for tag in cell.metadata['tags']:
+                    tags.setdefault(tag, []).append(cell.metadata["nbpages"]["link"])
         return tags
 
     @property
@@ -286,6 +288,7 @@ class NbCollection:
                     self.notebooks.append(Appendix(filename, chapter, section))
         self.nbheader = NbHeader()
         self._keyword_index = {}
+        self._tag_index = {}
 
     @property
     def keyword_index(self):
@@ -341,12 +344,14 @@ class NbCollection:
             with open(html_path, 'w') as f:
                 f.write(body)
 
-    def write_tag_index(self):
-        self.tag_index = dict()
-        for nb in self.notebooks:
-            for tag in nb.tags:
-                self.tag_index.setdefault(tag, []).append(nb.filename)
-        print(self.tag_index)
+    @property
+    def tag_index(self):
+        if not self._tag_index:
+            self._tag_index = dict()
+            for nb in self.notebooks:
+                for tag in nb.tags.keys():
+                    self._tag_index.setdefault(tag, []).extend(nb.tags[tag])
+        return self._tag_index
 
     def write_toc(self):
         """Write table of contents file for a collection of notebooks."""
@@ -382,6 +387,16 @@ class NbCollection:
                     f.write("* " + keyword + "\n")
                     for link in self.keyword_index[keyword]:
                         f.write("    - " + link + "\n")
+
+            if self.tag_index:
+                f.write("\n")
+                print("## Tag Index", file=f)
+                f.write("\n")
+                for tag in self.tag_index:
+                    f.write("* " + tag + "\n")
+                    for val in self.tag_index[tag]:
+                        f.write("    - " + val + "\n")
+
         os.system(' '.join(['notedown', f'"{INDEX_MD}"', ">", f'"{INDEX_NB}"']))
 
     def write_readme(self):

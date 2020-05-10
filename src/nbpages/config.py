@@ -7,8 +7,8 @@ import shutil
 
 # directory locations
 TEMPLATE_DIR = os.path.join(os.getcwd(), 'templates/')
-NOTEBOOK_SRC = os.path.join(os.getcwd(), 'notebooks-private/')
-NOTEBOOK_DST = os.path.join(os.getcwd(), 'notebooks/')
+NOTEBOOK_SRC = os.path.join(os.getcwd(), 'notebooks-dev/')
+NOTEBOOK_DST = os.path.join(os.getcwd(), 'notebooks-public/')
 
 # file locations
 CONFIG_FILE = os.path.join(os.getcwd(), "nbpages.cfg")
