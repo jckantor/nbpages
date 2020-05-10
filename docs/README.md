@@ -16,6 +16,23 @@ To upgrade a previously installed version to the latest version
 
     pip install nbpages --upgrade
 
+## Setting up the notebook repository
+
+The first step in publishing a collection of notebooks on Github Pages is to
+[create a repository on Github.com](https://help.github.com/en/articles/creating-a-new-repository).
+Github Pages are enabled under the settings tab for the repository. Scroll down to the Github Pages heading and select
+`master branch` for the source. This is also a good time to select a theme for the published collection.
+
+`nbpages` requires a local copy of the repository that can be created by cloning the remote repository.
+Then from the command line, navigate to the top level directory of the local repository and issue the command
+
+    nbpages --setup
+
+Directories named `notebooks` and `templates` will be created if they do not already exist.  A configuration file
+`config` will be created inside the directory using data read from the `.git`. Jinja templates `README.md.jinja` and
+`notebook_header.jinja` willed created if they don't already exist. These templates can be edited as required
+using data fields defined in `config`.
+
 ## Notebook organization
 
 Notebooks are maintained within the `notebooks` directory. Thare are organized into a chapter/section heirarchy
