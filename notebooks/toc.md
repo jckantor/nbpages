@@ -1,7 +1,7 @@
 # [nbpages](https://jckantor.github.io/nbpages)
 
 
-## [Chapter 1.0 1.0 Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb)
+## [Chapter 1.0 Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb)
 - [1.0.1 Notebook naming and ancillary/generated files](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb#1.0.1-Notebook-naming-and-ancillary/generated-files)
 - [1.0.2 Notebook title and headers](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb#1.0.2-Notebook-title-and-headers)
     - [1.0.2.1 Title](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/01.00-Style-Guide.ipynb#1.0.2.1-Title)
@@ -26,7 +26,7 @@
 * Tags: mathematics
 
 
-## [Chapter 2.0 2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/02.00-Examples.ipynb)
+## [Chapter 2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks/02.00-Examples.ipynb)
 * Markdown Links
     - [CBE 20255 Introduction to Chemical Engineering Analysis](http://jckantor.github.io/CBE20255/)
     - [CBE 30338 Chemical Process Control](http://jckantor.github.io/CBE30338/)
@@ -34,4 +34,4 @@
     - [ND Pyomo Cookbook](https://jckantor.github.io/ND-Pyomo-Cookbook/)
     - [nbpages](https://jckantor.github.io/nbpages/)
     - [Controlling Natural Watersheds](https://jckantor.github.io/Controlling-Natural-Watersheds/)
-* Tags: mathematics, hi::world, solution, exercise
+* Tags: hi::world, exercise, solution, mathematics

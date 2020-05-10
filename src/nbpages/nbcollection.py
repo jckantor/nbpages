@@ -102,7 +102,7 @@ class Nb:
 
     @property
     def link(self):
-        """Return a markdown link to the public html view of this notebook."""
+        """Return a markdown link to the nbviewer view of this notebook."""
         return f"[{self.numbered_title}]({self.url})"
 
     @property
@@ -194,7 +194,7 @@ class Chapter(Nb):
     @property
     def numbered_title(self):
         """Return formatted title with numbering for a notebook."""
-        return f"Chapter {int(self.chapter)}.{int(self.section)} {self.title}"
+        return f"Chapter {self.title}"
 
     @property
     def toc(self):
