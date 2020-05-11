@@ -47,8 +47,9 @@ def main():
     notebooks.write_headers()
     notebooks.write_navbars()
     notebooks.write_toc()
-    notebooks.write_keyword_index()
-    notebooks.write_readme()
+    notebooks.write_tag_index()
+    notebooks.write_index()
+    notebooks.write_html()
 
     return 0
 

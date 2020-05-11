@@ -26,8 +26,8 @@ class Nb:
         self.path_dst = os.path.join(NOTEBOOK_DST_DIR, filename)
         self.chapter = chapter
         self.section = section
-        self.url = os.path.join(NBVIEWER_URL, filename)
-        self.html = os.path.join("html", os.path.basename(filename) + ".html")
+        self.html_filename = os.path.splitext(self.filename)[0] + ".html"
+        self.html_url = GITHUB_PAGE_URL + "/" + self.html_filename
         self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.download_link = DOWNLOAD_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.content = nbformat.read(self.path_src, as_version=4)
@@ -59,7 +59,7 @@ class Nb:
                         sec_num += f".{int(j)}"
                 section_header = sec_num + m.group("header")
                 header = section_header.strip().split()
-                url = '#'.join([self.url, '-'.join(header)])
+                url = '#'.join([self.html_url, '-'.join(header)])
                 start = m.start("header")
                 end = m.end("header")
                 cell.source = cell.source[:start] + " " + section_header + cell.source[end:]
@@ -106,8 +106,8 @@ class Nb:
 
     @property
     def link(self):
-        """Return a markdown link to the nbviewer view of this notebook."""
-        return f"[{self.numbered_title}]({self.url})"
+        """Return a markdown link to the html view of this notebook."""
+        return f"[{self.numbered_title}]({self.html_url})"
 
     @property
     def html_link(self):
@@ -127,7 +127,7 @@ class Nb:
         for header_cell in header_cells:
             header = header_cell.source.splitlines()[0].strip().split()
             txt = ' '.join(header[1:])
-            url = '#'.join([self.url, '-'.join(header[1:])])
+            url = '#'.join([self.html_url, '-'.join(header[1:])])
             toc.append("    "*(len(header[0])-2) + f"- [{txt}]({url})")
         return toc
 
@@ -140,7 +140,7 @@ class Nb:
             lines = headercell.source.splitlines()
             header = lines[0].strip().split()
             txt = ' '.join(header[1:])
-            url = '#'.join([self.url, '-'.join(header[1:])])
+            url = '#'.join([self.html_url, '-'.join(header[1:])])
             for keywordline in [line.strip() for line in lines[1:] if line.lower().startswith("keywords: ")]:
                 for word in keywordline.split(':')[1].split(','):
                     index.setdefault(word.strip(), []).append(f"[{txt}]({url})")
@@ -317,9 +317,9 @@ class NbCollection:
             return
         for prev_nb, nb, next_nb in zip(itertools.chain([None], a), b, itertools.chain(c, [None])):
             navbar = NAVBAR_TAG
-            navbar += PREV_TEMPLATE.format(title=prev_nb.title, url=prev_nb.url) if prev_nb else ''
+            navbar += PREV_TEMPLATE.format(title=prev_nb.title, url=prev_nb.html_url) if prev_nb else ''
             navbar += CONTENTS + INDEX if self.keyword_index else CONTENTS
-            navbar += NEXT_TEMPLATE.format(title=next_nb.title, url=next_nb.url) if next_nb else ''
+            navbar += NEXT_TEMPLATE.format(title=next_nb.title, url=next_nb.html_url) if next_nb else ''
             navbar += nb.colab_link
             navbar += nb.download_link
             if nb.content.cells[1].source.startswith(NAVBAR_TAG):
@@ -341,7 +341,7 @@ class NbCollection:
         for nb in self.notebooks:
             (body, resources) = html_exporter.from_notebook_node(nb.content)
             html_filename = os.path.splitext(nb.filename)[0] + ".html"
-            html_path = os.path.join("html", html_filename)
+            html_path = os.path.join(HTML_DIR, html_filename)
             print(f"- writing {html_path}")
             with open(html_path, 'w') as f:
                 f.write(body)
@@ -376,12 +376,12 @@ class NbCollection:
                     f.write(", ".join([tag for tag in nb.tags]) + "\n")
         os.system(' '.join(['notedown', f'"{TOC_MD}"', '>', f'"{TOC_NB}"']))
 
-    def write_keyword_index(self):
+    def write_tag_index(self):
         """Write keyword index file for a collection of notebooks."""
         keywords = sorted(self.keyword_index.keys(), key=str.lower)
         print("- writing keyword index file")
-        with open(INDEX_MD, 'w') as f:
-            f.write(INDEX_HEADER + "\n")
+        with open(TAG_INDEX_MD, 'w') as f:
+            f.write(TAG_INDEX_HEADER + "\n")
             if keywords:
                 print("\n## Keyword Index", file=f)
                 f.write("\n")
@@ -399,18 +399,18 @@ class NbCollection:
                     for val in self.tag_index[tag]:
                         f.write("    - " + val + "\n")
 
-        os.system(' '.join(['notedown', f'"{INDEX_MD}"', ">", f'"{INDEX_NB}"']))
+        os.system(' '.join(['notedown', f'"{TAG_INDEX_MD}"', ">", f'"{TAG_INDEX_NB}"']))
 
-    def write_readme(self):
+    def write_index(self):
         """Write README.md using readme.md.jinja."""
         print("- writing README.md")
-        readme_toc = [README_TOC] if self.notebooks else []
-        readme_toc += [README_INDEX] if self.keyword_index.keys() else []
-        readme_toc += [nb.readme for nb in self.notebooks]
+        index_toc = [INDEX_TOC] if self.notebooks else []
+        index_toc += [INDEX_INDEX] if self.keyword_index.keys() else []
+        index_toc += [nb.readme for nb in self.notebooks]
         env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
-        with open(README_MD, 'w') as f:
-            f.write(env.get_template('README.md.jinja').render(
-                readme_toc=readme_toc, page_title=PAGE_TITLE, github_url=GITHUB_URL))
+        with open(INDEX_MD, 'w') as f:
+            f.write(env.get_template('index.md.jinja').render(
+                readme_toc=index_toc, page_title=PAGE_TITLE, github_url=GITHUB_URL))
 
     def lint(self):
         """Report style issues in a collection of notebooks."""

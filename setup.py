@@ -9,9 +9,5 @@ from setuptools import setup
 """
 
 setup(
-    entry_points={
-        'console_scripts': [
-            'nbpages=nbpages.__main__:main'
-        ]
-    },
+    entry_points={'console_scripts': ['nbpages=nbpages.__main__:main']},
 )
