@@ -8,7 +8,7 @@ import shutil
 # directory locations
 TEMPLATE_DIR = os.path.join(os.getcwd(), 'templates/')
 NOTEBOOK_DST_DIR = 'notebooks-dev'
-NOTEBOOK_SRC_DIR = 'notebooks=public'
+NOTEBOOK_SRC_DIR = 'notebooks-public'
 NOTEBOOK_SRC = os.path.join(os.getcwd(), 'notebooks-dev/')
 NOTEBOOK_DST = os.path.join(os.getcwd(), 'notebooks-public/')
 
@@ -42,7 +42,7 @@ GITHUB_PAGE_URL = f"https://{GITHUB_USER}.github.io/{PAGE_TITLE}"
 NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 
 # nbviewer/github url
-NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{GITHUB_REPOSITORY}/blob/master/{NOTEBOOK_DST}/"
+NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{GITHUB_REPOSITORY}/blob/master/{NOTEBOOK_DST_DIR}/"
 
 # TOC and INDEX page headers with link to page url
 TOC_HEADER = f"# [{PAGE_TITLE}]({GITHUB_PAGE_URL})"
