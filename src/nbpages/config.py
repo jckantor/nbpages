@@ -40,7 +40,7 @@ GITHUB_PAGE_URL = f"https://{GITHUB_USER}.github.io/{PAGE_TITLE}"
 NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 
 # nbviewer/github url
-NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{GITHUB_REPOSITORY}/blob/master/notebooks/"
+NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{GITHUB_REPOSITORY}/blob/master/{NOTEBOOK_DST}/"
 
 # TOC and INDEX page headers with link to page url
 TOC_HEADER = f"# [{PAGE_TITLE}]({GITHUB_PAGE_URL})"
@@ -54,13 +54,13 @@ README_INDEX = f"### [Keyword Index]({NBVIEWER_URL}index.ipynb?flush=true)"
 
 # link template to open notebooks in Google colaboratory
 COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_REPOSITORY}' + \
-             '/blob/master/notebooks/{notebook_filename}">' + \
+             f'/blob/master/{NOTEBOOK_DST}' + '/{notebook_filename}">' + \
              '<img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
              ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
 
 # link template to download notebooks from github
 DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{GITHUB_REPOSITORY}' + \
-             '/master/notebooks/{notebook_filename}">' + \
+             f'/master/{NOTEBOOK_DST}' + '/{notebook_filename}">' + \
              '<img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
              ' alt="Download" title="Download Notebook"></a>'
 
