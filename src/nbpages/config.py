@@ -7,6 +7,8 @@ import shutil
 
 # directory locations
 TEMPLATE_DIR = os.path.join(os.getcwd(), 'templates/')
+NOTEBOOK_DST_DIR = 'notebooks-dev'
+NOTEBOOK_SRC_DIR = 'notebooks=public'
 NOTEBOOK_SRC = os.path.join(os.getcwd(), 'notebooks-dev/')
 NOTEBOOK_DST = os.path.join(os.getcwd(), 'notebooks-public/')
 
@@ -54,13 +56,13 @@ README_INDEX = f"### [Keyword Index]({NBVIEWER_URL}index.ipynb?flush=true)"
 
 # link template to open notebooks in Google colaboratory
 COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_REPOSITORY}' + \
-             f'/blob/master/{NOTEBOOK_DST}' + '/{notebook_filename}">' + \
+             f'/blob/master/{NOTEBOOK_DST_DIR}' + '/{notebook_filename}">' + \
              '<img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
              ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
 
 # link template to download notebooks from github
 DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{GITHUB_REPOSITORY}' + \
-             f'/master/{NOTEBOOK_DST}' + '/{notebook_filename}">' + \
+             f'/master/{NOTEBOOK_DST_DIR}' + '/{notebook_filename}">' + \
              '<img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
              ' alt="Download" title="Download Notebook"></a>'
 
