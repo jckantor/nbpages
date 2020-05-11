@@ -7,8 +7,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--setup", help="create templates directory", action="store_true")
 parser.add_argument("--lint", help="report any notebook lint", action="store_true")
 parser.add_argument("--metadata", help="display notebook metadata", action="store_true")
-parser.add_argument("--html", help="write static html", action="store_true")
 parser.add_argument("--tags", help="display notebook tags", action="store_true")
+parser.add_argument("--remove_cells", help="remove tagged cells", nargs="+")
 args = parser.parse_args()
 
 from .config import *
@@ -32,21 +32,21 @@ def main():
     if args.lint:
         notebooks.lint()
 
-    elif args.metadata:
+    if args.metadata:
         notebooks.metadata()
 
-    elif args.tags:
+    if args.tags:
         notebooks.write_tag_index()
 
-    elif args.html:
-        notebooks.write_html()
+    if args.remove_cells:
+        for value in args.remove_cells:
+            print("remove", value)
 
-    else:
-        notebooks.write_headers()
-        notebooks.write_navbars()
-        notebooks.write_toc()
-        notebooks.write_keyword_index()
-        notebooks.write_readme()
+    notebooks.write_headers()
+    notebooks.write_navbars()
+    notebooks.write_toc()
+    notebooks.write_keyword_index()
+    notebooks.write_readme()
 
     return 0
 
