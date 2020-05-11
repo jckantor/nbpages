@@ -14,9 +14,9 @@ args = parser.parse_args()
 from .config import *
 
 # asserts
-print(NOTEBOOK_SRC)
-assert os.path.exists(TEMPLATE_DIR), "template directorynot found. Run 'nbpages --setup' to create config directory."
-assert os.path.exists(NOTEBOOK_SRC), "notebooks directory not found. Run 'nbpages --setup' to create notebooks directory."
+assert os.path.exists(TEMPLATE_DIR), "template directory not found. Run 'nbpages --setup'."
+assert os.path.exists(NOTEBOOK_SRC_DIR), "notebook source directory not found. Run 'nbpages --setup'."
+assert os.path.exists(NOTEBOOK_DST_DIR), "notebook destination directory not found. Run 'nbpages --setup'."
 
 # optional initial setup. setup required before nbcollection can be imported
 
@@ -25,6 +25,7 @@ if args.setup:
     sys.exit(0)
 
 from .nbcollection import NbCollection
+
 
 def main():
 
@@ -50,6 +51,7 @@ def main():
     notebooks.write_readme()
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

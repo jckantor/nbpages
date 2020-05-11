@@ -13,6 +13,7 @@ from nbconvert import HTMLExporter
 html_exporter = HTMLExporter()
 html_exporter.template_file = 'full'
 
+
 class Nb:
     HTML_IMG = re.compile(r'<img[^>]*>')
     MARKDOWN_FIG = re.compile(r'(?:!\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
@@ -21,8 +22,8 @@ class Nb:
 
     def __init__(self, filename, chapter, section):
         self.filename = filename
-        self.path_src = os.path.join(NOTEBOOK_SRC, filename)
-        self.path_dst = os.path.join(NOTEBOOK_DST, filename)
+        self.path_src = os.path.join(NOTEBOOK_SRC_DIR, filename)
+        self.path_dst = os.path.join(NOTEBOOK_DST_DIR, filename)
         self.chapter = chapter
         self.section = section
         self.url = os.path.join(NBVIEWER_URL, filename)
@@ -36,6 +37,7 @@ class Nb:
         for cell in self.content.cells:
             cell.metadata["nbpages"] = {}
         level = 0
+        section_header = ""
         h = [0] * 6
         try:
             section = f"{int(self.chapter)}.{int(self.section)}"
@@ -160,9 +162,9 @@ class Nb:
         orphans = []
         for cell in self.content.cells[2:-1]:
             if cell.cell_type == "markdown":
-                 for line in cell.source.splitlines()[1:]:
-                     if self.__class__.MARKDOWN_HEADER.match(line):
-                         orphans.append(line)
+                for line in cell.source.splitlines()[1:]:
+                    if self.__class__.MARKDOWN_HEADER.match(line):
+                        orphans.append(line)
         return orphans
 
     def __gt__(self, nb):
@@ -218,7 +220,7 @@ class Appendix(Nb):
     @property
     def toc(self):
         """Return table of contents entry for a notebook."""
-        toc =  Nb.toc.fget(self)
+        toc = Nb.toc.fget(self)
         toc.insert(0, "\n## " + self.link)
         return toc
 
@@ -243,7 +245,7 @@ class Section(Nb):
     @property
     def toc(self):
         """Return table of contents entry for a notebook."""
-        toc =  Nb.toc.fget(self)
+        toc = Nb.toc.fget(self)
         toc.insert(0, "### " + self.link)
         return toc
 
@@ -273,7 +275,7 @@ class NbCollection:
     # regular expression that matches notebook filenames to be included in the TOC
     REG = re.compile(r'(\d\d|[A-Z])\.(\d\d)-(.*)\.ipynb')
 
-    def __init__(self, dir=NOTEBOOK_SRC):
+    def __init__(self, dir=NOTEBOOK_SRC_DIR):
         self.notebooks = []
         for filename in sorted(os.listdir(dir)):
             if self.__class__.REG.match(filename):
@@ -310,7 +312,7 @@ class NbCollection:
         """Insert navigation bars into a collection of notebooks."""
         a, b, c = itertools.tee(self.notebooks, 3)
         try:
-            next (c)
+            next(c)
         except StopIteration:
             return
         for prev_nb, nb, next_nb in zip(itertools.chain([None], a), b, itertools.chain(c, [None])):
@@ -357,21 +359,21 @@ class NbCollection:
         """Write table of contents file for a collection of notebooks."""
         print("- writing table of contents file")
         with open(TOC_MD, 'w') as f:
-            print(TOC_HEADER, file=f)
+            f.write(TOC_HEADER + "\n")
             for nb in self.notebooks:
                 f.write('\n')
                 f.write('\n'.join(nb.toc) + '\n')
                 if nb.markdown_figs:
-                    print("* Markdown Figures", file=f)
+                    f.write("* Markdown Figures" + "\n")
                     for txt, url in nb.markdown_figs:
-                        print("    - [{0}]({1})".format(txt if txt else url, url), file=f)
+                        f.write("    - [{0}]({1})\n".format(txt if txt else url, url))
                 if nb.markdown_links:
-                    print("* Markdown Links", file=f)
+                    f.write("* Markdown Links" + "\n")
                     for txt, url in nb.markdown_links:
-                        print(f"    - [{txt}]({url})", file=f)
+                        f.write(f"    - [{txt}]({url})\n")
                 if nb.tags:
-                    print("* Tags: ", file=f, end='')
-                    print(", ".join([tag for tag in nb.tags]), file=f)
+                    f.write("* Tags: ")
+                    f.write(", ".join([tag for tag in nb.tags]) + "\n")
         os.system(' '.join(['notedown', f'"{TOC_MD}"', '>', f'"{TOC_NB}"']))
 
     def write_keyword_index(self):
@@ -379,7 +381,7 @@ class NbCollection:
         keywords = sorted(self.keyword_index.keys(), key=str.lower)
         print("- writing keyword index file")
         with open(INDEX_MD, 'w') as f:
-            print(INDEX_HEADER, file=f)
+            f.write(INDEX_HEADER + "\n")
             if keywords:
                 print("\n## Keyword Index", file=f)
                 f.write("\n")

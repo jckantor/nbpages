@@ -3,30 +3,22 @@ import configparser
 import datetime
 import shutil
 
-### LOCAL DIRECTORY AND FILE LOCATIONS
+# DIRECTORY AND FILE LOCATIONS
 
-# directory locations
-TEMPLATE_DIR = os.path.join(os.getcwd(), 'templates/')
-NOTEBOOK_SRC_DIR = 'notebooks_dev'
-NOTEBOOK_DST_DIR = 'notebooks_public'
+TEMPLATE_DIR = "templates"
+NOTEBOOK_SRC_DIR = "notebooks_dev"
+NOTEBOOK_DST_DIR = "notebooks_public"
 
-NOTEBOOK_SRC = os.path.join(os.getcwd(), NOTEBOOK_SRC_DIR)
-NOTEBOOK_DST = os.path.join(os.getcwd(), NOTEBOOK_DST_DIR)
+CONFIG_FILE = "nbpages.cfg"
+README_MD = "README.md"
+TOC_MD = os.path.join(NOTEBOOK_DST_DIR, "toc.md")
+TOC_NB = os.path.join(NOTEBOOK_DST_DIR, "toc.ipynb")
+INDEX_MD = os.path.join(NOTEBOOK_DST_DIR, "index.md")
+INDEX_NB = os.path.join(NOTEBOOK_DST_DIR, "index.ipynb")
 
-# file locations
-CONFIG_FILE = os.path.join(os.getcwd(), "nbpages.cfg")
-README_MD = os.path.join(os.getcwd(), 'README.md')
-
-# table of contents and index files
-TOC_MD = os.path.join(NOTEBOOK_DST, 'toc.md')
-TOC_NB = os.path.join(NOTEBOOK_DST, 'toc.ipynb')
-INDEX_MD = os.path.join(NOTEBOOK_DST, 'index.md')
-INDEX_NB= os.path.join(NOTEBOOK_DST, 'index.ipynb')
-
-### THERE SHOULD BE NO NEED TO EDIT ANYTHING BELOW THIS LINE
+# THERE SHOULD BE NO NEED TO EDIT ANYTHING BELOW THIS LINE
 
 # read .git config to extract url, user, and page_title
-
 assert os.path.exists('.git'), ".git subdirectory not found. "
 git_config = configparser.ConfigParser(strict=False)
 git_config.read(os.path.join(".git", "config"))
@@ -37,7 +29,7 @@ PAGE_TITLE = GITHUB_URL.rsplit('/')[-1].split('.')[0]
 GITHUB_REPOSITORY = f"{GITHUB_USER}/{PAGE_TITLE}"
 GITHUB_PAGE_URL = f"https://{GITHUB_USER}.github.io/{PAGE_TITLE}"
 
-### CREATE STRING CONSTANTS
+# CREATE STRING CONSTANTS
 
 # tags
 NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
@@ -53,7 +45,7 @@ INDEX_HEADER = f"# [{PAGE_TITLE}]({GITHUB_PAGE_URL})"
 README_TOC = f"### [Table of Contents]({NBVIEWER_URL}toc.ipynb?flush=true)"
 README_INDEX = f"### [Keyword Index]({NBVIEWER_URL}index.ipynb?flush=true)"
 
-### CREATE STRING TEMPLATES
+# CREATE STRING TEMPLATES
 
 # link template to open notebooks in Google colaboratory
 COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_REPOSITORY}/blob/master/{NOTEBOOK_DST_DIR}' + \
