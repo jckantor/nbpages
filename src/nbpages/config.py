@@ -42,7 +42,7 @@ GITHUB_PAGE_URL = f"https://{GITHUB_USER}.github.io/{PAGE_TITLE}"
 NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 
 # nbviewer/github url
-NBVIEWER_URL = f"http://nbviewer.jupyter.org/github/{GITHUB_REPOSITORY}/blob/master/{NOTEBOOK_DST_DIR}/"
+NBVIEWER_URL = f"https://nbviewer.jupyter.org/github/{GITHUB_REPOSITORY}/blob/master/{NOTEBOOK_DST_DIR}/"
 
 # TOC and INDEX page headers with link to page url
 TOC_HEADER = f"# [{PAGE_TITLE}]({GITHUB_PAGE_URL})"
