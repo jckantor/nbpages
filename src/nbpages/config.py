@@ -7,8 +7,8 @@ import shutil
 
 # directory locations
 TEMPLATE_DIR = os.path.join(os.getcwd(), 'templates/')
-NOTEBOOK_DST_DIR = 'notebooks-dev'
-NOTEBOOK_SRC_DIR = 'notebooks-public'
+NOTEBOOK_DST_DIR = 'notebooks-public'
+NOTEBOOK_SRC_DIR = 'notebooks-dev'
 NOTEBOOK_SRC = os.path.join(os.getcwd(), 'notebooks-dev/')
 NOTEBOOK_DST = os.path.join(os.getcwd(), 'notebooks-public/')
 

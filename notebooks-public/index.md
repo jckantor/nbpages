@@ -3,18 +3,18 @@
 ## Keyword Index
 
 * notebook format
-    - [1.0 Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-dev/01.00-Style-Guide.ipynb#1.0-Style-Guide)
+    - [1.0 Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-public/01.00-Style-Guide.ipynb#1.0-Style-Guide)
 * style guide
-    - [1.0 Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-dev/01.00-Style-Guide.ipynb#1.0-Style-Guide)
+    - [1.0 Style Guide](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-public/01.00-Style-Guide.ipynb#1.0-Style-Guide)
 
 ## Tag Index
 
 * mathematics
-    - [1.0.4.3 Mathematics](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-dev/01.00-Style-Guide.ipynb#1.0.4.3-Mathematics)
-    - [2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-dev/02.00-Examples.ipynb#2.0-Examples)
+    - [1.0.4.3 Mathematics](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-public/01.00-Style-Guide.ipynb#1.0.4.3-Mathematics)
+    - [2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-public/02.00-Examples.ipynb#2.0-Examples)
 * hi::world
-    - [2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-dev/02.00-Examples.ipynb#2.0-Examples)
+    - [2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-public/02.00-Examples.ipynb#2.0-Examples)
 * exercise
-    - [2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-dev/02.00-Examples.ipynb#2.0-Examples)
+    - [2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-public/02.00-Examples.ipynb#2.0-Examples)
 * solution
-    - [2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-dev/02.00-Examples.ipynb#2.0-Examples)
+    - [2.0 Examples](http://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-public/02.00-Examples.ipynb#2.0-Examples)
