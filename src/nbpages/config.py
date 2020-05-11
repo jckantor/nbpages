@@ -7,10 +7,11 @@ import shutil
 
 # directory locations
 TEMPLATE_DIR = os.path.join(os.getcwd(), 'templates/')
-NOTEBOOK_DST_DIR = 'notebooks-public'
-NOTEBOOK_SRC_DIR = 'notebooks-dev'
-NOTEBOOK_SRC = os.path.join(os.getcwd(), 'notebooks-dev/')
-NOTEBOOK_DST = os.path.join(os.getcwd(), 'notebooks-public/')
+NOTEBOOK_SRC_DIR = 'notebooks_dev'
+NOTEBOOK_DST_DIR = 'notebooks_public'
+
+NOTEBOOK_SRC = os.path.join(os.getcwd(), NOTEBOOK_SRC_DIR)
+NOTEBOOK_DST = os.path.join(os.getcwd(), NOTEBOOK_DST_DIR)
 
 # file locations
 CONFIG_FILE = os.path.join(os.getcwd(), "nbpages.cfg")
@@ -55,15 +56,13 @@ README_INDEX = f"### [Keyword Index]({NBVIEWER_URL}index.ipynb?flush=true)"
 ### CREATE STRING TEMPLATES
 
 # link template to open notebooks in Google colaboratory
-COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_REPOSITORY}' + \
-             f'/blob/master/{NOTEBOOK_DST_DIR}' + '/{notebook_filename}">' + \
-             '<img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
+COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_REPOSITORY}/blob/master/{NOTEBOOK_DST_DIR}' + \
+             '/{notebook_filename}"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
              ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
 
 # link template to download notebooks from github
-DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{GITHUB_REPOSITORY}' + \
-             f'/master/{NOTEBOOK_DST_DIR}' + '/{notebook_filename}">' + \
-             '<img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
+DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/master/{NOTEBOOK_DST_DIR}' +  \
+             '/{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
              ' alt="Download" title="Download Notebook"></a>'
 
 # navigation bar templates for notebook pages

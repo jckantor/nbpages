@@ -14,6 +14,7 @@ args = parser.parse_args()
 from .config import *
 
 # asserts
+print(NOTEBOOK_SRC)
 assert os.path.exists(TEMPLATE_DIR), "template directorynot found. Run 'nbpages --setup' to create config directory."
 assert os.path.exists(NOTEBOOK_SRC), "notebooks directory not found. Run 'nbpages --setup' to create notebooks directory."
 
