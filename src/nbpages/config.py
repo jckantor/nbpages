@@ -11,12 +11,17 @@ HTML_DIR = "docs"
 
 CONFIG_FILE = "nbpages.cfg"
 README_MD = "README.md"
+
 INDEX_MD = "index.md"
 INDEX_NB = "index.ipynb"
 INDEX_HTML = "index.html"
+
 TOC_MD = os.path.join(HTML_DIR, "toc.md")
+TOC_NB = os.path.join(HTML_DIR, "toc.ipynb")
 TOC_HTML = os.path.join(HTML_DIR, "toc.html")
+
 TAG_INDEX_MD = os.path.join(HTML_DIR, "tag_index.md")
+TAG_INDEX_NB = os.path.join(HTML_DIR, "tag_index.ipynb")
 TAG_INDEX_HTML = os.path.join(HTML_DIR, "tag_index.html")
 
 # THERE SHOULD BE NO NEED TO EDIT ANYTHING BELOW THIS LINE
