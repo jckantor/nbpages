@@ -7,26 +7,25 @@ import configparser
 # DIRECTORY AND FILE NAMES
 TEMPLATE_DIR = "templates"
 NOTEBOOK_SRC_DIR = "notebooks"
-
 CONFIG = "nbpages.cfg"
-README_MD = "readme.md"
-
-INDEX_HTML = "index.html"
-TOC_HTML = "toc.html"
-TAG_INDEX_HTML = "tag_index.html"
 
 # THERE SHOULD BE NO NEED TO EDIT BELOW THIS LINE
 DOCS_DIR = "docs"
 NOTEBOOK_DST_DIR = DOCS_DIR
 
-INDEX_MD = Path(INDEX_HTML).stem + ".md"
-INDEX_NB = Path(INDEX_HTML).stem + ".ipynb"
+README_MD = "readme.md"
 
-TOC_MD = Path(TOC_HTML).stem + ".md"
-TOC_NB = Path(TOC_HTML).stem + ".ipynb"
+INDEX_HTML = os.path.join(DOCS_DIR, "index.html")
+INDEX_MD = os.path.join(DOCS_DIR, "index.md")
+INDEX_NB = os.path.join(DOCS_DIR, "index.nb")
 
-TAG_INDEX_MD = Path(TAG_INDEX_HTML).stem + ".md"
-TAG_INDEX_NB = Path(TAG_INDEX_HTML).stem + ".ipynb"
+TOC_HTML = os.path.join(DOCS_DIR, "toc.html")
+TOC_MD = os.path.join(DOCS_DIR, "toc.md")
+TOC_NB = os.path.join(DOCS_DIR, "toc.ipynb")
+
+TAG_INDEX_HTML = os.path.join(DOCS_DIR, "tag_index.html")
+TAG_INDEX_MD = os.path.join(DOCS_DIR, "tag_index.md")
+TAG_INDEX_NB = os.path.join(DOCS_DIR, "tag_index.ipynb")
 
 # read .git config to extract url, user, and page_title
 assert os.path.exists('.git'), ".git subdirectory not found. "
@@ -45,7 +44,7 @@ GITHUB_PAGE_URL = f"https://{GITHUB_USER}.github.io/{PAGE_TITLE}"
 NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 
 # nbviewer/github url
-NBVIEWER_URL = f"https://nbviewer.jupyter.org/github/{GITHUB_REPOSITORY}/blob/master/{NOTEBOOK_DST_DIR}/"
+#NBVIEWER_URL = f"https://nbviewer.jupyter.org/github/{GITHUB_REPOSITORY}/blob/master/{NOTEBOOK_DST_DIR}/"
 
 # TOC and INDEX page headers with link to page url
 TOC_HEADER = f"# [{PAGE_TITLE}]({GITHUB_PAGE_URL})"
@@ -62,10 +61,6 @@ COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_REPO
              '/{notebook_filename}"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
              ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
 
-# link template to download notebooks from github
-#DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/master/{NOTEBOOK_DOWNLOAD_DIR}' +  \
-#             '/{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
-#             ' alt="Download" title="Download Notebook"></a>'
 DOWNLOAD_LINK = f'<p><a href="{GITHUB_PAGE_URL}' +  \
              '/{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
              ' alt="Download" title="Download Notebook"></a>'
