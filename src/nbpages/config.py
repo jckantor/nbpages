@@ -63,6 +63,6 @@ DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{GITHUB_REPOSITO
 # navigation bar templates for notebook pages
 NAVBAR_TAG = "<!--NAVIGATION-->\n"
 PREV_TEMPLATE = "< [{title}]({url}) "
-CONTENTS = "| [Contents](toc.ipynb) |"
-INDEX = " [Tag Index](index.ipynb) |"
+CONTENTS = "| [Contents](toc.html) |"
+INDEX = " [Tag Index](tag_index.html) |"
 NEXT_TEMPLATE = " [{title}]({url}) >"
