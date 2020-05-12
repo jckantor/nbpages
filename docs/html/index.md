@@ -72,15 +72,15 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 ### [Tag Index](https://jckantor.github.io/nbpages/tag_index.html?flush=true)
 
 
-### [Chapter 1.0 Style Guide](https://jckantor.github.io/nbpages/01.00-Style-Guide.html)
+### [Chapter 1.0 Style Guide](https://jckantor.github.io/nbpages/docs/html/01.00-Style-Guide.html)
 
-- [1.1 Notebook naming and ancillary/generated files](https://jckantor.github.io/nbpages/01.01-Notebook-Naming-and-Ancillary-Files.html)
+- [1.1 Notebook naming and ancillary/generated files](https://jckantor.github.io/nbpages/docs/html/01.01-Notebook-Naming-and-Ancillary-Files.html)
 
-- [1.2 Notebook Style](https://jckantor.github.io/nbpages/01.02-Notebook-Style.html)
+- [1.2 Notebook Style](https://jckantor.github.io/nbpages/docs/html/01.02-Notebook-Style.html)
 
-- [1.3 External Files](https://jckantor.github.io/nbpages/01.03-External-Files.html)
+- [1.3 External Files](https://jckantor.github.io/nbpages/docs/html/01.03-External-Files.html)
 
-- [1.4 Coding Style](https://jckantor.github.io/nbpages/01.04-Coding.html)
+- [1.4 Coding Style](https://jckantor.github.io/nbpages/docs/html/01.04-Coding.html)
 
 
-### [Chapter 2.0 Examples](https://jckantor.github.io/nbpages/02.00-Examples.html)
+### [Chapter 2.0 Examples](https://jckantor.github.io/nbpages/docs/html/02.00-Examples.html)

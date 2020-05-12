@@ -28,7 +28,7 @@ class Nb:
         self.chapter = chapter
         self.section = section
         self.html_filename = os.path.splitext(self.filename)[0] + ".html"
-        self.html_url = GITHUB_PAGE_URL + "/" + self.html_filename
+        self.html_url = GITHUB_PAGE_URL + "/" + HTML_DIR + "/" + self.html_filename
         self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.download_link = DOWNLOAD_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.content = nbformat.read(self.path_src, as_version=4)
