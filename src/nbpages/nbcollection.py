@@ -68,6 +68,11 @@ class Nb:
             cell.metadata["nbpages"]["section"] = section_header
             cell.metadata["nbpages"]["link"] = f"[{section_header}]({url})"
 
+    def remove(self, tag):
+        for cell in self.content.cells:
+            if 'tags' in cell.metadata.keys() and tag in cell.metadata['tags']:
+                print("Remove", tag, self.filename)
+
     @property
     def title(self):
         """Return notebook title by extracting the first level one header."""
@@ -301,6 +306,10 @@ class NbCollection:
                     for link in links:
                         self._keyword_index.setdefault(word, []).append(link)
         return self._keyword_index
+
+    def remove_cells(self, tag):
+        for nb in self.notebooks:
+            nb.remove_cells(tag)
 
     def write_headers(self):
         """Insert a common header into a collection of notebooks."""

@@ -41,8 +41,8 @@ def main():
         notebooks.write_tag_index()
 
     if args.remove_cells:
-        for value in args.remove_cells:
-            print("remove", value)
+        for tag in args.remove_cells:
+            notebooks.remove_cells(tag)
 
     notebooks.write_headers()
     notebooks.write_navbars()
