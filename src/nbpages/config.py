@@ -18,6 +18,7 @@ TOC_MD = os.path.join(HTML_DIR, "toc.md")
 TOC_NB = os.path.join(HTML_DIR, "toc.ipynb")
 TAG_INDEX_MD = os.path.join(HTML_DIR, "tag_index.md")
 TAG_INDEX_NB = os.path.join(HTML_DIR, "tag_index.ipynb")
+TAG_INDEX_HTML = os.path.join(HTML_DIR, "tag_index.html")
 
 # THERE SHOULD BE NO NEED TO EDIT ANYTHING BELOW THIS LINE
 
@@ -46,7 +47,7 @@ TAG_INDEX_HEADER = f"# [{PAGE_TITLE}]({GITHUB_PAGE_URL})"
 
 # headers for TOC and index pages with links to nbviewer/github
 INDEX_TOC = f"### [Table of Contents]({GITHUB_PAGE_URL}/toc.md?flush=true)"
-INDEX_INDEX = f"### [Tag Index]({GITHUB_PAGE_URL}/tag_index.md?flush=true)"
+INDEX_INDEX = f"### [Tag Index]({GITHUB_PAGE_URL}/tag_index.html?flush=true)"
 
 # CREATE STRING TEMPLATES
 

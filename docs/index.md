@@ -69,7 +69,7 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 
 ### [Table of Contents](https://jckantor.github.io/nbpages/toc.md?flush=true)
 
-### [Tag Index](https://jckantor.github.io/nbpages/tag_index.md?flush=true)
+### [Tag Index](https://jckantor.github.io/nbpages/tag_index.html?flush=true)
 
 
 ### [Chapter 1.0 Style Guide](https://jckantor.github.io/nbpages/01.00-Style-Guide.html)
