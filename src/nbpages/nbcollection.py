@@ -408,7 +408,7 @@ class NbCollection:
         index_toc += [INDEX_INDEX] if self.keyword_index.keys() else []
         index_toc += [nb.readme for nb in self.notebooks]
         env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
-        with open(INDEX_MD, 'w') as f:
+        with open(os.path.join(HTML_DIR, INDEX_MD), 'w') as f:
             f.write(env.get_template('index.md.jinja').render(
                 readme_toc=index_toc, page_title=PAGE_TITLE, github_url=GITHUB_URL))
 
