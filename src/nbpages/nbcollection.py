@@ -320,7 +320,7 @@ class NbCollection:
             navbar += CONTENTS + INDEX if self.keyword_index else CONTENTS
             navbar += NEXT_TEMPLATE.format(title=next_nb.title, url=next_nb.html_url) if next_nb else ''
             navbar += nb.colab_link
-            navbar += "$~$"
+            navbar += "&nbsp;"
             navbar += nb.download_link
             if nb.content.cells[1].source.startswith(NAVBAR_TAG):
                 print(f"- amending navbar for {nb.filename}")
