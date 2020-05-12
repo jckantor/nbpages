@@ -56,7 +56,7 @@ INDEX_INDEX = f"### [Tag Index]({GITHUB_PAGE_URL}/tag_index.html?flush=true)"
 # CREATE STRING TEMPLATES
 
 # link template to open notebooks in Google colaboratory
-COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_REPOSITORY}/blob/master/{NOTEBOOK_DST_DIR}' + \
+COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_REPOSITORY}/blob/master/docs' + \
              '/{notebook_filename}"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
              ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
 
@@ -64,8 +64,8 @@ COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_REPO
 #DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/master/{NOTEBOOK_DOWNLOAD_DIR}' +  \
 #             '/{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
 #             ' alt="Download" title="Download Notebook"></a>'
-DOWNLOAD_LINK = f'<p><a href="{GITHUB_PAGE_URL}/' +  \
-             '{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
+DOWNLOAD_LINK = f'<p><a href="{GITHUB_PAGE_URL}' +  \
+             '/{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
              ' alt="Download" title="Download Notebook"></a>'
 
 # navigation bar templates for notebook pages
