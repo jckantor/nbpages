@@ -6,7 +6,6 @@ import json
 import os
 from jinja2 import Environment, FileSystemLoader
 
-
 from .config import *
 
 from nbconvert import HTMLExporter
@@ -24,7 +23,7 @@ class Nb:
         self.filename = filename
         self.path_src = os.path.join(NOTEBOOK_SRC_DIR, filename)
         self.path_dst = os.path.join(NOTEBOOK_DST_DIR, filename)
-        self.path_download = os.path.join(DOCS_DIR, filename)
+        self.path_download = os.path.join(DOCS_DIR, filename)   # need to download from github pages
         self.path_html = os.path.join(DOCS_DIR, filename)
         self.chapter = chapter
         self.section = section
