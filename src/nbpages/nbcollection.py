@@ -237,10 +237,7 @@ class Section(Nb):
     @property
     def numbered_title(self):
         """Return formatted title with numbering for a notebook."""
-        try:
-            return f"{int(self.chapter)}.{int(self.section)} {self.title}"
-        except:
-            return f"{self.chapter}.{int(self.section)} {self.title}"
+        return f"{self.title}"
 
     @property
     def toc(self):
