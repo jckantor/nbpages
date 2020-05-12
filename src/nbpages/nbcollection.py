@@ -373,7 +373,10 @@ class NbCollection:
                     f.write("* Tags: ")
                     f.write(", ".join([tag for tag in nb.tags]) + "\n")
 
-        os.system(' '.join(['notedown', f'"{TOC_MD}"', '>', f'"{TOC_NB}"']))
+        with open(TOC_HTML, 'w') as output_file:
+            output_file.write(Markdown().convert(open(TOC_MD).read()))
+
+        #os.system(' '.join(['notedown', f'"{TOC_MD}"', '>', f'"{TOC_NB}"']))
 
     def write_tag_index(self):
         """Write keyword index file for a collection of notebooks."""
