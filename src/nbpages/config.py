@@ -7,6 +7,7 @@ import shutil
 TEMPLATE_DIR = "templates"
 NOTEBOOK_SRC_DIR = "notebooks-dev"
 NOTEBOOK_DST_DIR = "notebooks-public"
+NOTEBOOK_DOWNLOAD_DIR = "docs"
 HTML_DIR = "docs"
 
 CONFIG_FILE = "nbpages.cfg"
@@ -61,7 +62,7 @@ COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_REPO
              ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
 
 # link template to download notebooks from github
-DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/master/{NOTEBOOK_DST_DIR}' +  \
+DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/master/{NOTEBOOK_DOWNLOAD_DIR}' +  \
              '/{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
              ' alt="Download" title="Download Notebook"></a>'
 

@@ -24,6 +24,7 @@ class Nb:
         self.filename = filename
         self.path_src = os.path.join(NOTEBOOK_SRC_DIR, filename)
         self.path_dst = os.path.join(NOTEBOOK_DST_DIR, filename)
+        self.path_download = os.path.join(HTML_DIR, filename)
         self.chapter = chapter
         self.section = section
         self.html_filename = os.path.splitext(self.filename)[0] + ".html"
@@ -266,6 +267,7 @@ class NbHeader:
             print('- inserting header for {0}'.format(nb.filename))
             nb.content.cells.insert(0, new_markdown_cell(self.source))
         nbformat.write(nb.content, nb.path_dst)
+        nbformat.write(nb.content, nb.path_download)
 
 
 class NbCollection:
@@ -332,6 +334,7 @@ class NbCollection:
                 print(f"- inserting navbar for {nb.filename}")
                 nb.content.cells.append(new_markdown_cell(source=navbar))
             nbformat.write(nb.content, nb.path_dst)
+            nbformat.write(nb.content, nb.path_download)
 
     def write_html(self):
         """Write html files for a collection of notebooks."""
