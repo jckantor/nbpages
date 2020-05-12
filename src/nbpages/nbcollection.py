@@ -374,7 +374,7 @@ class NbCollection:
                 if nb.tags:
                     f.write("* Tags: ")
                     f.write(", ".join([tag for tag in nb.tags]) + "\n")
-        #os.system(' '.join(['notedown', f'"{TOC_MD}"', '>', f'"{TOC_NB}"']))
+        os.system(' '.join(['notedown', f'"{TOC_MD}"', '>', f'"{TOC_NB}"']))
 
     def write_tag_index(self):
         """Write keyword index file for a collection of notebooks."""
@@ -399,7 +399,7 @@ class NbCollection:
                     for val in self.tag_index[tag]:
                         f.write("    - " + val + "\n")
 
-        #os.system(' '.join(['notedown', f'"{TAG_INDEX_MD}"', ">", f'"{TAG_INDEX_NB}"']))
+        os.system(' '.join(['notedown', f'"{TAG_INDEX_MD}"', ">", f'"{TAG_INDEX_NB}"']))
 
     def write_index(self):
         """Write index.md using the index.md.jinja template."""
