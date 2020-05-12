@@ -13090,7 +13090,7 @@ and code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!--NAVIGATION-->
-&lt; <a href="https://jckantor.github.io/nbpages/01.02-Notebook-Style.html">1.2 Notebook Style</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/01.04-Coding.html">1.4 Coding Style</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/notebooks-public/01.03-External-Files.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a>&nbsp;<p><a href="https://jckantor.github.io/nbpages/01.03-External-Files.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
+| <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/01.01-Notebook-Naming-and-Ancillary-Files.html">1.1 Notebook naming and ancillary/generated files</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/notebooks-public/01.00-Style-Guide.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/01.00-Style-Guide.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
 
 </div>
 </div>
@@ -13098,15 +13098,7 @@ and code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="1.3-External-Files">1.3 External Files<a class="anchor-link" href="#1.3-External-Files">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Notebooks often incorporate figures, data, or video. Any external files must be appropriately licensed for reuse. If that isn't possible, then that information should be accessed by linking to a resource showing the user how to properly access that information.</p>
-<p>To facilitate use of the notebooks, external resources should be referenced by an external link whenever possible. If the resource must be included within repository, the link should be to the publically accessible repository. This practice enables cross-platform use of notebooks and streamlines the import and use of notebooks by other users.</p>
+<h1 id="1.0-Style-Guide">1.0 Style Guide<a class="anchor-link" href="#1.0-Style-Guide">&#182;</a></h1><p>Keywords: style guide, notebook format</p>
 
 </div>
 </div>
@@ -13114,7 +13106,16 @@ and code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.3.1-Figures">1.3.1 Figures<a class="anchor-link" href="#1.3.1-Figures">&#182;</a></h2><p>Figures included within the repository should located within a common figures directory. This practice enables reuse of figures, and streamlines the editing and maintanence of figures. Figures should be <code>.png</code> or <code>.jpg</code> format as appropriate, and resized for use with the stndard markdown <code>![]()</code> markup.  Use of HTML image tags is discouraged and reported as 'lint'.</p>
+<p>Maintaining a collection of Jupyter notebooks requires attention to important details, among them are the structure and style of the individual notebooks. Maintaining a consistent notebook style enables use of tools to automate management of the collection. The purpose of this notebook is document a standard style suited to management using [nbpages]{<a href="https://jckantor.github.io/nbpages">https://jckantor.github.io/nbpages</a>)</p>
+<p>This style guide assumes the use of software tools to manage the collection of notebooks. The software tools will perform the following tasks:</p>
+<ul>
+<li>Generate a <code>Readme.md</code> file to be written to the top-level directory.</li>
+<li>Generate a table of contents written to <code>toc.md</code> and <code>toc.ipynb</code> in the notebooks directory.</li>
+<li>Insert and update a common header for all notebooks</li>
+<li>Insert and update a navigation bar located in the second and terminal cell of each notebook.</li>
+<li>A listing of all links and figures found in the notebooks.</li>
+<li>A listing of stylistic <code>lint</code> encountered during the processing of the notebooks.</li>
+</ul>
 
 </div>
 </div>
@@ -13122,29 +13123,35 @@ and code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.3.2-Data">1.3.2 Data<a class="anchor-link" href="#1.3.2-Data">&#182;</a></h2><p>Data files distributed with the repository should be located within a common data directory.</p>
+<h2 id="1.0.1-Further-reading">1.0.1 Further reading<a class="anchor-link" href="#1.0.1-Further-reading">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li><a href="https://github.com/spacetelescope/style-guides/blob/master/guides/jupyter-notebooks.md">Space Telescope Science Institute Style Guide</a></li>
+<li><a href="https://github.com/chrisvoncsefalvay/jupyter-best-practices">Jupyter notebook best practices and style guide</a></li>
+<li><a href="https://www.dataquest.io/blog/data-science-project-style-guide/">Dataquest: An In-Depth Style Guide for Data Science Projects</a></li>
+<li><a href="https://www.esri.com/about/newsroom/arcuser/coding-standards-for-jupyter-notebook/">ESRI: Coding Standards for Jupyter Notebook</a></li>
+</ul>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="1.0">1.0<a class="anchor-link" href="#1.0">&#182;</a></h1>
 </div>
 </div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!--NAVIGATION-->
-&lt; <a href="https://jckantor.github.io/nbpages/01.02-Notebook-Style.html">1.2 Notebook Style</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/01.04-Coding.html">1.4 Coding Style</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/notebooks-public/01.03-External-Files.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a>&nbsp;<p><a href="https://jckantor.github.io/nbpages/01.03-External-Files.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
+| <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/01.01-Notebook-Naming-and-Ancillary-Files.html">1.1 Notebook naming and ancillary/generated files</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/notebooks-public/01.00-Style-Guide.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/01.00-Style-Guide.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
 
 </div>
 </div>

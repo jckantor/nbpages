@@ -24,7 +24,7 @@ class Nb:
         self.filename = filename
         self.path_src = os.path.join(NOTEBOOK_SRC_DIR, filename)
         self.path_dst = os.path.join(NOTEBOOK_DST_DIR, filename)
-        self.path_download = os.path.join(HTML_DIR, filename)
+        self.path_download = os.path.join(NOTEBOOK_DOWNLOAD_DIR, filename)
         self.chapter = chapter
         self.section = section
         self.html_filename = os.path.splitext(self.filename)[0] + ".html"
@@ -320,7 +320,6 @@ class NbCollection:
             navbar += CONTENTS + INDEX if self.keyword_index else CONTENTS
             navbar += NEXT_TEMPLATE.format(title=next_nb.title, url=next_nb.html_url) if next_nb else ''
             navbar += nb.colab_link
-            navbar += "&nbsp;"
             navbar += nb.download_link
             if nb.content.cells[1].source.startswith(NAVBAR_TAG):
                 print(f"- amending navbar for {nb.filename}")
@@ -381,6 +380,8 @@ class NbCollection:
 
         os.system(' '.join(['notedown', f'"{TOC_MD}"', '>', f'"{TOC_NB}"']))
         os.system(' '.join(['jupyter', 'nbconvert', TOC_NB]))
+        os.remove(TOC_MD)
+        os.remove(TOC_NB)
 
     def write_tag_index(self):
         """Write keyword index file for a collection of notebooks."""
@@ -407,6 +408,8 @@ class NbCollection:
 
         os.system(' '.join(['notedown', f'"{TAG_INDEX_MD}"', ">", f'"{TAG_INDEX_NB}"']))
         os.system(' '.join(['jupyter', 'nbconvert', TAG_INDEX_NB]))
+        os.remove(TAG_INDEX_MD)
+        os.remove(TAG_INDEX_NB)
 
     def write_index(self):
         """Write index.md using the index.md.jinja template."""
