@@ -13090,50 +13090,47 @@ and code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!--NAVIGATION-->
-&lt; <a href="https://jckantor.github.io/nbpages/docs/html/01.03-External-Files.html">1.3 External Files</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/docs/html/02.00-Examples.html">2.0 Examples</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/notebooks-public/01.04-Coding.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/01.04-Coding.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
+&lt; <a href="https://jckantor.github.io/nbpages/01.04-Coding.html">1.4 Coding Style</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> |<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/notebooks-public/02.00-Examples.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/02.00-Examples.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered celltag_hi::world"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="2.0-Examples">2.0 Examples<a class="anchor-link" href="#2.0-Examples">&#182;</a></h1>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="1.4-Coding-Style">1.4 Coding Style<a class="anchor-link" href="#1.4-Coding-Style">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.4.1-Design-for-portability">1.4.1 Design for portability<a class="anchor-link" href="#1.4.1-Design-for-portability">&#182;</a></h2><p>Notebooks are intended as durable and robust means of communicating with a diverse audience. To this end, special effort attemtion must be given to making it possible to run the notebooks on multiple platforms.</p>
+<ul>
+<li><a href="http://jckantor.github.io/CBE20255/">CBE 20255 Introduction to Chemical Engineering Analysis</a></li>
+<li><a href="http://jckantor.github.io/CBE30338/">CBE 30338 Chemical Process Control</a></li>
+<li><a href="http://jckantor.github.io/CBE40455/">CBE 40455 Process Operations</a></li>
+<li><a href="https://jckantor.github.io/ND-Pyomo-Cookbook/">ND Pyomo Cookbook</a></li>
+<li><a href="https://jckantor.github.io/nbpages/">nbpages</a></li>
+<li><a href="https://jckantor.github.io/Controlling-Natural-Watersheds/">Controlling Natural Watersheds</a></li>
+</ul>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.4.2-Installations-and-imports">1.4.2 Installations and imports<a class="anchor-link" href="#1.4.2-Installations-and-imports">&#182;</a></h2><p>It is good practice to include all necessary installations and imports in the first executable cell of a notebook, and may be included in a special section entitled <strong>Installations and imports</strong>.</p>
-<p>To the extent possible, the installation and import cells should be written to run cross-platform without raising exceptions. Code should be written assumming the standard Python libraries, including Matplotlib, Numpy, Pandas, and Scipy, are present. Any needed installations should included in the first code cell of the notebook and written for cross-platform use. For example, the following code installs <code>glpk</code> for Google Colaboratory.</p>
+<div class="cell border-box-sizing code_cell rendered celltag_mathematics">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
 
-<pre><code>import sys
-if 'google.colab' in sys.modules:
-    !pip install pyomo
-    !pin install glpk
-
-</code></pre>
-<p>A try/except may be used to avoid repeated installation attempts on a user laptop:</p>
-
-<pre><code>try:
-    import glpk
-except:
-    !pip install glpk
-    import glpk</code></pre>
-
+    </div>
 </div>
 </div>
+
 </div>
-<div class="cell border-box-sizing code_cell rendered">
+<div class="cell border-box-sizing code_cell rendered celltag_exercise celltag_solution">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
@@ -13150,7 +13147,7 @@ except:
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!--NAVIGATION-->
-&lt; <a href="https://jckantor.github.io/nbpages/docs/html/01.03-External-Files.html">1.3 External Files</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/docs/html/02.00-Examples.html">2.0 Examples</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/notebooks-public/01.04-Coding.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/01.04-Coding.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
+&lt; <a href="https://jckantor.github.io/nbpages/01.04-Coding.html">1.4 Coding Style</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> |<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/notebooks-public/02.00-Examples.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/02.00-Examples.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
 
 </div>
 </div>

@@ -28,7 +28,7 @@ class Nb:
         self.chapter = chapter
         self.section = section
         self.html_filename = os.path.splitext(self.filename)[0] + ".html"
-        self.html_url = GITHUB_PAGE_URL + "/" + HTML_DIR + "/" + self.html_filename
+        self.html_url = GITHUB_PAGE_URL + "/" + self.html_filename
         self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.download_link = DOWNLOAD_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.content = nbformat.read(self.path_src, as_version=4)
@@ -341,7 +341,7 @@ class NbCollection:
         for nb in self.notebooks:
             (body, resources) = html_exporter.from_notebook_node(nb.content)
             html_filename = os.path.splitext(nb.filename)[0] + ".html"
-            html_path = os.path.join(HTML_DIR, html_filename)
+            html_path = os.path.join(DOCS_DIR, html_filename)
             print(f"- writing {html_path}")
             with open(html_path, 'w') as f:
                 f.write(body)
@@ -418,7 +418,7 @@ class NbCollection:
         index_toc += [INDEX_INDEX] if self.keyword_index.keys() else []
         index_toc += [nb.readme for nb in self.notebooks]
         env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
-        with open(os.path.join(HTML_DIR, INDEX_MD), 'w') as f:
+        with open(os.path.join(DOCS_DIR, INDEX_MD), 'w') as f:
             f.write(env.get_template('index.md.jinja').render(
                 readme_toc=index_toc, page_title=PAGE_TITLE, github_url=GITHUB_URL))
 

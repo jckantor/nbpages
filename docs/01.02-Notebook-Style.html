@@ -13090,7 +13090,7 @@ and code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!--NAVIGATION-->
-&lt; <a href="https://jckantor.github.io/nbpages/docs/html/01.02-Notebook-Style.html">1.2 Notebook Style</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/docs/html/01.04-Coding.html">1.4 Coding Style</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/notebooks-public/01.03-External-Files.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/01.03-External-Files.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
+&lt; <a href="https://jckantor.github.io/nbpages/01.01-Notebook-Naming-and-Ancillary-Files.html">1.1 Notebook naming and ancillary/generated files</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/01.03-External-Files.html">1.3 External Files</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/notebooks-public/01.02-Notebook-Style.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/01.02-Notebook-Style.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
 
 </div>
 </div>
@@ -13098,15 +13098,21 @@ and code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="1.3-External-Files">1.3 External Files<a class="anchor-link" href="#1.3-External-Files">&#182;</a></h1>
+<h1 id="1.2-Notebook-Style">1.2 Notebook Style<a class="anchor-link" href="#1.2-Notebook-Style">&#182;</a></h1>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Notebooks often incorporate figures, data, or video. Any external files must be appropriately licensed for reuse. If that isn't possible, then that information should be accessed by linking to a resource showing the user how to properly access that information.</p>
-<p>To facilitate use of the notebooks, external resources should be referenced by an external link whenever possible. If the resource must be included within repository, the link should be to the publically accessible repository. This practice enables cross-platform use of notebooks and streamlines the import and use of notebooks by other users.</p>
+<h2 id="1.2.1-Headings-and-subheadings">1.2.1 Headings and subheadings<a class="anchor-link" href="#1.2.1-Headings-and-subheadings">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="1.2.1.1-Title">1.2.1.1 Title<a class="anchor-link" href="#1.2.1.1-Title">&#182;</a></h3><p>Each notebook begins with a markdown level header containing the title of the corresponding chapter or section. This should be capitalized following the Chicago Manual of Style. The hashtag <code>#</code> appears as the first line in the cell, and there is exactly one level 1 header per notebook. The title cell may include a brief summary of the notebook contents.</p>
 
 </div>
 </div>
@@ -13114,7 +13120,35 @@ and code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.3.1-Figures">1.3.1 Figures<a class="anchor-link" href="#1.3.1-Figures">&#182;</a></h2><p>Figures included within the repository should located within a common figures directory. This practice enables reuse of figures, and streamlines the editing and maintanence of figures. Figures should be <code>.png</code> or <code>.jpg</code> format as appropriate, and resized for use with the stndard markdown <code>![]()</code> markup.  Use of HTML image tags is discouraged and reported as 'lint'.</p>
+<h3 id="1.2.1.2-Subheadings">1.2.1.2 Subheadings<a class="anchor-link" href="#1.2.1.2-Subheadings">&#182;</a></h3><p>A notebook will typically consist of multiple sections.  The sections are organized heirarchically as markdown headings. Following the document title, the highest level heading begins as markdown level 2 (i.e., <code>##</code>). The heirarchy is strict meaning that the next level in the heirarchy, <code>###</code>, and must appear before the first heading of the next higher level. This, for example, is an allowable heirarchy:</p>
+
+<pre><code># Notebook Title
+## First section
+### First subsection
+#### First sub-subsection
+#### Second sub-subsection
+### Second subsection
+## Second section
+### Another subsection
+
+</code></pre>
+<p>The following example is not compliant because it skips from <code>##</code> to <code>####</code> without an intervening <code>###</code>:</p>
+
+<pre><code># Notebook Title
+## First section
+#### First sub-subsection
+#### Second sub-subsection
+### Second subsection
+## Second section
+### Another subsection
+
+</code></pre>
+<p>The following guidelines apply to headings and subheadings:</p>
+<ul>
+<li>Following the Chicago Manual of Style, only the first word in headings and subheadings are capitalized.</li>
+<li>Each heading or subheading appears as the first line in a markdown cell.</li>
+<li>Titles, headings, and subheadings should be unnumbered.</li>
+</ul>
 
 </div>
 </div>
@@ -13122,8 +13156,38 @@ and code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.3.2-Data">1.3.2 Data<a class="anchor-link" href="#1.3.2-Data">&#182;</a></h2><p>Data files distributed with the repository should be located within a common data directory.</p>
+<h3 id="1.2.1.3-Orphan-headings">1.2.1.3 Orphan headings<a class="anchor-link" href="#1.2.1.3-Orphan-headings">&#182;</a></h3><p>Orphan headings are any heading not adhering to this style guide. Headings that are not the first line in a cell, or inconsistent with a string heirarchy are reported as 'lint'.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="1.2.1.4-Keywords">1.2.1.4 Keywords<a class="anchor-link" href="#1.2.1.4-Keywords">&#182;</a></h3><p>Keywords can be included in the level 1 headers designating a title. The keywords are specified in a new line beginning with <code>Keywords:</code> (case in-sensitive) followed by a comma separated list of keyword phrases. Keywords are used to construct an index for the notebook collection.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.2.2-Markdown">1.2.2 Markdown<a class="anchor-link" href="#1.2.2-Markdown">&#182;</a></h2><p>Plain github-flavored markdown should be used whereever possible. Avoid use of non-markdown constructs, such as html tags.</p>
+<ul>
+<li>Any references should be collected under a separate heading entitled References, and formatted using the Chicago Manual of Style.</li>
+<li>Additional sections entitled Exercises, Additional resources, Further reading may be included in the notebooks. Each exercise should be given a separate subsection to be included in the table of contents.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.2.3-Mathematics">1.2.3 Mathematics<a class="anchor-link" href="#1.2.3-Mathematics">&#182;</a></h2><p>Mathematics should be typeset using the LaTeX conventions.</p>
+\begin{align*}
+\frac{\partial T}{\partial t} &amp; = \nabla^2T
+\end{align*}
 </div>
 </div>
 </div>
@@ -13144,7 +13208,7 @@ and code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!--NAVIGATION-->
-&lt; <a href="https://jckantor.github.io/nbpages/docs/html/01.02-Notebook-Style.html">1.2 Notebook Style</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/docs/html/01.04-Coding.html">1.4 Coding Style</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/notebooks-public/01.03-External-Files.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/01.03-External-Files.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
+&lt; <a href="https://jckantor.github.io/nbpages/01.01-Notebook-Naming-and-Ancillary-Files.html">1.1 Notebook naming and ancillary/generated files</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/01.03-External-Files.html">1.3 External Files</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/notebooks-public/01.02-Notebook-Style.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/01.02-Notebook-Style.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
 
 </div>
 </div>
