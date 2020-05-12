@@ -402,7 +402,7 @@ class NbCollection:
         #os.system(' '.join(['notedown', f'"{TAG_INDEX_MD}"', ">", f'"{TAG_INDEX_NB}"']))
 
     def write_index(self):
-        """Write README.md using readme.md.jinja."""
+        """Write index.md using the index.md.jinja template."""
         print("- writing README.md")
         index_toc = [INDEX_TOC] if self.notebooks else []
         index_toc += [INDEX_INDEX] if self.keyword_index.keys() else []

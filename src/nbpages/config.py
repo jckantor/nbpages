@@ -45,8 +45,8 @@ TOC_HEADER = f"# [{PAGE_TITLE}]({GITHUB_PAGE_URL})"
 TAG_INDEX_HEADER = f"# [{PAGE_TITLE}]({GITHUB_PAGE_URL})"
 
 # headers for TOC and index pages with links to nbviewer/github
-INDEX_TOC = f"### [Table of Contents]({NBVIEWER_URL}toc.ipynb?flush=true)"
-INDEX_INDEX = f"### [Keyword Index]({NBVIEWER_URL}index.ipynb?flush=true)"
+INDEX_TOC = f"### [Table of Contents]({GITHUB_PAGE_URL}/toc.ipynb?flush=true)"
+INDEX_INDEX = f"### [Keyword Index]({GITHUB_PAGE_URL}/tag_index.ipynb?flush=true)"
 
 # CREATE STRING TEMPLATES
 
