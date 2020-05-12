@@ -7,10 +7,7 @@ import shutil
 TEMPLATE_DIR = "templates"
 NOTEBOOK_SRC_DIR = "notebooks-dev"
 NOTEBOOK_DST_DIR = "notebooks-public"
-
 DOCS_DIR = "docs"
-HTML_DIR = os.path.join(DOCS_DIR, "html")
-NOTEBOOK_DOWNLOAD_DIR = os.path.join(DOCS_DIR, "downloads")
 
 CONFIG_FILE = "nbpages.cfg"
 README_MD = "README.md"
@@ -67,7 +64,7 @@ COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_REPO
 #DOWNLOAD_LINK = f'<p><a href="https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/master/{NOTEBOOK_DOWNLOAD_DIR}' +  \
 #             '/{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
 #             ' alt="Download" title="Download Notebook"></a>'
-DOWNLOAD_LINK = f'<p><a href="{GITHUB_PAGE_URL}/downloads/' +  \
+DOWNLOAD_LINK = f'<p><a href="{GITHUB_PAGE_URL}/' +  \
              '{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
              ' alt="Download" title="Download Notebook"></a>'
 

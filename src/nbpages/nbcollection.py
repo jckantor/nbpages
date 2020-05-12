@@ -24,7 +24,8 @@ class Nb:
         self.filename = filename
         self.path_src = os.path.join(NOTEBOOK_SRC_DIR, filename)
         self.path_dst = os.path.join(NOTEBOOK_DST_DIR, filename)
-        self.path_download = os.path.join(NOTEBOOK_DOWNLOAD_DIR, filename)
+        self.path_download = os.path.join(DOCS_DIR, filename)
+        self.path_html = os.path.join(DOCS_DIR, filename)
         self.chapter = chapter
         self.section = section
         self.html_filename = os.path.splitext(self.filename)[0] + ".html"
