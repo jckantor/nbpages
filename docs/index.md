@@ -83,6 +83,8 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 - [1.4 Coding Style](https://jckantor.github.io/nbpages/01.04-Coding.html)
 
 
-### [Chapter 2.0 Examples](https://jckantor.github.io/nbpages/02.00-Examples.html)
+### [Chapter 2.0 Usage](https://jckantor.github.io/nbpages/02.00-Usage.html)
 
 - [2.1 Tagging](https://jckantor.github.io/nbpages/02.01-Tagging.html)
+
+- [2.5 Examples](https://jckantor.github.io/nbpages/02.05-Examples.html)

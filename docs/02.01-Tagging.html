@@ -13089,7 +13089,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!--NAVIGATION-->
-&lt; <a href="https://jckantor.github.io/nbpages/02.00-Examples.html">2.0 Examples</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> |<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/docs/02.01-Tagging.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/02.01-Tagging.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
+&lt; <a href="https://jckantor.github.io/nbpages/02.00-Usage.html">2.0 Usage</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/02.05-Examples.html">2.5 Examples</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/docs/02.01-Tagging.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/02.01-Tagging.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
 
 </div>
 </div>
@@ -13123,7 +13123,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 </div>
 <div class="cell border-box-sizing code_cell rendered celltag_scipy.integrate.solve_ivp">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
@@ -13146,7 +13146,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 
 <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">181</span><span class="p">)</span>
 <span class="n">y0</span> <span class="o">=</span> <span class="p">[</span><span class="n">N</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
-<span class="n">soln</span> <span class="o">=</span> <span class="n">solve_ivp</span><span class="p">(</span><span class="n">deriv</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">y0</span><span class="p">,</span> <span class="n">t_eval</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
+<span class="n">soln</span> <span class="o">=</span> <span class="n">solve_ivp</span><span class="p">(</span><span class="n">deriv</span><span class="p">,</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">y0</span><span class="p">,</span> <span class="n">t_eval</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">soln</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">soln</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Susceptible&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">soln</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">soln</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Infectious&#39;</span><span class="p">)</span>
@@ -13200,7 +13200,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 </div>
 <div class="cell border-box-sizing code_cell rendered celltag_exercise">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 2.1 write a function that returns the square of a number</span>
@@ -13236,7 +13236,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!--NAVIGATION-->
-&lt; <a href="https://jckantor.github.io/nbpages/02.00-Examples.html">2.0 Examples</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> |<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/docs/02.01-Tagging.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/02.01-Tagging.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
+&lt; <a href="https://jckantor.github.io/nbpages/02.00-Usage.html">2.0 Usage</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/02.05-Examples.html">2.5 Examples</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/docs/02.01-Tagging.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/02.01-Tagging.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
 
 </div>
 </div>
