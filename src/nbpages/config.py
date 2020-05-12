@@ -1,30 +1,32 @@
 import os
-import configparser
 import datetime
+from pathlib import Path
 import shutil
+import configparser
 
-# DIRECTORY AND FILE LOCATIONS
+# DIRECTORY AND FILE NAMES
 TEMPLATE_DIR = "templates"
-NOTEBOOK_SRC_DIR = "notebooks-dev"
-NOTEBOOK_DST_DIR = "notebooks-public"
-DOCS_DIR = "docs"
+NOTEBOOK_SRC_DIR = "notebooks"
 
-CONFIG_FILE = "nbpages.cfg"
-README_MD = "README.md"
+CONFIG = "nbpages.cfg"
+README_MD = "readme.md"
 
-INDEX_MD = "index.md"
-INDEX_NB = "index.ipynb"
 INDEX_HTML = "index.html"
+TOC_HTML = "toc.html"
+TAG_INDEX_HTML = "tag_index.html"
 
-TOC_MD = os.path.join(DOCS_DIR, "toc.md")
-TOC_NB = os.path.join(DOCS_DIR, "toc.ipynb")
-TOC_HTML = os.path.join(DOCS_DIR, "toc.html")
+# THERE SHOULD BE NO NEED TO EDIT BELOW THIS LINE
+DOCS_DIR = "docs"
+NOTEBOOK_DST_DIR = DOCS_DIR
 
-TAG_INDEX_MD = os.path.join(DOCS_DIR, "tag_index.md")
-TAG_INDEX_NB = os.path.join(DOCS_DIR, "tag_index.ipynb")
-TAG_INDEX_HTML = os.path.join(DOCS_DIR, "tag_index.html")
+INDEX_MD = Path(INDEX_HTML).stem + ".md"
+INDEX_NB = Path(INDEX_HTML).stem + ".ipynb"
 
-# THERE SHOULD BE NO NEED TO EDIT ANYTHING BELOW THIS LINE
+TOC_MD = Path(TOC_HTML).stem + ".md"
+TOC_NB = Path(TOC_HTML).stem + ".ipynb"
+
+TAG_INDEX_MD = Path(TAG_INDEX_HTML).stem + ".md"
+TAG_INDEX_NB = Path(TAG_INDEX_HTML).stem + ".ipynb"
 
 # read .git config to extract url, user, and page_title
 assert os.path.exists('.git'), ".git subdirectory not found. "
