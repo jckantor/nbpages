@@ -14,6 +14,7 @@ html_exporter.template_file = 'full'
 
 
 class Nb:
+    # regular expressions for the notebook class
     HTML_IMG = re.compile(r'<img[^>]*>')
     MARKDOWN_FIG = re.compile(r'(?:!\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
     MARKDOWN_HEADER = re.compile(r'(^|\n)(?P<level>#{1,6})(?P<header>.*?)#*(\n|$)')
@@ -25,50 +26,38 @@ class Nb:
         self.path_dst = os.path.join(NOTEBOOK_DST_DIR, filename)
         self.path_download = os.path.join(DOCS_DIR, filename)   # need to download from github pages
         self.path_html = os.path.join(DOCS_DIR, filename)
-        self.chapter = chapter
-        self.section = section
+        self.chapter = str(int(chapter)) if chapter.isdigit() else chapter
+        self.section = str(int(section))
         self.html_filename = os.path.splitext(self.filename)[0] + ".html"
         self.html_url = GITHUB_PAGE_URL + "/" + self.html_filename
         self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.download_link = DOWNLOAD_LINK.format(notebook_filename=os.path.basename(self.filename))
         self.content = nbformat.read(self.path_src, as_version=4)
-        self.add_section_numbering()
+        self.insert_subsection_numbering()
 
-    def add_section_numbering(self):
-        for cell in self.content.cells:
-            cell.metadata["nbpages"] = {}
-        level = 0
-        section_header = ""
-        url = self.html_url
+    def insert_subsection_numbering(self):
+        subsection_number_root = f"{self.chapter}.{self.section}"
+        subsection_level = 0
         header_numbers = [0] * 6
-        try:
-            section = f"{int(self.chapter)}.{int(self.section)}"
-        except:
-            section = f"{self.chapter}.{int(self.section)}"
+        subsection_header = ""
+        subsection_url = self.html_url
         for cell in self.content.cells:
             if cell.cell_type == "markdown":
                 m = self.__class__.MARKDOWN_HEADER.match(cell.source)
                 if m:
-                    next_level = len(m.group('level'))
-                    if next_level >= level:
-                        header_numbers[next_level - 1] += 1
-                        level = next_level
-                    else:
-                        header_numbers[next_level - 1] += 1
-                        header_numbers[next_level:] = [0] * (6-next_level)
-                    sec_num = section
-                    for h in header_numbers[1:]:
-                        if h > 0:
-                            sec_num += f".{int(h)}"
-                    section_header = sec_num + m.group("header")
-                    header = section_header.strip().split()
-                    url = '#'.join([self.html_url, '-'.join(header)])
-                    start = m.start("header")
-                    end = m.end("header")
-                    cell.source = cell.source[:start] + " " + section_header + cell.source[end:]
-            cell.metadata["nbpages"]["level"] = level
-            cell.metadata["nbpages"]["section"] = section_header
-            cell.metadata["nbpages"]["link"] = f"[{section_header}]({url})"
+                    subsection_level = len(m.group('level'))
+                    header_numbers[subsection_level - 1] += 1
+                    header_numbers[subsection_level:] = [0] * (6 - subsection_level)
+                    subsection_header = subsection_number_root \
+                                    + "".join(f".{int(n)}" for n in header_numbers[1:] if n > 0) \
+                                    + m.group("header")
+                    subsection_url = '#'.join([self.html_url, '-'.join(subsection_header.strip().split())])
+                    cell.source = cell.source[:m.start("header")] + " " + subsection_header + cell.source[m.end("header"):]
+            cell.metadata["nbpages"] = {
+                "level": subsection_level,
+                "section": subsection_header,
+                "link": f"[{subsection_header}]({subsection_url})"
+            }
 
     def remove(self, tag):
         for cell in self.content.cells:
@@ -87,7 +76,7 @@ class Nb:
 
     @property
     def markdown_figs(self):
-        """Return a list of markdown figures appearing in this notebook."""
+        """Return a list of markdown figures appearing in the markdown cells of this notebook."""
         figs = []
         for cell in self.content.cells:
             if cell.cell_type == "markdown":
@@ -96,20 +85,19 @@ class Nb:
 
     @property
     def markdown_links(self):
-        """Return a list of markdown links appearing in this notebook."""
+        """Return a list of markdown links appearing in the markdown cells of this notebook."""
         links = []
-        for cell in self.content.cells[2:-1]:
+        for cell in self.content.cells:
             if cell.cell_type == "markdown":
                 links.extend(self.__class__.MARKDOWN_LINK.findall(cell.source))
         return links
 
     @property
     def img_tags(self):
-        """Return a list of html img tags appearing in this notebook."""
+        """Return a list of html img tags appearing in all cells of this notebook."""
         img_tags = []
-        for cell in self.content.cells[2:-1]:
-            if cell.cell_type == "markdown":
-                img_tags.extend(self.__class__.HTML_IMG.findall(cell.source))
+        for cell in self.content.cells:
+            img_tags.extend(self.__class__.HTML_IMG.findall(cell.source))
         return img_tags
 
     @property
@@ -156,7 +144,7 @@ class Nb:
 
     @property
     def tags(self):
-        """Return cell tags"""
+        """Return a dictionary of with tags as keys and a list of cell links as values."""
         tags = dict()
         for cell in self.content.cells:
             if 'tags' in cell.metadata.keys():
@@ -166,9 +154,9 @@ class Nb:
 
     @property
     def orphan_headers(self):
-        """"Return a list of orphan headers in a notebook."""
+        """"Return a list of orphan headers (i.e., headers not in the first line of a cell) in a notebook."""
         orphans = []
-        for cell in self.content.cells[2:-1]:
+        for cell in self.content.cells:
             if cell.cell_type == "markdown":
                 for line in cell.source.splitlines()[1:]:
                     if self.__class__.MARKDOWN_HEADER.match(line):
@@ -432,6 +420,10 @@ class NbCollection:
         with open(INDEX_MD, 'w') as f:
             f.write(env.get_template('index.md.jinja').render(
                 readme_toc=index_toc, page_title=PAGE_TITLE, github_url=GITHUB_URL))
+
+    def tags(self):
+        for nb in self.notebooks:
+            print(nb.tags)
 
     def lint(self):
         """Report style issues in a collection of notebooks."""

@@ -33,12 +33,15 @@ def main():
 
     if args.lint:
         notebooks.lint()
+        return
 
     if args.metadata:
         notebooks.metadata()
+        return
 
     if args.tags:
-        notebooks.write_tag_index()
+        notebooks.tags()
+        return
 
     if args.remove_cells:
         for tag in args.remove_cells:
