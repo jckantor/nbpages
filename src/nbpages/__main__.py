@@ -40,7 +40,8 @@ def main():
         return
 
     if args.tags:
-        notebooks.tags()
+        for tag in list(sorted(notebooks.tag_index.keys(), key=str.casefold)):
+            print(tag)
         return
 
     if args.remove_cells:

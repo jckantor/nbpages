@@ -59,10 +59,11 @@ class Nb:
                 "link": f"[{subsection_header}]({subsection_url})"
             }
 
-    def remove(self, tag):
+    def remove_cells(self, tag):
         for cell in self.content.cells:
             if 'tags' in cell.metadata.keys() and tag in cell.metadata['tags']:
-                print("Remove", tag, self.filename)
+                print("- remove cell tagged", tag, "from", self.filename)
+        self.content.cells = [c for c in self.content.cells if 'tags' not in c.metadata.keys() or tag not in c.metadata['tags']]
 
     @property
     def title(self):
@@ -78,7 +79,7 @@ class Nb:
     def markdown_figs(self):
         """Return a list of markdown figures appearing in the markdown cells of this notebook."""
         figs = []
-        for cell in self.content.cells:
+        for cell in self.content.cells[2:-1]:
             if cell.cell_type == "markdown":
                 figs.extend(self.__class__.MARKDOWN_FIG.findall(cell.source))
         return figs
@@ -87,7 +88,7 @@ class Nb:
     def markdown_links(self):
         """Return a list of markdown links appearing in the markdown cells of this notebook."""
         links = []
-        for cell in self.content.cells:
+        for cell in self.content.cells[2:-1]:
             if cell.cell_type == "markdown":
                 links.extend(self.__class__.MARKDOWN_LINK.findall(cell.source))
         return links
@@ -96,7 +97,7 @@ class Nb:
     def img_tags(self):
         """Return a list of html img tags appearing in all cells of this notebook."""
         img_tags = []
-        for cell in self.content.cells:
+        for cell in self.content.cells[2:-1]:
             img_tags.extend(self.__class__.HTML_IMG.findall(cell.source))
         return img_tags
 
@@ -144,7 +145,7 @@ class Nb:
 
     @property
     def tags(self):
-        """Return a dictionary of with tags as keys and a list of cell links as values."""
+        """Return a dictionary with tags as keys and a list of cell links as values."""
         tags = dict()
         for cell in self.content.cells:
             if 'tags' in cell.metadata.keys():
@@ -347,11 +348,14 @@ class NbCollection:
 
     @property
     def tag_index(self):
+        """Return of dictionary sorted links to tags indexed by tags."""
         if not self._tag_index:
             self._tag_index = dict()
             for nb in self.notebooks:
-                for tag in nb.tags.keys():
-                    self._tag_index.setdefault(tag, []).extend(nb.tags[tag])
+                for tag, links in nb.tags.items():
+                    self._tag_index.setdefault(tag, []).extend(links)
+            for tag in self._tag_index.keys():
+                self._tag_index[tag] = list(sorted(set(self._tag_index[tag]), key=str.casefold))
         return self._tag_index
 
     def write_toc(self):
@@ -400,7 +404,7 @@ class NbCollection:
                 f.write("\n")
                 print("## Tag Index", file=f)
                 f.write("\n")
-                for tag in self.tag_index:
+                for tag in sorted(self.tag_index.keys(), key=str.casefold):
                     f.write("* " + tag + "\n")
                     for val in self.tag_index[tag]:
                         f.write("    - " + val + "\n")
@@ -420,10 +424,6 @@ class NbCollection:
         with open(INDEX_MD, 'w') as f:
             f.write(env.get_template('index.md.jinja').render(
                 readme_toc=index_toc, page_title=PAGE_TITLE, github_url=GITHUB_URL))
-
-    def tags(self):
-        for nb in self.notebooks:
-            print(nb.tags)
 
     def lint(self):
         """Report style issues in a collection of notebooks."""
