@@ -39,31 +39,33 @@ class Nb:
             cell.metadata["nbpages"] = {}
         level = 0
         section_header = ""
-        h = [0] * 6
+        url = self.html_url
+        header_numbers = [0] * 6
         try:
             section = f"{int(self.chapter)}.{int(self.section)}"
         except:
             section = f"{self.chapter}.{int(self.section)}"
         for cell in self.content.cells:
-            m = self.__class__.MARKDOWN_HEADER.match(cell.source)
-            if m:
-                next_level = len(m.group('level'))
-                if next_level >= level:
-                    h[next_level - 1] += 1
-                    level = next_level
-                else:
-                    h[next_level - 1] += 1
-                    h[next_level:] = [0] * (6-next_level)
-                sec_num = section
-                for j in h[1:]:
-                    if j > 0:
-                        sec_num += f".{int(j)}"
-                section_header = sec_num + m.group("header")
-                header = section_header.strip().split()
-                url = '#'.join([self.html_url, '-'.join(header)])
-                start = m.start("header")
-                end = m.end("header")
-                cell.source = cell.source[:start] + " " + section_header + cell.source[end:]
+            if cell.cell_type == "markdown":
+                m = self.__class__.MARKDOWN_HEADER.match(cell.source)
+                if m:
+                    next_level = len(m.group('level'))
+                    if next_level >= level:
+                        header_numbers[next_level - 1] += 1
+                        level = next_level
+                    else:
+                        header_numbers[next_level - 1] += 1
+                        header_numbers[next_level:] = [0] * (6-next_level)
+                    sec_num = section
+                    for h in header_numbers[1:]:
+                        if h > 0:
+                            sec_num += f".{int(h)}"
+                    section_header = sec_num + m.group("header")
+                    header = section_header.strip().split()
+                    url = '#'.join([self.html_url, '-'.join(header)])
+                    start = m.start("header")
+                    end = m.end("header")
+                    cell.source = cell.source[:start] + " " + section_header + cell.source[end:]
             cell.metadata["nbpages"]["level"] = level
             cell.metadata["nbpages"]["section"] = section_header
             cell.metadata["nbpages"]["link"] = f"[{section_header}]({url})"
