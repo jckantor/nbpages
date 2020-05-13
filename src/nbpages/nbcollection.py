@@ -10,7 +10,7 @@ from .config import *
 
 from nbconvert import HTMLExporter
 html_exporter = HTMLExporter()
-html_exporter.template_file = 'full'
+html_exporter.template_file = os.path.join(TEMPLATE_DIR, 'nbpage.tpl')  #'full'
 
 
 class Nb:
