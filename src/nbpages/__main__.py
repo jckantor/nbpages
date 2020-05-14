@@ -9,6 +9,8 @@ parser.add_argument("--lint", help="report any notebook lint", action="store_tru
 parser.add_argument("--metadata", help="display notebook metadata", action="store_true")
 parser.add_argument("--tags", help="display notebook tags", action="store_true")
 parser.add_argument("--remove_cells", help="remove tagged cells", nargs="+")
+parser.add_argument("--remove_solution_code", help="remove solution code from code cells", action="store_true")
+parser
 args = parser.parse_args()
 
 from .config import *
@@ -47,6 +49,9 @@ def main():
     if args.remove_cells:
         for tag in args.remove_cells:
             notebooks.remove_cells(tag)
+
+    if args.remove_solution_code:
+        notebooks.remove_solution_code()
 
     notebooks.write_headers()
     notebooks.write_navbars()

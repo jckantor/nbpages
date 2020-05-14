@@ -8,9 +8,10 @@ from jinja2 import Environment, FileSystemLoader
 
 from .config import *
 
+# specify html exporter, replace standard 'full' with custom template
 from nbconvert import HTMLExporter
 html_exporter = HTMLExporter()
-html_exporter.template_file = os.path.join(TEMPLATE_DIR, 'nbpage.tpl')  #'full'
+html_exporter.template_file = os.path.join(TEMPLATE_DIR, 'nbpages.tpl')
 
 
 class Nb:
@@ -35,35 +36,11 @@ class Nb:
         self.content = nbformat.read(self.path_src, as_version=4)
         self.insert_subsection_numbering()
 
-    def insert_subsection_numbering(self):
-        subsection_number_root = f"{self.chapter}.{self.section}"
-        subsection_level = 0
-        header_numbers = [0] * 6
-        subsection_header = ""
-        subsection_url = self.html_url
-        for cell in self.content.cells:
-            if cell.cell_type == "markdown":
-                m = self.__class__.MARKDOWN_HEADER.match(cell.source)
-                if m:
-                    subsection_level = len(m.group('level'))
-                    header_numbers[subsection_level - 1] += 1
-                    header_numbers[subsection_level:] = [0] * (6 - subsection_level)
-                    subsection_header = subsection_number_root \
-                                    + "".join(f".{int(n)}" for n in header_numbers[1:] if n > 0) \
-                                    + m.group("header")
-                    subsection_url = '#'.join([self.html_url, '-'.join(subsection_header.strip().split())])
-                    cell.source = cell.source[:m.start("header")] + " " + subsection_header + cell.source[m.end("header"):]
-            cell.metadata["nbpages"] = {
-                "level": subsection_level,
-                "section": subsection_header,
-                "link": f"[{subsection_header}]({subsection_url})"
-            }
+    def __gt__(self, nb):
+        return self.filename > nb.filename
 
-    def remove_cells(self, tag):
-        for cell in self.content.cells:
-            if 'tags' in cell.metadata.keys() and tag in cell.metadata['tags']:
-                print("- remove cell tagged", tag, "from", self.filename)
-        self.content.cells = [c for c in self.content.cells if 'tags' not in c.metadata.keys() or tag not in c.metadata['tags']]
+    def __str__(self):
+        return self.filename
 
     @property
     def title(self):
@@ -164,12 +141,43 @@ class Nb:
                         orphans.append(line)
         return orphans
 
-    def __gt__(self, nb):
-        return self.filename > nb.filename
+    def insert_subsection_numbering(self):
+        subsection_number_root = f"{self.chapter}.{self.section}"
+        subsection_level = 0
+        header_numbers = [0] * 6
+        subsection_header = ""
+        subsection_url = self.html_url
+        for cell in self.content.cells:
+            if cell.cell_type == "markdown":
+                m = self.__class__.MARKDOWN_HEADER.match(cell.source)
+                if m:
+                    subsection_level = len(m.group('level'))
+                    header_numbers[subsection_level - 1] += 1
+                    header_numbers[subsection_level:] = [0] * (6 - subsection_level)
+                    subsection_header = subsection_number_root \
+                                    + "".join(f".{int(n)}" for n in header_numbers[1:] if n > 0) \
+                                    + m.group("header")
+                    subsection_url = '#'.join([self.html_url, '-'.join(subsection_header.strip().split())])
+                    cell.source = cell.source[:m.start("header")] + " " + subsection_header + cell.source[m.end("header"):]
+            cell.metadata["nbpages"] = {
+                "level": subsection_level,
+                "section": subsection_header,
+                "link": f"[{subsection_header}]({subsection_url})"
+            }
 
-    def __str__(self):
-        return self.filename
+    def remove_cells(self, tag):
+        for cell in self.content.cells:
+            if 'tags' in cell.metadata.keys() and tag in cell.metadata['tags']:
+                print("- remove cell tagged", tag, "from", self.filename)
+        self.content.cells = [c for c in self.content.cells if 'tags' not in c.metadata.keys() or tag not in c.metadata['tags']]
 
+    def remove_solution_code(self):
+        SOLUTION_CODE = re.compile("### BEGIN SOLUTION(.*)### END SOLUTION", re.DOTALL)
+        for cell in self.content.cells:
+            if cell.cell_type=='code':
+                if SOLUTION_CODE.findall(cell.source):
+                    cell.source = SOLUTION_CODE.sub("# YOUR SOLUTION HERE", cell.source)
+                    print("- remove solution code from", self.filename)
 
 class FrontMatter(Nb):
     def __init__(self, filename, chapter, section):
@@ -298,14 +306,55 @@ class NbCollection:
                         self._keyword_index.setdefault(word, []).append(link)
         return self._keyword_index
 
+    @property
+    def tag_index(self):
+        """Return of dictionary sorted links to tags indexed by tags."""
+        if not self._tag_index:
+            self._tag_index = dict()
+            for nb in self.notebooks:
+                for tag, links in nb.tags.items():
+                    self._tag_index.setdefault(tag, []).extend(links)
+            for tag in self._tag_index.keys():
+                self._tag_index[tag] = list(sorted(set(self._tag_index[tag]), key=str.casefold))
+        return self._tag_index
+
+    def lint(self):
+        """Report style issues in a collection of notebooks."""
+        for nb in self.notebooks:
+            if nb.img_tags:
+                print("\n", nb.filename)
+                print(*nb.img_tags, sep="\n")
+            if nb.orphan_headers:
+                print("\nOrphan headers in ", nb.filename)
+                print(*nb.orphan_headers, sep="\n")
+
+    def metadata(self):
+        """Print metadata for a collection of notebooks."""
+        for nb in self.notebooks:
+            print(json.dumps(nb.content['metadata'], sort_keys=True, indent=4))
+
     def remove_cells(self, tag):
         for nb in self.notebooks:
             nb.remove_cells(tag)
+
+    def remove_solution_code(self):
+        for nb in self.notebooks:
+            nb.remove_solution_code()
 
     def write_headers(self):
         """Insert a common header into a collection of notebooks."""
         for nb in self.notebooks:
             self.nbheader.write(nb)
+
+    def write_html(self):
+        """Write html files for a collection of notebooks."""
+        for nb in self.notebooks:
+            (body, resources) = html_exporter.from_notebook_node(nb.content)
+            html_filename = os.path.splitext(nb.filename)[0] + ".html"
+            html_path = os.path.join(DOCS_DIR, html_filename)
+            print(f"- writing {html_path}")
+            with open(html_path, 'w') as f:
+                f.write(body)
 
     def write_navbars(self):
         """Insert navigation bars into a collection of notebooks."""
@@ -336,27 +385,6 @@ class NbCollection:
             nbformat.write(nb.content, nb.path_dst)
             nbformat.write(nb.content, nb.path_download)
 
-    def write_html(self):
-        """Write html files for a collection of notebooks."""
-        for nb in self.notebooks:
-            (body, resources) = html_exporter.from_notebook_node(nb.content)
-            html_filename = os.path.splitext(nb.filename)[0] + ".html"
-            html_path = os.path.join(DOCS_DIR, html_filename)
-            print(f"- writing {html_path}")
-            with open(html_path, 'w') as f:
-                f.write(body)
-
-    @property
-    def tag_index(self):
-        """Return of dictionary sorted links to tags indexed by tags."""
-        if not self._tag_index:
-            self._tag_index = dict()
-            for nb in self.notebooks:
-                for tag, links in nb.tags.items():
-                    self._tag_index.setdefault(tag, []).extend(links)
-            for tag in self._tag_index.keys():
-                self._tag_index[tag] = list(sorted(set(self._tag_index[tag]), key=str.casefold))
-        return self._tag_index
 
     def write_toc(self):
         """Write table of contents file for a collection of notebooks."""
@@ -425,17 +453,3 @@ class NbCollection:
             f.write(env.get_template('index.md.jinja').render(
                 readme_toc=index_toc, page_title=PAGE_TITLE, github_url=GITHUB_URL))
 
-    def lint(self):
-        """Report style issues in a collection of notebooks."""
-        for nb in self.notebooks:
-            if nb.img_tags:
-                print("\n", nb.filename)
-                print(*nb.img_tags, sep="\n")
-            if nb.orphan_headers:
-                print("\nOrphan headers in ", nb.filename)
-                print(*nb.orphan_headers, sep="\n")
-
-    def metadata(self):
-        """Print metadata for a collection of notebooks."""
-        for nb in self.notebooks:
-            print(json.dumps(nb.content['metadata'], sort_keys=True, indent=4))
