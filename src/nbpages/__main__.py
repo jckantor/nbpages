@@ -57,7 +57,7 @@ def main():
     notebooks.write_navbars()
     notebooks.write_toc()
     notebooks.write_tag_index()
-    notebooks.write_index()
+    notebooks.write_index_html()
     notebooks.write_html()
 
     return 0

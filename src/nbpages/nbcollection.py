@@ -415,25 +415,22 @@ class NbCollection:
         os.remove(TOC_NB)
 
     def write_tag_index(self):
-        """Write keyword index file for a collection of notebooks."""
+        """Write tag index file for a collection of notebooks."""
         keywords = sorted(self.keyword_index.keys(), key=str.lower)
-        print("- writing keyword index file")
+        print("- writing tag index file")
         with open(TAG_INDEX_MD, 'w') as f:
             f.write(TAG_INDEX_HEADER + "\n")
             if keywords:
-                print("\n## Keyword Index", file=f)
-                f.write("\n")
+                print("\n## Keyword Index\n", file=f)
                 for keyword in keywords:
-                    f.write("* " + keyword + "\n")
+                    f.write(f"* {keyword}\n")
                     for link in self.keyword_index[keyword]:
                         f.write("    - " + link + "\n")
 
             if self.tag_index:
-                f.write("\n")
-                print("## Tag Index", file=f)
-                f.write("\n")
+                print("\n## Tag Index\n", file=f)
                 for tag in sorted(self.tag_index.keys(), key=str.casefold):
-                    f.write("* " + tag + "\n")
+                    f.write(f"* {tag}\n")
                     for val in self.tag_index[tag]:
                         f.write("    - " + val + "\n")
 
@@ -442,7 +439,7 @@ class NbCollection:
         os.remove(TAG_INDEX_MD)
         os.remove(TAG_INDEX_NB)
 
-    def write_index(self):
+    def write_index_html(self):
         """Write index.md using the index.md.jinja template."""
         print("- writing README.md")
         index_toc = [INDEX_TOC] if self.notebooks else []
