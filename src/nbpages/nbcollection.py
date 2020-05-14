@@ -173,11 +173,14 @@ class Nb:
 
     def remove_solution_code(self):
         SOLUTION_CODE = re.compile("### BEGIN SOLUTION(.*)### END SOLUTION", re.DOTALL)
+        HIDDEN_TESTS = re.compile("### BEGIN HIDDEN TESTS(.*)### END HIDDEN TESTS", re.DOTALL)
         for cell in self.content.cells:
             if cell.cell_type=='code':
                 if SOLUTION_CODE.findall(cell.source):
                     cell.source = SOLUTION_CODE.sub("# YOUR SOLUTION HERE", cell.source)
                     print("- remove solution code from", self.filename)
+                if HIDDEN_TESTS.findall(cell.source):
+                    cell.source = HIDDEN_TESTS.sub("", cell.source)
 
 class FrontMatter(Nb):
     def __init__(self, filename, chapter, section):
@@ -425,14 +428,15 @@ class NbCollection:
                 for keyword in keywords:
                     f.write(f"* {keyword}\n")
                     for link in self.keyword_index[keyword]:
-                        f.write("    - " + link + "\n")
+                        f.write(f"    - {link}\n")
 
             if self.tag_index:
                 print("\n## Tag Index\n", file=f)
                 for tag in sorted(self.tag_index.keys(), key=str.casefold):
-                    f.write(f"* {tag}\n")
-                    for val in self.tag_index[tag]:
-                        f.write("    - " + val + "\n")
+                    print(f"<a name={tag}></a>")
+                    f.write(f"* <a name={tag}></a>{tag}\n")
+                    for link in self.tag_index[tag]:
+                        f.write(f"    - {link}\n")
 
         os.system(' '.join(['notedown', f'"{TAG_INDEX_MD}"', ">", f'"{TAG_INDEX_NB}"']))
         os.system(' '.join(['jupyter', 'nbconvert', TAG_INDEX_NB]))
