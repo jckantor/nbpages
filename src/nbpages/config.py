@@ -10,7 +10,7 @@ NOTEBOOK_SRC_DIR = "notebooks"
 CONFIG = "nbpages.cfg"
 
 # THERE SHOULD BE NO NEED TO EDIT BELOW THIS LINE
-DOCS_DIR = "docs"
+DOCS_DIR= "docs"
 NOTEBOOK_DST_DIR = DOCS_DIR
 
 README_MD = "readme.md"
@@ -27,8 +27,8 @@ TAG_INDEX_HTML = os.path.join(DOCS_DIR, "tag_index.html")
 TAG_INDEX_MD = os.path.join(DOCS_DIR, "tag_index.md")
 TAG_INDEX_NB = os.path.join(DOCS_DIR, "tag_index.ipynb")
 
-# read .git config to extract url, user, and page_title
-assert os.path.exists('.git'), ".git subdirectory not found. "
+# read .git config from the local directory to extract url, user, and page_title
+assert os.path.exists('.git'), "local .git subdirectory not found. "
 git_config = configparser.ConfigParser(strict=False)
 git_config.read(os.path.join(".git", "config"))
 
@@ -38,13 +38,6 @@ PAGE_TITLE = GITHUB_URL.rsplit('/')[-1].split('.')[0]
 GITHUB_REPOSITORY = f"{GITHUB_USER}/{PAGE_TITLE}"
 GITHUB_PAGE_URL = f"https://{GITHUB_USER}.github.io/{PAGE_TITLE}"
 
-# CREATE STRING CONSTANTS
-
-# tags
-NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
-
-# nbviewer/github url
-#NBVIEWER_URL = f"https://nbviewer.jupyter.org/github/{GITHUB_REPOSITORY}/blob/master/{NOTEBOOK_DST_DIR}/"
 
 # TOC and INDEX page headers with link to page url
 TOC_HEADER = f"# [{PAGE_TITLE}]({GITHUB_PAGE_URL})"
@@ -56,17 +49,9 @@ INDEX_INDEX = f"### [Tag Index]({GITHUB_PAGE_URL}/tag_index.html?flush=true)"
 
 # CREATE STRING TEMPLATES
 
-# link template to open notebooks in Google colaboratory
-COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{GITHUB_REPOSITORY}/blob/master/docs' + \
-             '/{notebook_filename}"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
-             ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
-
-DOWNLOAD_LINK = f'<p><a href="{GITHUB_PAGE_URL}' +  \
-             '/{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
-             ' alt="Download" title="Download Notebook"></a>'
+#
 
 # navigation bar templates for notebook pages
-NAVBAR_TAG = "<!--NAVIGATION-->\n"
 PREV_TEMPLATE = "< [{title}]({url}) "
 CONTENTS = "| [Contents](toc.html) |"
 INDEX = " [Tag Index](tag_index.html) |"

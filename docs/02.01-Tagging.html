@@ -1,4 +1,4 @@
-<!-- jinja2 template that adds cell tags to the html rendering of notebooks -->
+<!-- jinja2 template to adds cell tags to the html rendering of notebooks -->
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
@@ -13128,11 +13128,11 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 
     <div style="background-color:white; border:thin solid grey; margin-left:95px; margin-right:6px">
     
-        &nbsp; <a href="https://jckantor.github.io/nbpages/tag_index.html#differential-equations?flush=true">differential-equations</a>
+        &nbsp; <a href="https://jckantor.github.io/nbpages/tag_index.html#differential-equations">differential-equations</a>
     
-        &nbsp; <a href="https://jckantor.github.io/nbpages/tag_index.html#SIR-model?flush=true">SIR-model</a>
+        &nbsp; <a href="https://jckantor.github.io/nbpages/tag_index.html#SIR-model">SIR-model</a>
     
-        &nbsp; <a href="https://jckantor.github.io/nbpages/tag_index.html#compartmental-model?flush=true">compartmental-model</a>
+        &nbsp; <a href="https://jckantor.github.io/nbpages/tag_index.html#compartmental-model">compartmental-model</a>
     
     </div>
     
@@ -13154,7 +13154,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 
     <div style="background-color:white; border:thin solid grey; margin-left:95px; margin-right:6px">
     
-        &nbsp; <a href="https://jckantor.github.io/nbpages/tag_index.html#scipy.integrate.solve_ivp?flush=true">scipy.integrate.solve_ivp</a>
+        &nbsp; <a href="https://jckantor.github.io/nbpages/tag_index.html#scipy.integrate.solve_ivp">scipy.integrate.solve_ivp</a>
     
     </div>
     
@@ -13237,7 +13237,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 
     <div style="background-color:white; border:thin solid grey; margin-left:95px; margin-right:6px">
     
-        &nbsp; <a href="https://jckantor.github.io/nbpages/tag_index.html#exercise?flush=true">exercise</a>
+        &nbsp; <a href="https://jckantor.github.io/nbpages/tag_index.html#exercise">exercise</a>
     
     </div>
     
@@ -13254,7 +13254,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 
     <div style="background-color:white; border:thin solid grey; margin-left:95px; margin-right:6px">
     
-        &nbsp; <a href="https://jckantor.github.io/nbpages/tag_index.html#exercise?flush=true">exercise</a>
+        &nbsp; <a href="https://jckantor.github.io/nbpages/tag_index.html#exercise">exercise</a>
     
     </div>
     
@@ -13265,10 +13265,18 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># write a function that returns the square of a number</span>
 
-<span class="c1"># YOUR SOLUTION HERE</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="k">def</span> <span class="nf">sqr</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+<span class="c1">### END SOLUTION</span>
 
 <span class="k">assert</span> <span class="n">sqr</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span>
 <span class="k">assert</span> <span class="n">sqr</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+
+<span class="c1">### BEGIN HIDDEN TESTS</span>
+<span class="k">assert</span> <span class="n">sqr</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mi">9</span>
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sqr</span><span class="p">(</span><span class="mf">3.3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">10.89</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.001</span>
+<span class="c1">### END HIDDEN TESTS</span>
 </pre></div>
 
     </div>
