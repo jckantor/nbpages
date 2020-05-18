@@ -67,7 +67,8 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 
     nbpages --help
 
-[//]: # (The following template code is used to insert a list of notebook links.)
+Documentation
+-------------
 
 
 ### [Table of Contents](https://nbviewer.jupyter.org/github/jckantor/nbpages/blob/master/notebooks-public/toc.ipynb?flush=true)
