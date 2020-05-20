@@ -15,6 +15,10 @@ To upgrade a previously installed version to the latest version
 
     pip install nbpages --upgrade
 
+(Advanced Users) For installation from a local clone of the git repo, use:
+
+    pip install -e .
+
 Setting up the notebook repository
 ----------------------------------
 
