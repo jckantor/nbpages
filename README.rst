@@ -38,11 +38,11 @@ and create an `nbpages.cfg` configuration file. The templates and configuration 
 default settings. When complete, push these changes to the remote git repository.
 
 Step 3. Github Pages are enabled in the settings tab of the remote repository. Scroll down to the Github Pages
-heading. For source select `master branch /docs folder`, and select an appropriate theme. Selecting a theme will insert
-a file `_config.yml` in the `docs` folder. If you wish to include a logo for the them, add a line `logo: image_url`
-where `image_url` is a url for the desired logo image. Finally, on the main repository page you may wish to click `edit`
-to add a brief description and the github pages url as the website for the repository. When finished, sync these changes
-to the local repository.
+heading. For source select `master branch /docs folder` and choose an appropriate theme. Selecting a theme will insert
+a file named `_config.yml` in the `docs` folder. If you wish to include a logo for the theme, add a line
+`logo: image_url` to `_config.yml` where `image_url` is a url for the desired logo image. Finally, on the main
+repository page you may wish to click `edit` to add a brief description and the github pages url as the website for the
+repository. When finished, sync these changes to the local repository.
 
 Step 4. In the top level directory of the local repository, run the command
 
