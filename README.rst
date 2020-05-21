@@ -15,22 +15,34 @@ To upgrade a previously installed version to the latest version
 
     pip install nbpages --upgrade
 
-(Advanced Users) For installation from a local clone of the git repo, use:
+(Advanced Users) For an editable installation from a local clone of the git repo, use:
 
-    pip install -e .
+    pip install --editable .
+
+An editable installation will allow you keep your installation of nbpages in sync with github using `git pull` commands.
 
 Setting up the notebook repository
 ----------------------------------
 
-The first step in publishing a collection of notebooks on Github Pages is to
-[create a repository on Github.com](https://help.github.com/en/articles/creating-a-new-repository).
-Github Pages are enabled under the settings tab for the repository. Scroll down to the Github Pages heading and select
+Step 1. The first step in publishing a collection of notebooks on Github Pages is to
+[create a repository on Github.com](https://help.github.com/en/articles/creating-a-new-repository). The repository
+should include a .gitignore (typically the python option), a suitable license, and a README.md. Once created, clone the
+repository into a local directory.
+
+Step 2. Then from the command line, navigate to the top level directory of the local repository and issue the command
+
+    nbpages --setup
+
+This will setup a `docs`, `notebooks`, and `templates` directory, load several templates into the templates directory,
+and create an `nbpages.cfg` configuration file. The templates and configuration file can be edited to change from
+default settings. When complete, push these changes to the remote git repository.
+
+Step 3. Github Pages are enabled in the settings tab of the remote repository. Scroll down to the Github Pages
+heading. Sel
 `master branch` for the source. This is also a good time to select a theme for the published collection.
 
 `nbpages` requires a local copy of the repository that can be created by cloning the remote repository.
-Then from the command line, navigate to the top level directory of the local repository and issue the command
 
-    nbpages --setup
 
 Directories named `notebooks` and `templates` will be created if they do not already exist.  A configuration file
 `config` will be created inside the directory using data read from the `.git`. Jinja templates `README.md.jinja` and

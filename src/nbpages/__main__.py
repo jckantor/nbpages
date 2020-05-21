@@ -4,7 +4,6 @@ import sys
 import argparse
 import configparser
 
-from .nbcollection import NbCollection
 from .nbsetup import nbsetup
 
 # parse command line arguments first
@@ -29,11 +28,13 @@ args = parser.parse_args()
 
 config_file = "nbpages.cfg"
 
-def main():
+if args.setup:
+    nbsetup()
+    sys.exit(0)
 
-    if args.setup:
-        nbsetup()
-        return 0
+from .nbcollection import NbCollection
+
+def main():
 
     # read configuration file
     assert os.path.exists(config_file), f"{config_file} not found"
