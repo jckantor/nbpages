@@ -26,8 +26,8 @@ Setting up the notebook repository
 
 Step 1. The first step in publishing a collection of notebooks on Github Pages is to
 [create a repository on Github.com](https://help.github.com/en/articles/creating-a-new-repository). The repository
-should include a .gitignore (typically the python option), a suitable license, and a README.md. Once created, clone the
-repository into a local directory.
+should include a .gitignore (typically the python option), a suitable license, and README.md. Once created, clone the
+repository to a local directory.
 
 Step 2. Then from the command line, navigate to the top level directory of the local repository and issue the command
 
