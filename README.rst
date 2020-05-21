@@ -38,16 +38,18 @@ and create an `nbpages.cfg` configuration file. The templates and configuration 
 default settings. When complete, push these changes to the remote git repository.
 
 Step 3. Github Pages are enabled in the settings tab of the remote repository. Scroll down to the Github Pages
-heading. Sel
-`master branch` for the source. This is also a good time to select a theme for the published collection.
+heading. For source select `master branch /docs folder`, and select an appropriate theme. Selecting a theme will insert
+a file `_config.yml` in the `docs` folder. If you wish to include a logo for the them, add a line `logo: image_url`
+where `image_url` is a url for the desired logo image. Finally, on the main repository page you may wish to click `edit`
+to add a brief description and the github pages url as the website for the repository. When finished, sync these changes
+to the local repository.
 
-`nbpages` requires a local copy of the repository that can be created by cloning the remote repository.
+Step 4. In the top level directory of the local repository, run the command
 
+    nbpages
 
-Directories named `notebooks` and `templates` will be created if they do not already exist.  A configuration file
-`config` will be created inside the directory using data read from the `.git`. Jinja templates `README.md.jinja` and
-`notebook_header.jinja` willed created if they don't already exist. These templates can be edited as required
-using data fields defined in `config`.
+This will create additional table of contents and tag_index files in the `docs` directory. Commit and push these changes
+to the remote directory. At this stage you have a published an empty collection of notebooks to github pages.
 
 Notebook organization
 ---------------------
