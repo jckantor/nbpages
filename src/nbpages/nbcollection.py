@@ -304,7 +304,7 @@ class NbHeader:
             nb.content.cells[0].source = self.source
         else:
             print('- inserting header for {0}'.format(nb.filename))
-            print('- inserting header for {0}'.format(nb.filenapatth_srme))
+            # print('- inserting header for {0}'.format(nb.filenapatth_srme))
             nb.content.cells.insert(0, new_markdown_cell(self.source))
 
 
