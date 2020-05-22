@@ -14,7 +14,7 @@ parser.add_argument("--templates", help="specify templates directory (default 't
 
 # commands that don't write to the destination directory
 parser.add_argument("--setup", help="create templates directory", action="store_true")
-parser.add_argument("--lint", help="report any notebook lint", action="store_true")
+parser.add_argument("--lint", help="report notebook lint", action="store_true")
 parser.add_argument("--metadata", help="display notebook metadata", action="store_true")
 parser.add_argument("--tags", help="display notebook tags", action="store_true")
 parser.add_argument("--get_cells", help="extract cells with specified tags", nargs="+")
