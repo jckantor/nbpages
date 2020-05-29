@@ -6,11 +6,6 @@ import configparser
 
 from .nbsetup import nbsetup, make_dir_if_needed
 
-# verify nbpages is being run in the top level of a github repository
-if not os.path.exists('.git'):
-    print("nbpages must be run in the top level directory of a github notebook respository.")
-    sys.exit(1)
-
 # parse command line arguments first
 parser = argparse.ArgumentParser()
 parser.add_argument("--src", help="notebook source directory", nargs=1, metavar="SRC")
@@ -26,13 +21,24 @@ parser.add_argument("--get_cells", help="extract cells with specified tags", nar
 parser.add_argument("--search", help="show notebooks containing a regular expression", nargs=1)
 
 # commands that do write to the destination directory
-parser.add_argument("--publish", help="prepare notebooks for github pages", action="store_true")
+parser.add_argument("--publish", help="publish notebooks to the distination directory for github pages", action="store_true")
 parser.add_argument("--remove_cells", help="remove tagged cells", nargs="+")
 parser.add_argument("--remove_solution_code", help="remove solution code from code cells", action="store_true")
+
+# print help if no arguments
+if len(sys.argv) == 1:
+    parser.print_help()
+    sys.exit(1)
 
 # parse command line arguments
 args = parser.parse_args()
 config_file = args.config
+
+
+# verify nbpages is being run in the top level of a github repository
+if not os.path.exists('.git'):
+    print("nbpages must be run in the top level directory of a github notebook respository")
+    sys.exit(1)
 
 # setup
 if args.setup:
@@ -40,7 +46,7 @@ if args.setup:
     sys.exit(0)
 
 if not os.path.exists(config_file):
-    print(f"Configuration file {config_file} not founds. Run nbpages --setup to create a config file.")
+    print(f"configuration file {config_file} not founds. Run nbpages --setup to create a config file.")
     sys.exit(1)
 
 from .nbcollection import NbCollection
@@ -88,14 +94,16 @@ def main():
     if args.remove_solution_code:
         notebooks.remove_solution_code()
 
-    notebooks.insert_subsection_numbers()
-    notebooks.insert_headers()
-    notebooks.insert_navbars(NOTEBOOK_DST_DIR)
-    notebooks.write_ipynb(NOTEBOOK_DST_DIR)
-    notebooks.write_toc(NOTEBOOK_DST_DIR)
-    notebooks.write_tag_index(NOTEBOOK_DST_DIR)
-    notebooks.write_index_html(NOTEBOOK_DST_DIR)
-    notebooks.write_html(NOTEBOOK_DST_DIR, os.path.join(templates_dir, 'nbpages.tpl'))
+    if args.publish:
+
+        notebooks.insert_subsection_numbers()
+        notebooks.insert_headers()
+        notebooks.insert_navbars(NOTEBOOK_DST_DIR)
+        notebooks.write_ipynb(NOTEBOOK_DST_DIR)
+        notebooks.write_toc(NOTEBOOK_DST_DIR)
+        notebooks.write_tag_index(NOTEBOOK_DST_DIR)
+        notebooks.write_index_html(NOTEBOOK_DST_DIR)
+        notebooks.write_html(NOTEBOOK_DST_DIR, os.path.join(templates_dir, 'nbpages.tpl'))
 
     return 0
 
