@@ -387,7 +387,6 @@ class NbCollection:
             '/blob/master/{dst}/{notebook_filename}"> ' + \
             '<img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
             ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
-
         # download from github pages
         DOWNLOAD_LINK = f'<p><a href="{github_pages_url}' + \
                         '/{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
