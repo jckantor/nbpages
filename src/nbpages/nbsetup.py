@@ -10,15 +10,17 @@ index_md_tpl = """
 {% for line in readme_toc -%}
 {{ line }}
 {% endfor %}
+
 """
 
 notebook_header_tpl = """
 *This notebook contains material from [{{ page_title }}]({{ page_url }});
 content is available [on Github]({{ github_url }}).*
+
 """
 
 nbpages_tpl = """
-<!-- jinja2 template that extendes `full` to add cell tags in the html rendering of notebooks -->
+<!-- jinja2 template extends `full` to include cell tags in the html rendering of notebooks -->
 {% extends 'full.tpl'%}
 {% block any_cell %}
 {% if cell['metadata'].get('tags', []) %}
@@ -31,7 +33,8 @@ nbpages_tpl = """
 {% else %}
     {{ super() }}
 {% endif %}
-{% endblock any
+{% endblock any_cell %}
+
 """
 
 
