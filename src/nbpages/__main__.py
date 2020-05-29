@@ -34,7 +34,6 @@ if len(sys.argv) == 1:
 args = parser.parse_args()
 config_file = args.config
 
-
 # verify nbpages is being run in the top level of a github repository
 if not os.path.exists('.git'):
     print("nbpages must be run in the top level directory of a github notebook respository")
@@ -68,43 +67,30 @@ def main():
 
     if args.lint:
         notebooks.lint()
-        return 0
-
-    if args.metadata:
+    elif args.metadata:
         notebooks.metadata()
-        return 0
-
-    if args.search:
+    elif args.search:
         notebooks.search(args.search[0])
-        return 0
-
-    if args.tags:
+    elif args.tags:
         for tag in list(sorted(notebooks.tag_index.keys(), key=str.casefold)):
             print(tag)
-        return 0
-
-    if args.get_cells:
+    elif args.get_cells:
         notebooks.get_cells(args.get_cells[0])
-        return 0
-
-    if args.remove_cells:
-        for tag in args.remove_cells:
-            notebooks.remove_cells(tag)
-
-    if args.remove_solution_code:
-        notebooks.remove_solution_code()
-
-    if args.publish:
-
-        notebooks.insert_subsection_numbers()
-        notebooks.insert_headers()
-        notebooks.insert_navbars(NOTEBOOK_DST_DIR)
-        notebooks.write_ipynb(NOTEBOOK_DST_DIR)
-        notebooks.write_toc(NOTEBOOK_DST_DIR)
-        notebooks.write_tag_index(NOTEBOOK_DST_DIR)
-        notebooks.write_index_html(NOTEBOOK_DST_DIR)
-        notebooks.write_html(NOTEBOOK_DST_DIR, os.path.join(templates_dir, 'nbpages.tpl'))
-
+    else:
+        if args.remove_cells:
+            for tag in args.remove_cells:
+                notebooks.remove_cells(tag)
+        if args.remove_solution_code:
+            notebooks.remove_solution_code()
+        if args.publish:
+            notebooks.insert_subsection_numbers()
+            notebooks.insert_headers()
+            notebooks.insert_navbars(NOTEBOOK_DST_DIR)
+            notebooks.write_ipynb(NOTEBOOK_DST_DIR)
+            notebooks.write_toc(NOTEBOOK_DST_DIR)
+            notebooks.write_tag_index(NOTEBOOK_DST_DIR)
+            notebooks.write_index_html(NOTEBOOK_DST_DIR)
+            notebooks.write_html(NOTEBOOK_DST_DIR, os.path.join(templates_dir, 'nbpages.tpl'))
     return 0
 
 if __name__ == "__main__":
