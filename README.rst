@@ -46,7 +46,7 @@ repository. When finished, sync these changes to the local repository.
 
 Step 4. In the top level directory of the local repository, run the command
 
-    nbpages
+    nbpages --publish
 
 This will create additional table of contents and tag_index files in the `docs` directory. Commit and push these changes
 to the remote directory. At this stage you have a published an empty collection of notebooks to github pages.
@@ -64,7 +64,7 @@ Normal usage
 
 Following setup, the normal use of `nbpages` is to execute the command line
 
-    nbpages
+    nbpages --publish
 
 from the top level directory of the notebook repository. Normally this command would be between completing edits or
 additions to the notebooks and prior to a github commit. The command will
@@ -72,7 +72,7 @@ additions to the notebooks and prior to a github commit. The command will
 * add or amend headers and navigation bars in all notebooks,
 * write a table of contents file
 * write a keyword index
-* write README.md using the template file
+* write index.md using the template file
 
 Utilities
 ---------
@@ -84,6 +84,11 @@ To help achieve a consistent style over a collection of notebooks, use the comma
 to locate some forms of notebook 'lint'.  A current list of additional features can be found
 
     nbpages --help
+
+A summary of notebook metadata, such as python version last used to run the notebooks, is printed to stdout with
+
+    nbpages  --metadata
+
 
 Documentation
 -------------
