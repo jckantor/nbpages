@@ -8,8 +8,6 @@ from .nbsetup import nbsetup, make_dir_if_needed
 
 # parse command line arguments first
 parser = argparse.ArgumentParser()
-parser.add_argument("--src", help="notebook source directory", nargs=1, metavar="SRC")
-parser.add_argument("--dst", help="notebook destination directory", nargs=1, metavar="DST")
 parser.add_argument("--config", help="specify config file", default="nbpages.cfg", metavar="CONFIG_FILE")
 
 # commands that don't write to the destination directory
@@ -55,15 +53,15 @@ def main():
     config = configparser.ConfigParser()
     config.read(config_file)
     templates_dir = config['NBPAGES']['templates_dir']
+    src_dir = config["NBPAGES"]["src_dir"]
+    dst_dir = config["NBPAGES"]["dst_dir"]
 
     # source and destination directories
-    NOTEBOOK_SRC_DIR = args.src[0] if args.src else config["NBPAGES"]["src_dir"]
-    NOTEBOOK_DST_DIR = args.dst[0] if args.dst else config["NBPAGES"]["dst_dir"]
-    assert NOTEBOOK_SRC_DIR != NOTEBOOK_DST_DIR, "notebook source and destination directories must be different"
-    assert os.path.exists(NOTEBOOK_SRC_DIR), f"notebook source directory '{NOTEBOOK_SRC_DIR}' not found"
-    make_dir_if_needed(NOTEBOOK_DST_DIR)
+    assert src_dir != dst_dir, "notebook source and destination directories must be different"
+    assert os.path.exists(src_dir), f"notebook source directory '{src_dir}' not found"
+    make_dir_if_needed(dst_dir)
 
-    notebooks = NbCollection(config["NBPAGES"], NOTEBOOK_SRC_DIR, NOTEBOOK_DST_DIR)
+    notebooks = NbCollection(config["NBPAGES"], src_dir, dst_dir)
 
     if args.lint:
         notebooks.lint()
@@ -85,12 +83,12 @@ def main():
         if args.publish:
             notebooks.insert_subsection_numbers()
             notebooks.insert_headers()
-            notebooks.insert_navbars(NOTEBOOK_DST_DIR)
-            notebooks.write_ipynb(NOTEBOOK_DST_DIR)
-            notebooks.write_toc(NOTEBOOK_DST_DIR)
-            notebooks.write_tag_index(NOTEBOOK_DST_DIR)
-            notebooks.write_index_html(NOTEBOOK_DST_DIR)
-            notebooks.write_html(NOTEBOOK_DST_DIR, os.path.join(templates_dir, 'nbpages.tpl'))
+            notebooks.insert_navbars(dst_dir)
+            notebooks.write_ipynb(dst_dir)
+            notebooks.write_toc(dst_dir)
+            notebooks.write_tag_index(dst_dir)
+            notebooks.write_index_html(dst_dir)
+            notebooks.write_html(dst_dir, os.path.join(templates_dir, 'nbpages.tpl'))
     return 0
 
 if __name__ == "__main__":
