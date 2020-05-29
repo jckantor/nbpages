@@ -9,6 +9,19 @@ import os
 from jinja2 import Environment, FileSystemLoader
 from nbconvert import HTMLExporter
 
+config_file = "nbpages.cfg"
+
+config = configparser.ConfigParser()
+config.read(config_file)
+config =  config["NBPAGES"]
+github_user_name = config['github_user_name']
+github_repo_name = config['github_repo_name']
+github_repo_url = config['github_repo_url']
+github_pages_url = config['github_pages_url']
+templates_dir = config['templates_dir']
+figures_dir = config['figures_dir']
+data_dir = config['data_dir']
+
 # tags
 NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 NAVBAR_TAG = "<!--NAVIGATION-->\n"
@@ -23,18 +36,6 @@ MARKDOWN_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 SOLUTION_CODE = re.compile("### BEGIN SOLUTION(.*)### END SOLUTION", re.DOTALL)
 HIDDEN_TESTS = re.compile("### BEGIN HIDDEN TESTS(.*)### END HIDDEN TESTS", re.DOTALL)
 
-# read configuration file
-config_file = "nbpages.cfg"
-TEMPLATE_DIR = "templates"
-
-assert os.path.exists(config_file), f"configuration file {config_file} not found"
-config = configparser.ConfigParser()
-config.read(config_file)
-
-github_user_name = config['NBPAGES']['github_user_name']
-github_repo_name = config['NBPAGES']['github_repo_name']
-github_repo_url = config['NBPAGES']['github_repo_url']
-github_pages_url = config['NBPAGES']['github_pages_url']
 
 class Nb:
 
@@ -290,7 +291,7 @@ class Section(Nb):
 class NbHeader:
 
     def __init__(self):
-        env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
+        env = Environment(loader=FileSystemLoader(templates_dir))
         template = env.get_template('notebook_header.tpl')
         self.content = template.render(page_title=github_repo_name, page_url=github_pages_url, github_url=github_repo_url)
         self.source = NOTEBOOK_HEADER_TAG + self.content
@@ -310,7 +311,16 @@ class NbHeader:
 
 class NbCollection:
 
-    def __init__(self, src, dst):
+    def __init__(self, config, src, dst):
+
+        self.github_user_name = config['github_user_name']
+        self.github_repo_name = config['github_repo_name']
+        self.github_repo_url = config['github_repo_url']
+        self.github_pages_url = config['github_pages_url']
+        self.templates_dir = config['templates_dir']
+        self.figures_dir = config['figures_dir']
+        self.data_dir = config['data_dir']
+
         self.notebooks = []
         for filename in sorted(os.listdir(src)):
             if NB_FILENAME.match(filename):
