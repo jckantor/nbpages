@@ -86,9 +86,10 @@ def main():
             notebooks.insert_navbars(dst_dir)
             notebooks.write_ipynb(dst_dir)
             notebooks.write_toc(dst_dir)
+            notebooks.write_figure_index()
             notebooks.write_tag_index(dst_dir)
-            notebooks.write_index_html(dst_dir)
             notebooks.write_html(dst_dir, os.path.join(templates_dir, 'nbpages.tpl'))
+            notebooks.write_index_html(dst_dir)
     return 0
 
 if __name__ == "__main__":

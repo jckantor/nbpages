@@ -6,11 +6,12 @@ import json
 import configparser
 
 import os
+import shutil
 from jinja2 import Environment, FileSystemLoader
 from nbconvert import HTMLExporter
 
+# read configuration file
 config_file = "nbpages.cfg"
-
 config = configparser.ConfigParser()
 config.read(config_file)
 config =  config["NBPAGES"]
@@ -19,8 +20,10 @@ github_repo_name = config['github_repo_name']
 github_repo_url = config['github_repo_url']
 github_pages_url = config['github_pages_url']
 templates_dir = config['templates_dir']
-figures_dir = config['figures_dir']
-data_dir = config['data_dir']
+src_dir = config["src_dir"]
+dst_dir = config["dst_dir"]
+figures_subdir = config['figures_subdir']
+data_subdir = config['data_subdir']
 
 # tags
 NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
@@ -313,14 +316,6 @@ class NbCollection:
 
     def __init__(self, config, src, dst):
 
-        self.github_user_name = config['github_user_name']
-        self.github_repo_name = config['github_repo_name']
-        self.github_repo_url = config['github_repo_url']
-        self.github_pages_url = config['github_pages_url']
-        self.templates_dir = config['templates_dir']
-        self.figures_dir = config['figures_dir']
-        self.data_dir = config['data_dir']
-
         self.notebooks = []
         for filename in sorted(os.listdir(src)):
             if NB_FILENAME.match(filename):
@@ -334,8 +329,18 @@ class NbCollection:
                 else:
                     self.notebooks.append(Appendix(filename, chapter, section, src, dst))
         self.nbheader = NbHeader()
+        self._figures = []
         self._keyword_index = {}
         self._tag_index = {}
+
+    @property
+    def figures(self):
+        """Return list of figures in the figures directory."""
+        dir = os.path.join(src_dir, figures_subdir)
+        assert os.path.exists(dir), f"- figures subdirectory {dir} was not found"
+        if not self._figures:
+            self._figures = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
+        return self._figures
 
     @property
     def keyword_index(self):
@@ -465,6 +470,47 @@ class NbCollection:
                     print(nb.filename)
                     break
 
+    def figure_index(self):
+        """Return index of figures appearing in a collection of notebooks."""
+        fig_index = {}
+        for figure in self.figures:
+            regex = re.compile(figure)
+            fig_index[figure] = [(nb.filename, cell.metadata["nbpages"]["section"], cell.metadata["nbpages"]["link"]) \
+                                 for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]
+
+        for figure in fig_index.keys():
+            print(f"- figure ![{figure}](./{figures_subdir}/{figure})")
+            for fname, section, link in fig_index[figure]:
+                print(f"    * {link}")
+
+    def write_figure_index(self):
+        figure_index = {}
+        for figure in sorted(self.figures, key=str.lower):
+            regex = re.compile(figure)
+            figure_index[figure] = [(nb.filename, cell.metadata["nbpages"]["section"], cell.metadata["nbpages"]["link"]) \
+                                 for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]
+        if figure_index:
+            print("- writing figure index")
+            figure_index_file = os.path.join(dst_dir, "figure_index")
+            with open(f"{figure_index_file}.md", 'w') as f:
+                f.write(f"# [{github_repo_name}]({github_pages_url})\n")
+                f.write("\n## Index of Figures in this Repository\n")
+                for figure in figure_index.keys():
+                    if figure_index[figure]:
+                        f.write(f"\n### {figure}\n")
+                        f.write(f"![{figure}]({figures_subdir}/{figure})\n")
+                        for fname, section, link in figure_index[figure]:
+                            f.write(f"* {link}\n")
+                        figure_src = os.path.join(src_dir, figures_subdir, figure)
+                        figure_dst = os.path.join(dst_dir, figures_subdir, figure)
+                        print(f"- copying {figure_src} to {figure_dst}")
+                        shutil.copy(figure_src, figure_dst)
+
+            os.system(f"notedown {figure_index_file}.md > {figure_index_file}.ipynb")
+            os.system(f"jupyter nbconvert {figure_index_file}.ipynb")
+            os.remove(f"{figure_index_file}.md")
+            os.remove(f"{figure_index_file}.ipynb")
+
     def write_html(self, dst, template_file="full"):
         """Write html files for a collection of notebooks to a specified directory."""
         html_exporter = HTMLExporter()
@@ -486,6 +532,7 @@ class NbCollection:
         print("- writing index.md")
         INDEX = os.path.join(dst, "index.md")
         index_toc = [f"### [Table of Contents]({github_pages_url}/toc.html)"] if self.notebooks else []
+        index_toc += [f"### [Figure Index]({github_pages_url}/figure_index.html)"]
         index_toc += [f"### [Tag Index]({github_pages_url}/tag_index.html)"] if self.tag_index.keys() else []
         index_toc += [nb.readme for nb in self.notebooks]
         env = Environment(loader=FileSystemLoader("templates"))

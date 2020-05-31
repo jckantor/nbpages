@@ -62,10 +62,10 @@ def nbsetup(config_file="nbpages.cfg"):
 
     # nbpages default configuration
     templates_dir = "templates"
-    figures_dir = "figures"
-    data_dir = "data"
     src_dir = "notebooks"
     dst_dir = "docs"
+    figures_subdir = "figures"
+    data_subdir = "data"
 
     # verify a .git repository has been established
     assert os.path.exists('.git'), ".git subdirectory not found. "
@@ -88,18 +88,23 @@ def nbsetup(config_file="nbpages.cfg"):
                          "github_repo_name": github_repo_name,
                          "github_pages_url": github_pages_url,
                          "templates_dir": templates_dir,
-                         "figures_dir": figures_dir,
-                         "data_dir": data_dir,
                          "src_dir": src_dir,
                          "dst_dir": dst_dir,
+                         "figures_subdir": figures_subdir,
+                         "data_subdir": data_subdir,
                          }
     with open(config_file, "w") as f:
         print("- writing " + config_file)
         config.write(f)
 
     # create directories if needed
-    for dir in [src_dir, dst_dir, templates_dir, figures_dir, data_dir]:
-        make_dir_if_needed(dir)
+    make_dir_if_needed(templates_dir)
+    make_dir_if_needed(src_dir)
+    make_dir_if_needed(os.path.join(src_dir, figures_subdir))
+    make_dir_if_needed(os.path.join(src_dir, data_subdir))
+    make_dir_if_needed(dst_dir)
+    make_dir_if_needed(os.path.join(dst_dir, figures_subdir))
+    make_dir_if_needed(os.path.join(dst_dir, data_subdir))
 
     # create templates
     write_template_if_needed(notebook_header_tpl, templates_dir, 'notebook_header.tpl')
