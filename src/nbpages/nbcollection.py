@@ -169,6 +169,20 @@ class Nb:
                 orphans.extend([line for line in cell.source.splitlines()[1:] if MARKDOWN_HEADER.match(line)])
         return orphans
 
+    @property
+    def output_errors(self):
+        output_errors = []
+        for cell in self.content.cells:
+            if cell.cell_type == "code":
+                for output in cell.outputs:
+                    if output["output_type"] == "error":
+                        output_errors.append(f"{output['ename']}: {output['evalue']}")
+                    if "name" in output.keys():
+                        if output["name"] == "stderr":
+                            output_errors.append(f"{output['name']}: {output['text'].splitlines()[0]}")
+        return output_errors
+
+
     def insert_subsection_numbers(self):
         subsection_number_root = f"{self.chapter}.{self.section}"
         subsection_level = 0
@@ -200,6 +214,20 @@ class Nb:
             if 'tags' in cell.metadata.keys() and tag in cell.metadata['tags']:
                 cells.append(cell)
         return [cell for cell in self.content.cells if 'tags' in cell.metadata.keys() and tag in cell.metadata['tags']]
+
+    def lint(self):
+        lint_list = (
+            (self.html_anchor_tags, "Remove or replace HTML anchor tags with markdown links."),
+            (self.html_img_tags, "Replace HTML img tags with markdown image links."),
+            (self.orphan_headers, "Move orphan headers to the first line in a markdown cell."),
+            (self.output_errors, "Fix errors found in the output of codes cells."))
+        if any([lint for lint, msg in lint_list]):
+            print(self.filename)
+            for lint, msg in lint_list:
+                if lint:
+                    print(f"    {msg}")
+                    for s in lint:
+                        print(f"        {s}")
 
     def remove_cells(self, tag):
         for cell in self.content.cells:
@@ -431,22 +459,7 @@ class NbCollection:
     def lint(self):
         """Report style issues interfering with nbpages in a collection of notebooks."""
         for nb in self.notebooks:
-            print(f"{nb.filename}")
-            # html anchors
-            if nb.html_anchor_tags:
-                print("    Remove or replace HTML anchor tags with markdown links.")
-                for s in nb.html_anchor_tags:
-                    print(f"        {s}")
-            # html image tags are not included in the table of contents
-            if nb.html_img_tags:
-                print("    Replace HTML img tags with markdown image links.")
-                for s in nb.html_img_tags:
-                    print(f"        {s}")
-            # orphan headers complicate indexing and cross-referencing by tags
-            if nb.orphan_headers:
-                print("    Move orphan headers to the first line in a markdown cell.")
-                for s in nb.orphan_headers:
-                    print(f"        {s}")
+            nb.lint()
 
     def metadata(self):
         """Print selected metadata for a collection of notebooks."""
