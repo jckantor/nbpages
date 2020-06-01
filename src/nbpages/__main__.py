@@ -86,6 +86,7 @@ def main():
             notebooks.insert_navbars(dst_dir)
             notebooks.write_ipynb(dst_dir)
             notebooks.write_toc(dst_dir)
+            notebooks.write_data_index()
             notebooks.write_figure_index()
             notebooks.write_tag_index(dst_dir)
             notebooks.write_python_index()

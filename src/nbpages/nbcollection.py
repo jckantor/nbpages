@@ -357,18 +357,52 @@ class NbCollection:
                 else:
                     self.notebooks.append(Appendix(filename, chapter, section, src, dst))
         self.nbheader = NbHeader()
+        self._data = []
+        self._data_index = {}
         self._figures = []
+        self._figure_index = {}
         self._keyword_index = {}
         self._tag_index = {}
 
     @property
+    def data(self):
+        """Return list of data files in data directory."""
+        dir = os.path.join(src_dir, data_subdir)
+        assert os.path.exists(dir), f"- data subdirectory {data} was not found"
+        if not self._data:
+            self._data = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f)) \
+                          and not f.startswith('.') and (f.endswith('.csv') or f.endswith('.txt'))]
+        return self._data
+
+    @property
+    def data_index(self):
+        """Return dictionary of figures and links appearing in a collection of notebooks."""
+        if not self._data_index:
+            for data in self.data:
+                regex = re.compile(data)
+                self._data_index[data] = [cell.metadata["nbpages"]["link"] \
+                                     for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]
+        return self._data_index
+
+    @property
     def figures(self):
-        """Return list of figures in the figures directory."""
+        """Return list of figure files in the figures directory."""
         dir = os.path.join(src_dir, figures_subdir)
         assert os.path.exists(dir), f"- figures subdirectory {dir} was not found"
         if not self._figures:
-            self._figures = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
+            self._figures = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f)) \
+                             and not f.startswith('.') and not f.endswith('.tex') and not f.endswith('.pdf')]
         return self._figures
+
+    @property
+    def figure_index(self):
+        """Return dictionary of figures and links appearing in a collection of notebooks."""
+        if not self._figure_index:
+            for figure in self.figures:
+                regex = re.compile(figure)
+                self._figure_index[figure] = [cell.metadata["nbpages"]["link"] \
+                                     for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]
+        return self._figure_index
 
     @property
     def keyword_index(self):
@@ -461,6 +495,21 @@ class NbCollection:
         for nb in self.notebooks:
             nb.lint()
 
+        print(self.data)
+
+        for figure in sorted(self.figures, key=str.casefold):
+            regex = re.compile(figure)
+            found = False
+            for nb in self.notebooks:
+                for cell in nb.content.cells:
+                    found = regex.search(cell.source)
+                    if found:
+                        break
+                if found:
+                    break
+            if not found:
+                print(f"    Figure not used in any notebook: {figure}")
+
     def metadata(self):
         """Print selected metadata for a collection of notebooks."""
         for nb in self.notebooks:
@@ -483,42 +532,45 @@ class NbCollection:
                     print(nb.filename)
                     break
 
-    def figure_index(self):
-        """Return index of figures appearing in a collection of notebooks."""
-        fig_index = {}
-        for figure in self.figures:
-            regex = re.compile(figure)
-            fig_index[figure] = [(nb.filename, cell.metadata["nbpages"]["section"], cell.metadata["nbpages"]["link"]) \
-                                 for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]
-
-        for figure in fig_index.keys():
-            print(f"- figure ![{figure}](./{figures_subdir}/{figure})")
-            for fname, section, link in fig_index[figure]:
-                print(f"    * {link}")
+    def write_data_index(self):
+        if self.data_index:
+            print("- writing data index")
+            data_index_file = os.path.join(dst_dir, "data_index")
+            with open(f"{data_index_file}.md", 'w') as f:
+                f.write(f"# [{github_repo_name}]({github_pages_url})\n")
+                f.write("\n## Index of Data files in this Repository\n")
+                for data, links in sorted(self.data_index.items(), key=lambda x: str.casefold(x[0])):
+                    if links:
+                        f.write(f"\n### {data}\n")
+                        f.write(f"![{data}]({data_subdir}/{data})\n")
+                        for link in links:
+                            f.write(f"* {link}\n")
+                        data_src = os.path.join(src_dir, data_subdir, data)
+                        data_dst = os.path.join(dst_dir, data_subdir, data)
+                        print(f"- copying {data_src} to {data_dst}")
+                        shutil.copy(data_src, data_dst)
+            os.system(f"notedown {data_index_file}.md >  {data_index_file}.ipynb")
+            os.system(f"jupyter nbconvert {data_index_file}.ipynb")
+            os.remove(f"{data_index_file}.md")
+            os.remove(f"{data_index_file}.ipynb")
 
     def write_figure_index(self):
-        figure_index = {}
-        for figure in sorted(self.figures, key=str.lower):
-            regex = re.compile(figure)
-            figure_index[figure] = [(nb.filename, cell.metadata["nbpages"]["section"], cell.metadata["nbpages"]["link"]) \
-                                 for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]
-        if figure_index:
+        if self.figure_index:
             print("- writing figure index")
             figure_index_file = os.path.join(dst_dir, "figure_index")
             with open(f"{figure_index_file}.md", 'w') as f:
                 f.write(f"# [{github_repo_name}]({github_pages_url})\n")
                 f.write("\n## Index of Figures in this Repository\n")
-                for figure in figure_index.keys():
-                    if figure_index[figure]:
+                for figure, links in sorted(self.figure_index.items(), key=lambda x: str.casefold(x[0])):
+                    if links:
                         f.write(f"\n### {figure}\n")
                         f.write(f"![{figure}]({figures_subdir}/{figure})\n")
-                        for fname, section, link in figure_index[figure]:
+                        for link in links:
                             f.write(f"* {link}\n")
                         figure_src = os.path.join(src_dir, figures_subdir, figure)
                         figure_dst = os.path.join(dst_dir, figures_subdir, figure)
                         print(f"- copying {figure_src} to {figure_dst}")
                         shutil.copy(figure_src, figure_dst)
-
             os.system(f"notedown {figure_index_file}.md > {figure_index_file}.ipynb")
             os.system(f"jupyter nbconvert {figure_index_file}.ipynb")
             os.remove(f"{figure_index_file}.md")
@@ -545,9 +597,10 @@ class NbCollection:
         print("- writing index.md")
         INDEX = os.path.join(dst, "index.md")
         index_toc = [f"### [Table of Contents]({github_pages_url}/toc.html)"] if self.notebooks else []
-        index_toc += [f"### [Figure Index]({github_pages_url}/figure_index.html)"]
+        index_toc += [f"### [Data Index]({github_pages_url}/data_index.html)"] if any(len(v) > 0 for v in self.data_index.values()) else []
+        index_toc += [f"### [Figure Index]({github_pages_url}/figure_index.html)"] if any(len(v) > 0 for v in self.figure_index.values()) else []
         index_toc += [f"### [Python Module Index]({github_pages_url}/python_index.html)"]
-        index_toc += [f"### [Tag Index]({github_pages_url}/tag_index.html)"] if self.tag_index.keys() else []
+        index_toc += [f"### [Tag Index]({github_pages_url}/tag_index.html)"] if self.tag_index else []
         index_toc += [nb.readme for nb in self.notebooks]
         env = Environment(loader=FileSystemLoader("templates"))
         with open(INDEX, 'w') as f:
