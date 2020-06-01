@@ -533,12 +533,50 @@ class NbCollection:
         INDEX = os.path.join(dst, "index.md")
         index_toc = [f"### [Table of Contents]({github_pages_url}/toc.html)"] if self.notebooks else []
         index_toc += [f"### [Figure Index]({github_pages_url}/figure_index.html)"]
+        index_toc += [f"### [Python Module Index]({github_pages_url}/python_index.html)"]
         index_toc += [f"### [Tag Index]({github_pages_url}/tag_index.html)"] if self.tag_index.keys() else []
         index_toc += [nb.readme for nb in self.notebooks]
         env = Environment(loader=FileSystemLoader("templates"))
         with open(INDEX, 'w') as f:
             f.write(env.get_template('index.md.tpl').render(
                 readme_toc=index_toc, page_title=github_repo_name, github_url=github_repo_url))
+
+    def write_python_index(self):
+        python_index = {}
+        IMPORT = re.compile(r"^\s*import\s*(?P<txt>\S+)")
+        FROM = re.compile(r"^\s*from\s*(?P<txt>\w[\w|.]*)\s*import\s*(?P<fcn>[*|\w+][,\s*\w+]*)")
+        for nb in self.notebooks:
+            for cell  in nb.content.cells:
+                if cell.cell_type == "code":
+                    for line in cell.source.strip().splitlines():
+                        m = IMPORT.match(line)
+                        if m:
+                            python_index.setdefault(m.group("txt"), []).append(cell.metadata["nbpages"]["link"])
+                        m = FROM.match(line)
+                        if m:
+                            for fcn in list(filter(None, re.split('[,|\s+]', m.group("fcn")))):
+                                if fcn=='as':
+                                    break
+                                key = m.group("txt") + "." + fcn
+                                python_index.setdefault(key, []).append(cell.metadata["nbpages"]["link"])
+
+        if python_index:
+            print("- writing python index")
+            python_index_file = os.path.join(dst_dir, "python_index")
+            with open(f"{python_index_file}.md", 'w') as f:
+                f.write(f"# [{github_repo_name}]({github_pages_url})\n")
+                f.write("\n## Index of Python Libraries used in this Repository\n")
+                for key in sorted(python_index.keys(), key=str.casefold):
+                    if python_index[key]:
+                        f.write(f"\n### {key}\n")
+                        for link in python_index[key]:
+                            f.write(f"* {link}\n")
+
+            os.system(f"notedown {python_index_file}.md > {python_index_file}.ipynb")
+            os.system(f"jupyter nbconvert {python_index_file}.ipynb")
+            os.remove(f"{python_index_file}.md")
+            os.remove(f"{python_index_file}.ipynb")
+
 
     def write_tag_index(self, dst):
         """Write tag index file for a collection of notebooks."""
