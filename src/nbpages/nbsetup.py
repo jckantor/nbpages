@@ -38,14 +38,13 @@ nbpages_tpl = """
 """
 
 
-def make_dir_if_needed(dir_name):
-    """Create new directory if not present and verify that it exists."""
-    if not os.path.exists(dir_name):
-        print(f"- creating {dir_name} directory")
-        os.mkdir(dir_name)
+def make_dir_if_needed(dir):
+    """Create new directory if not present."""
+    if not os.path.exists(dir):
+        print(f"- creating {dir} directory")
+        os.mkdir(dir)
     else:
-        print(f"- {dir_name} directory already exists")
-    assert os.path.exists(dir_name), f"- failed to create directory {dir_name}"
+        print(f"- {dir} directory already exists")
 
 def write_template_if_needed(template_content, templates_dir, template_filename):
     """Create template file if needed, and verify that it exists."""

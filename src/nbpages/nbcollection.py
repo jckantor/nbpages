@@ -495,7 +495,18 @@ class NbCollection:
         for nb in self.notebooks:
             nb.lint()
 
-        print(self.data)
+        for data in sorted(self.data, key=str.casefold):
+            regex = re.compile(data)
+            found = False
+            for nb in self.notebooks:
+                for cell in nb.content.cells:
+                    found = regex.search(cell.source)
+                    if found:
+                        break
+                if found:
+                    break
+            if not found:
+                print(f"    Data file not used in any notebook: {data}")
 
         for figure in sorted(self.figures, key=str.casefold):
             regex = re.compile(figure)
