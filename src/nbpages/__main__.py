@@ -52,16 +52,16 @@ def main():
 
     config = configparser.ConfigParser()
     config.read(config_file)
-    templates_dir = config['NBPAGES']['templates_dir']
-    src_dir = config["NBPAGES"]["src_dir"]
-    dst_dir = config["NBPAGES"]["dst_dir"]
+    templates_dir = config['nbpages']['templates_dir']
+    src_dir = config["nbpages"]["src_dir"]
+    dst_dir = config["nbpages"]["dst_dir"]
 
     # source and destination directories
     assert src_dir != dst_dir, "notebook source and destination directories must be different"
     assert os.path.exists(src_dir), f"notebook source directory '{src_dir}' not found"
     make_dir_if_needed(dst_dir)
 
-    notebooks = NbCollection(config["NBPAGES"], src_dir, dst_dir)
+    notebooks = NbCollection(config["nbpages"], src_dir, dst_dir)
 
     if args.lint:
         notebooks.lint()
@@ -90,7 +90,7 @@ def main():
             notebooks.write_figure_index()
             notebooks.write_tag_index(dst_dir)
             notebooks.write_python_index()
-            notebooks.write_html(dst_dir, os.path.join(templates_dir, 'nbpages.tpl'))
+            notebooks.write_html(dst_dir, os.path.join(templates_dir, 'notebook.tpl'))
             notebooks.write_index_html(dst_dir)
     return 0
 

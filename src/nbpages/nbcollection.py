@@ -14,7 +14,7 @@ from nbconvert import HTMLExporter
 config_file = "nbpages.cfg"
 config = configparser.ConfigParser()
 config.read(config_file)
-config =  config["NBPAGES"]
+config =  config["nbpages"]
 github_user_name = config['github_user_name']
 github_repo_name = config['github_repo_name']
 github_repo_url = config['github_repo_url']

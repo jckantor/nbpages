@@ -1,4 +1,5 @@
 import os
+import sys
 import datetime
 import shutil
 import configparser
@@ -19,7 +20,7 @@ content is available [on Github]({{ github_url }}).*
 
 """
 
-nbpages_tpl = """
+notebook_tpl = """
 <!-- jinja2 template extends `full` to include cell tags in the html rendering of notebooks -->
 {% extends 'full.tpl'%}
 {% block any_cell %}
@@ -38,35 +39,29 @@ nbpages_tpl = """
 """
 
 
-def make_dir_if_needed(dir):
+def make_dir_if_needed(path):
     """Create new directory if not present."""
-    if not os.path.exists(dir):
-        print(f"- creating {dir} directory")
-        os.mkdir(dir)
+    if not os.path.exists(path):
+        os.mkdir(path)
     else:
-        print(f"- {dir} directory already exists")
+        print(f"- {path} directory already exists")
 
-def write_template_if_needed(template_content, templates_dir, template_filename):
+def write_template_if_needed(dir, filename, content):
     """Create template file if needed, and verify that it exists."""
-    fname = os.path.join(templates_dir, template_filename)
-    if not os.path.isfile(fname):
-        with open(fname, 'w') as f:
-            print(f"- writing {fname}")
-            f.write(template_content)
+    path = os.path.join(dir, filename)
+    if not os.path.isfile(path):
+        print(f"- writing {path}")
+        with open(path, 'w') as file:
+            file.write(content)
     else:
-        print(f"- {fname} already exists")
+        print(f"- {path} already exists")
 
 def nbsetup(config_file="nbpages.cfg"):
     """Setup directories if needed with default configuration and templates."""
 
-    # nbpages default configuration
-    templates_dir = "templates"
-    src_dir = "notebooks"
-    dst_dir = "docs"
-    figures_subdir = "figures"
-    data_subdir = "data"
-
+    print(f"creating {config_file}")
     # verify a .git repository has been established
+    print(f"- reading configuration information from .git/config")
     assert os.path.exists('.git'), ".git subdirectory not found. "
     git_config = configparser.ConfigParser(strict=False)
     git_config.read(os.path.join(".git", "config"))
@@ -75,45 +70,49 @@ def nbsetup(config_file="nbpages.cfg"):
     github_repo_name = github_repo_url.rsplit('/')[-1].split('.')[0]
     github_pages_url = f"https://{github_user_name}.github.io/{github_repo_name}"
 
-    print(f"- creating {config_file} from .git/config")
+    nbpages = { "github_repo_url": github_repo_url,
+                "github_user_name": github_user_name,
+                "github_repo_name": github_repo_name,
+                "github_pages_url": github_pages_url,
+                "templates_dir": "templates",
+                "src_dir": "notebooks",
+                "dst_dir": "docs",
+                "figures_subdir": "figures",
+                "data_subdir": "data",
+                }
+
     if os.path.isfile(config_file):
-        config_file_backup = config_file + datetime.datetime.now().strftime(".backup-%Y%M%dT%H%M%S")
-        print(f"- backing up {config_file} to {config_file_backup}")
+        config_file_backup = config_file + datetime.datetime.now().strftime(".backup-%Y-%m-%d-%H-%M-%S")
+        print(f"- backing up existing {config_file} to {config_file_backup}")
         shutil.copy2(config_file, config_file_backup)
 
+    print(f"- writing {config_file}")
     config = configparser.ConfigParser()
-    config["NBPAGES"] = {"github_repo_url": github_repo_url,
-                         "github_user_name": github_user_name,
-                         "github_repo_name": github_repo_name,
-                         "github_pages_url": github_pages_url,
-                         "templates_dir": templates_dir,
-                         "src_dir": src_dir,
-                         "dst_dir": dst_dir,
-                         "figures_subdir": figures_subdir,
-                         "data_subdir": data_subdir,
-                         }
+    config["nbpages"] = nbpages
     with open(config_file, "w") as f:
-        print("- writing " + config_file)
         config.write(f)
 
     # create directories if needed
-    make_dir_if_needed(templates_dir)
-    make_dir_if_needed(src_dir)
-    make_dir_if_needed(os.path.join(src_dir, figures_subdir))
-    make_dir_if_needed(os.path.join(src_dir, data_subdir))
-    make_dir_if_needed(dst_dir)
-    make_dir_if_needed(os.path.join(dst_dir, figures_subdir))
-    make_dir_if_needed(os.path.join(dst_dir, data_subdir))
+    print(f"creating templates directory")
+    make_dir_if_needed(nbpages["templates_dir"])
+    write_template_if_needed(nbpages["templates_dir"], 'notebook_header.tpl', notebook_header_tpl)
+    write_template_if_needed(nbpages["templates_dir"], 'index.md.tpl', index_md_tpl)
+    write_template_if_needed(nbpages["templates_dir"], 'notebook.tpl', notebook_tpl)
 
-    # create templates
-    write_template_if_needed(notebook_header_tpl, templates_dir, 'notebook_header.tpl')
-    write_template_if_needed(index_md_tpl, templates_dir, 'index.md.tpl')
-    write_template_if_needed(nbpages_tpl, templates_dir, 'nbpages.tpl')
+    print(f"creating source directory")
+    make_dir_if_needed(nbpages["src_dir"])
+    make_dir_if_needed(os.path.join(nbpages["src_dir"], nbpages["figures_subdir"]))
+    make_dir_if_needed(os.path.join(nbpages["src_dir"], nbpages["data_subdir"]))
+
+    print(f"creating destination directory")
+    make_dir_if_needed(nbpages["dst_dir"])
+    make_dir_if_needed(os.path.join(nbpages["dst_dir"], nbpages["figures_subdir"]))
+    make_dir_if_needed(os.path.join(nbpages["dst_dir"], nbpages["data_subdir"]))
 
     # create an initial index.md if none exists
-    if "index.md" not in os.listdir(dst_dir):
-        print(f"- writing index.md to {dst_dir}")
-        with open(os.path.join(dst_dir, "index.md"), "w") as f:
+    if "index.md" not in os.listdir(nbpages["dst_dir"]):
+        print("- writing index.md to {0}".format(nbpages["dst_dir"]))
+        with open(os.path.join(nbpages["dst_dir"], "index.md"), "w") as f:
             f.write(f"# {github_repo_name}\n")
 
     return 0
