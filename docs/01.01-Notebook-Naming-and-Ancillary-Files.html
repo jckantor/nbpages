@@ -1,4 +1,4 @@
-<!-- jinja2 template to adds cell tags to the html rendering of notebooks -->
+<!-- jinja2 template extends `full` to include cell tags in the html rendering of notebooks -->
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
@@ -13096,7 +13096,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!--NAVIGATION-->
-&lt; <a href="https://jckantor.github.io/nbpages/01.00-Style-Guide.html">1.0 Style Guide</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/01.02-Notebook-Style.html">1.2 Notebook Style</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/docs/01.01-Notebook-Naming-and-Ancillary-Files.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/01.01-Notebook-Naming-and-Ancillary-Files.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
+&lt; <a href="https://jckantor.github.io/nbpages/01.00-Style-Guide.html">1.0 Style Guide</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/01.02-Notebook-Style.html">1.2 Notebook Style</a><p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/docs/01.01-Notebook-Naming-and-Ancillary-Files.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/01.01-Notebook-Naming-and-Ancillary-Files.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
 
 </div>
 </div>
@@ -13108,17 +13108,34 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="1.1-Notebook-naming-and-ancillary/generated-files">1.1 Notebook naming and ancillary/generated files<a class="anchor-link" href="#1.1-Notebook-naming-and-ancillary/generated-files">&#182;</a></h1><p>All notebooks in a repository should reside in a single top-level directory named <code>notebooks</code>. The filenames begin with a prefix indicating their position in book-like organization. The first two digits indicate a chapter number with 00 reserved for front matter. Replacing the digits with a character indicates an appendix. Following a separating '.', a second pair of digits indicates a section with the front matter, chapter, or appendix. A hyphen separates the prefix from the rest of the filename. The standard <code>.ipynb</code> Jupyter notebook suffix is required.</p>
+<h1 id="1.1-Notebook-naming-and-ancillary/generated-files">1.1 Notebook naming and ancillary/generated files<a class="anchor-link" href="#1.1-Notebook-naming-and-ancillary/generated-files">&#182;</a></h1><p>Motebooks in a repository reside in a single top-level directory named <code>notebooks</code>.</p>
+<p>The filenames begin with a prefix indicating their position in book-like organization. The prefix patterns is <code>nn.mm-</code> where</p>
+<ul>
+<li>A prefix starting with two digits denotes a chapter number. Chapter 00 is used for front matter.</li>
+<li>A prefix starting with an alphabetic character denotes an appendix. </li>
+<li>Following a separating '.', a second pair of digits indicates a section number within a chapter or appendix. Section <code>00</code> is reserved for the start of a new chapter.</li>
+<li>A hyphen separates the prefix from the rest of the filename. The standard <code>.ipynb</code> Jupyter notebook suffix is required.</li>
+</ul>
 <p>Any local data or figures used or created by the notebooks should be included within subdirectories located within the notebooks directory.</p>
 
 <pre><code>my-repository-title/
+|
 |-- notebooks/
-    |--data/
-    |--figures/
-    |--00.00-Style-Guide.ipynb
-    |--01.00-Getting-Started.ipynb
-    |--01.01-First-Section.ipynb
-    |--02.00-Second-Chapter.ipynb</code></pre>
+|   |-- 00.00-Style-Guide.ipynb
+|   |-- 01.00-Getting-Started.ipynb
+|   |-- 01.01-First-Section-Title.ipynb
+|   |-- 02.00-Second-Chapter-Title.ipynb
+|   |-- A.00-First-Appendix.ipynb
+|   |-- B.00-Another-Appendix.ipynb
+|
+|-- templates/
+|   |-- nbpages.tpl
+|   |-- index.md.tpl
+|   |-- notebook_header.tpl
+|
+|-- nbpages.cfg
+|
+|-- docs/</code></pre>
 
 </div>
 </div>
@@ -13148,7 +13165,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!--NAVIGATION-->
-&lt; <a href="https://jckantor.github.io/nbpages/01.00-Style-Guide.html">1.0 Style Guide</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/01.02-Notebook-Style.html">1.2 Notebook Style</a> &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/docs/01.01-Notebook-Naming-and-Ancillary-Files.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/01.01-Notebook-Naming-and-Ancillary-Files.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
+&lt; <a href="https://jckantor.github.io/nbpages/01.00-Style-Guide.html">1.0 Style Guide</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | <a href="https://jckantor.github.io/nbpages/01.02-Notebook-Style.html">1.2 Notebook Style</a><p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/docs/01.01-Notebook-Naming-and-Ancillary-Files.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/01.01-Notebook-Naming-and-Ancillary-Files.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
 
 </div>
 </div>

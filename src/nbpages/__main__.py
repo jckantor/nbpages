@@ -8,7 +8,6 @@ from .nbsetup import nbsetup, make_dir_if_needed
 
 # parse command line arguments first
 parser = argparse.ArgumentParser()
-parser.add_argument("--config", help="specify config file", default="nbpages.cfg", metavar="CONFIG_FILE")
 
 # commands that don't write to the destination directory
 parser.add_argument("--setup", help="create templates directory", action="store_true")
@@ -23,45 +22,29 @@ parser.add_argument("--publish", help="publish notebooks to the distination dire
 parser.add_argument("--remove_cells", help="remove tagged cells", nargs="+")
 parser.add_argument("--remove_solution_code", help="remove solution code from code cells", action="store_true")
 
+# parse command line arguments
+args = parser.parse_args()
+
 # print help if no arguments
 if len(sys.argv) == 1:
     parser.print_help()
-    sys.exit(1)
+    sys.exit(0)
 
-# parse command line arguments
-args = parser.parse_args()
-config_file = args.config
-
-# verify nbpages is being run in the top level of a github repository
+# verify nbpages is run in the top level of a github repository
 if not os.path.exists('.git'):
     print("nbpages must be run in the top level directory of a github notebook respository")
     sys.exit(1)
 
-# setup
+# setup must be run to create configuration file before importing NbCollection
 if args.setup:
-    nbsetup(config_file)
+    nbsetup()
     sys.exit(0)
-
-if not os.path.exists(config_file):
-    print(f"configuration file {config_file} not founds. Run nbpages --setup to create a config file.")
-    sys.exit(1)
 
 from .nbcollection import NbCollection
 
 def main():
 
-    config = configparser.ConfigParser()
-    config.read(config_file)
-    templates_dir = config['nbpages']['templates_dir']
-    src_dir = config["nbpages"]["src_dir"]
-    dst_dir = config["nbpages"]["dst_dir"]
-
-    # source and destination directories
-    assert src_dir != dst_dir, "notebook source and destination directories must be different"
-    assert os.path.exists(src_dir), f"notebook source directory '{src_dir}' not found"
-    make_dir_if_needed(dst_dir)
-
-    notebooks = NbCollection(config["nbpages"], src_dir, dst_dir)
+    notebooks = NbCollection()
 
     if args.lint:
         notebooks.lint()
@@ -83,15 +66,17 @@ def main():
         if args.publish:
             notebooks.insert_subsection_numbers()
             notebooks.insert_headers()
-            notebooks.insert_navbars(dst_dir)
-            notebooks.write_ipynb(dst_dir)
-            notebooks.write_toc(dst_dir)
+            notebooks.insert_navbars()
+            notebooks.remove("*.html")
+            notebooks.remove("*.ipynb")
+            notebooks.write_ipynb()
+            notebooks.write_toc()
             notebooks.write_data_index()
             notebooks.write_figure_index()
-            notebooks.write_tag_index(dst_dir)
+            notebooks.write_tag_index()
             notebooks.write_python_index()
-            notebooks.write_html(dst_dir, os.path.join(templates_dir, 'notebook.tpl'))
-            notebooks.write_index_html(dst_dir)
+            notebooks.write_html()
+            notebooks.write_index_html()
     return 0
 
 if __name__ == "__main__":

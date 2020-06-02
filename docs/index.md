@@ -3,7 +3,7 @@
 
 # nbpages
 
-nbpages is a command line tool for managing a collection of Jupyter notebooks published on
+nbpages is a command line tool for publishing a collection of Jupyter notebooks to
 [Github Pages](https://pages.github.com/). This project was inspired by the tools included with the
 [Python Data Science Handbook](https://github.com/jakevdp/PythonDataScienceHandbook) by
 [Jake Vanderplas](https://github.com/jakevdp).
@@ -67,9 +67,11 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 [//]: # (The following template code is used to insert a list of notebook links.)
 
 
-### [Table of Contents](https://jckantor.github.io/nbpages/toc.html?flush=true)
+### [Table of Contents](https://jckantor.github.io/nbpages/toc.html)
 
-### [Tag Index](https://jckantor.github.io/nbpages/tag_index.html?flush=true)
+### [Python Module Index](https://jckantor.github.io/nbpages/python_index.html)
+
+### [Tag Index](https://jckantor.github.io/nbpages/tag_index.html)
 
 
 ### [Chapter 1.0 Style Guide](https://jckantor.github.io/nbpages/01.00-Style-Guide.html)

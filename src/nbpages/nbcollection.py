@@ -6,15 +6,24 @@ import json
 import configparser
 
 import os
+import glob
 import shutil
 from jinja2 import Environment, FileSystemLoader
 from nbconvert import HTMLExporter
 
-# read configuration file
+# configuration file
 config_file = "nbpages.cfg"
+
+# read configuration file
+if not os.path.exists(config_file):
+    print(f"configuration file not founds. Run nbpages --setup to create a config file.")
+    sys.exit(1)
+
 config = configparser.ConfigParser()
 config.read(config_file)
 config =  config["nbpages"]
+
+# extract configuration information
 github_user_name = config['github_user_name']
 github_repo_name = config['github_repo_name']
 github_repo_url = config['github_repo_url']
@@ -24,6 +33,11 @@ src_dir = config["src_dir"]
 dst_dir = config["dst_dir"]
 figures_subdir = config['figures_subdir']
 data_subdir = config['data_subdir']
+
+# source and destination directories
+assert src_dir != dst_dir, "notebook source and destination directories must be different"
+assert os.path.exists(src_dir), f"notebook source directory '{src_dir}' not found"
+assert os.path.exists(dst_dir), f"notebook destination directory '{dst_dir}' not found"
 
 # tags
 NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
@@ -42,13 +56,11 @@ HIDDEN_TESTS = re.compile("### BEGIN HIDDEN TESTS(.*)### END HIDDEN TESTS", re.D
 
 class Nb:
 
-    def __init__(self, filename, chapter, section, src, dst):
+    def __init__(self, filename, chapter, section):
         self.filename = filename
         self.chapter = str(int(chapter)) if chapter.isdigit() else chapter
         self.section = str(int(section))
-        self.path_src = os.path.join(src, filename)
-        self.path_dst = os.path.join(dst, filename)
-        self.content = nbformat.read(self.path_src, as_version=4)
+        self.content = nbformat.read(os.path.join(src_dir, filename), as_version=4)
 
         #self.path_download = os.path.join("docs", filename)   # need to download from github pages
         #self.path_html = os.path.join("docs", filename)
@@ -247,8 +259,8 @@ class Nb:
 
 
 class FrontMatter(Nb):
-    def __init__(self, filename, chapter, section, src, dst):
-        super().__init__(filename, chapter, section, src, dst)
+    def __init__(self, filename, chapter, section):
+        super().__init__(filename, chapter, section)
 
     @property
     def numbered_title(self):
@@ -264,8 +276,8 @@ class FrontMatter(Nb):
 
 
 class Chapter(Nb):
-    def __init__(self, filename, chapter, section, src, dst):
-        super().__init__(filename, chapter, section, src, dst)
+    def __init__(self, filename, chapter, section):
+        super().__init__(filename, chapter, section)
 
     @property
     def numbered_title(self):
@@ -281,8 +293,8 @@ class Chapter(Nb):
 
 
 class Appendix(Nb):
-    def __init__(self, filename, chapter, section, src, dst):
-        super().__init__(filename, chapter, section, src, dst)
+    def __init__(self, filename, chapter, section):
+        super().__init__(filename, chapter, section)
 
     @property
     def numbered_title(self):
@@ -298,8 +310,8 @@ class Appendix(Nb):
 
 
 class Section(Nb):
-    def __init__(self, filename, chapter, section, src, dst):
-        super().__init__(filename, chapter, section, src, dst)
+    def __init__(self, filename, chapter, section):
+        super().__init__(filename, chapter, section)
 
     @property
     def readme(self):
@@ -342,21 +354,23 @@ class NbHeader:
 
 class NbCollection:
 
-    def __init__(self, config, src, dst):
+    def __init__(self):
 
         self.notebooks = []
-        for filename in sorted(os.listdir(src)):
+        for filename in sorted(os.listdir(src_dir)):
             if NB_FILENAME.match(filename):
                 chapter, section, _ = NB_FILENAME.match(filename).groups()
                 if section not in "00":
-                    self.notebooks.append(Section(filename, chapter, section, src, dst))
+                    self.notebooks.append(Section(filename, chapter, section))
                 elif chapter in "00":
-                    self.notebooks.append(FrontMatter(filename, chapter, section, src, dst))
+                    self.notebooks.append(FrontMatter(filename, chapter, section))
                 elif chapter.isdigit():
-                    self.notebooks.append(Chapter(filename, chapter, section, src, dst))
+                    self.notebooks.append(Chapter(filename, chapter, section))
                 else:
-                    self.notebooks.append(Appendix(filename, chapter, section, src, dst))
+                    self.notebooks.append(Appendix(filename, chapter, section))
         self.nbheader = NbHeader()
+
+        # property caches
         self._data = []
         self._data_index = {}
         self._figures = []
@@ -366,17 +380,17 @@ class NbCollection:
 
     @property
     def data(self):
-        """Return list of data files in data directory."""
-        dir = os.path.join(src_dir, data_subdir)
-        assert os.path.exists(dir), f"- data subdirectory {data} was not found"
+        """Return list of .txt and .csv data files in data directory."""
+        path = os.path.join(src_dir, data_subdir)
+        assert os.path.exists(path), f"- data subdirectory {path} was not found"
         if not self._data:
-            self._data = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f)) \
+            self._data = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f)) \
                           and not f.startswith('.') and (f.endswith('.csv') or f.endswith('.txt'))]
         return self._data
 
     @property
     def data_index(self):
-        """Return dictionary of figures and links appearing in a collection of notebooks."""
+        """Return dictionary of data files and link appearing in a collection of notebooks."""
         if not self._data_index:
             for data in self.data:
                 regex = re.compile(data)
@@ -441,7 +455,8 @@ class NbCollection:
         for nb in self.notebooks:
             self.nbheader.insert(nb)
 
-    def insert_navbars(self, dst):
+    def insert_navbars(self):
+        """Insert navigation bars into a collection of notebooks."""
 
         # navigation bar templates for notebook pages
         PREV_TEMPLATE = "< [{title}]({url}) "
@@ -454,12 +469,12 @@ class NbCollection:
             '/blob/master/{dst}/{notebook_filename}"> ' + \
             '<img align="left" src="https://colab.research.google.com/assets/colab-badge.svg"' + \
             ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
+
         # download from github pages
         DOWNLOAD_LINK = f'<p><a href="{github_pages_url}' + \
                         '/{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
                         ' alt="Download" title="Download Notebook"></a>'
 
-        """Insert navigation bars into a collection of notebooks."""
         a, b, c = itertools.tee(self.notebooks, 3)
         try:
             next(c)
@@ -471,7 +486,7 @@ class NbCollection:
             navbar += f"| [Contents](toc.html) |"
             navbar += f" [Tag Index](tag_index.html) |" if self.tag_index or self.keyword_index else ""
             navbar += f" [{next_nb.title}]({next_nb.html_url})" if next_nb else ""
-            navbar += COLAB_LINK.format(dst=dst, notebook_filename=nb.filename)
+            navbar += COLAB_LINK.format(dst=dst_dir, notebook_filename=nb.filename)
             navbar += DOWNLOAD_LINK.format(notebook_filename=nb.filename)
             if nb.content.cells[1].source.startswith(NAVBAR_TAG):
                 print(f"- amending navbar for {nb.filename}")
@@ -494,7 +509,6 @@ class NbCollection:
         """Report style issues interfering with nbpages in a collection of notebooks."""
         for nb in self.notebooks:
             nb.lint()
-
         for data in sorted(self.data, key=str.casefold):
             regex = re.compile(data)
             found = False
@@ -507,7 +521,6 @@ class NbCollection:
                     break
             if not found:
                 print(f"    Data file not used in any notebook: {data}")
-
         for figure in sorted(self.figures, key=str.casefold):
             regex = re.compile(figure)
             found = False
@@ -543,79 +556,81 @@ class NbCollection:
                     print(nb.filename)
                     break
 
+    def remove(self, pattern):
+        assert dst_dir != src_dir, "destination directory must be different than the source directory"
+        html_files = glob.glob(os.path.join(dst_dir, pattern))
+        for file in html_files:
+            print(f"- removing {file}")
+            os.remove(file)
+
     def write_data_index(self):
+        content = ""
         if self.data_index:
             print("- writing data index")
-            data_index_file = os.path.join(dst_dir, "data_index")
-            with open(f"{data_index_file}.md", 'w') as f:
-                f.write(f"# [{github_repo_name}]({github_pages_url})\n")
-                f.write("\n## Index of Data files in this Repository\n")
-                for data, links in sorted(self.data_index.items(), key=lambda x: str.casefold(x[0])):
-                    if links:
-                        f.write(f"\n### {data}\n")
-                        f.write(f"![{data}]({data_subdir}/{data})\n")
-                        for link in links:
-                            f.write(f"* {link}\n")
-                        data_src = os.path.join(src_dir, data_subdir, data)
-                        data_dst = os.path.join(dst_dir, data_subdir, data)
-                        print(f"- copying {data_src} to {data_dst}")
-                        shutil.copy(data_src, data_dst)
-            os.system(f"notedown {data_index_file}.md >  {data_index_file}.ipynb")
-            os.system(f"jupyter nbconvert {data_index_file}.ipynb")
-            os.remove(f"{data_index_file}.md")
-            os.remove(f"{data_index_file}.ipynb")
+            content += f"# [{github_repo_name}]({github_pages_url})\n"
+            content += "\n## Index of Data files in this Repository\n"
+            for data, links in sorted(self.data_index.items(), key=lambda x: str.casefold(x[0])):
+                if links:
+                    content += f"\n### {data}\n"
+                    content += f"![{data}]({data_subdir}/{data})\n"
+                    for link in links:
+                        content += f"* {link}\n"
+                    data_src = os.path.join(src_dir, data_subdir, data)
+                    data_dst = os.path.join(dst_dir, data_subdir, data)
+                    print(f"- copying {data_src} to {data_dst}")
+                    shutil.copy(data_src, data_dst)
+        self.write_md2html("data_index", content)
 
     def write_figure_index(self):
+        content = ""
         if self.figure_index:
             print("- writing figure index")
-            figure_index_file = os.path.join(dst_dir, "figure_index")
-            with open(f"{figure_index_file}.md", 'w') as f:
-                f.write(f"# [{github_repo_name}]({github_pages_url})\n")
-                f.write("\n## Index of Figures in this Repository\n")
-                for figure, links in sorted(self.figure_index.items(), key=lambda x: str.casefold(x[0])):
-                    if links:
-                        f.write(f"\n### {figure}\n")
-                        f.write(f"![{figure}]({figures_subdir}/{figure})\n")
-                        for link in links:
-                            f.write(f"* {link}\n")
-                        figure_src = os.path.join(src_dir, figures_subdir, figure)
-                        figure_dst = os.path.join(dst_dir, figures_subdir, figure)
-                        print(f"- copying {figure_src} to {figure_dst}")
-                        shutil.copy(figure_src, figure_dst)
-            os.system(f"notedown {figure_index_file}.md > {figure_index_file}.ipynb")
-            os.system(f"jupyter nbconvert {figure_index_file}.ipynb")
-            os.remove(f"{figure_index_file}.md")
-            os.remove(f"{figure_index_file}.ipynb")
+            content += f"# [{github_repo_name}]({github_pages_url})\n"
+            content += "\n## Index of Figures in this Repository\n"
+            for figure, links in sorted(self.figure_index.items(), key=lambda x: str.casefold(x[0])):
+                if links:
+                    content += f"\n### {figure}\n"
+                    content += f"![{figure}]({figures_subdir}/{figure})\n"
+                    for link in links:
+                        content += f"* {link}\n"
+                    figure_src = os.path.join(src_dir, figures_subdir, figure)
+                    figure_dst = os.path.join(dst_dir, figures_subdir, figure)
+                    print(f"- copying {figure_src} to {figure_dst}")
+                    shutil.copy(figure_src, figure_dst)
+        self.write_md2html("figure_index", content)
 
-    def write_html(self, dst, template_file="full"):
+    def write_html(self):
         """Write html files for a collection of notebooks to a specified directory."""
         html_exporter = HTMLExporter()
-        html_exporter.template_file = template_file
+        html_exporter.template_file = os.path.join(templates_dir, 'notebook.tpl')
         for nb in self.notebooks:
             (body, resources) = html_exporter.from_notebook_node(nb.content)
-            html_path = os.path.join(dst,  os.path.splitext(nb.filename)[0] + ".html")
+            html_path = os.path.join(dst_dir,  os.path.splitext(nb.filename)[0] + ".html")
             print(f"- writing {html_path}")
             with open(html_path, 'w') as f:
                 f.write(body)
 
-    def write_ipynb(self, dst):
+    def write_ipynb(self):
         """Write notebooks to a specified directory."""
         for nb in self.notebooks:
-            nbformat.write(nb.content, os.path.join(dst, nb.filename))
+            nbformat.write(nb.content, os.path.join(dst_dir, nb.filename))
 
-    def write_index_html(self, dst):
+    def write_index_html(self):
         """Write index.md using the index.md.tpl template."""
         print("- writing index.md")
-        INDEX = os.path.join(dst, "index.md")
         index_toc = [f"### [Table of Contents]({github_pages_url}/toc.html)"] if self.notebooks else []
-        index_toc += [f"### [Data Index]({github_pages_url}/data_index.html)"] if any(len(v) > 0 for v in self.data_index.values()) else []
-        index_toc += [f"### [Figure Index]({github_pages_url}/figure_index.html)"] if any(len(v) > 0 for v in self.figure_index.values()) else []
-        index_toc += [f"### [Python Module Index]({github_pages_url}/python_index.html)"]
-        index_toc += [f"### [Tag Index]({github_pages_url}/tag_index.html)"] if self.tag_index else []
+        if os.path.isfile(os.path.join(dst_dir, "data_index.html")):
+            index_toc += [f"### [Data Index]({github_pages_url}/data_index.html)"]
+        if os.path.isfile(os.path.join(dst_dir, "figure_index.html")):
+            index_toc += [f"### [Figure Index]({github_pages_url}/figure_index.html)"]
+        if os.path.isfile(os.path.join(dst_dir, "python_index.html")):
+            index_toc += [f"### [Python Module Index]({github_pages_url}/python_index.html)"]
+        if os.path.isfile(os.path.join(dst_dir, "tag_index.html")):
+            index_toc += [f"### [Tag Index]({github_pages_url}/tag_index.html)"]
         index_toc += [nb.readme for nb in self.notebooks]
         env = Environment(loader=FileSystemLoader("templates"))
-        with open(INDEX, 'w') as f:
-            f.write(env.get_template('index.md.tpl').render(
+        with open(os.path.join(dst_dir, "index.md"), 'w') as file:
+            file.write(env.get_template('index.md.tpl').render(
                 readme_toc=index_toc, page_title=github_repo_name, github_url=github_repo_url))
 
     def write_python_index(self):
@@ -637,70 +652,62 @@ class NbCollection:
                                 key = m.group("txt") + "." + fcn
                                 python_index.setdefault(key, []).append(cell.metadata["nbpages"]["link"])
 
+        content = ""
         if python_index:
             print("- writing python index")
             python_index_file = os.path.join(dst_dir, "python_index")
-            with open(f"{python_index_file}.md", 'w') as f:
-                f.write(f"# [{github_repo_name}]({github_pages_url})\n")
-                f.write("\n## Index of Python Libraries used in this Repository\n")
-                for key in sorted(python_index.keys(), key=str.casefold):
-                    if python_index[key]:
-                        f.write(f"\n### {key}\n")
-                        for link in python_index[key]:
-                            f.write(f"* {link}\n")
 
-            os.system(f"notedown {python_index_file}.md > {python_index_file}.ipynb")
-            os.system(f"jupyter nbconvert {python_index_file}.ipynb")
-            os.remove(f"{python_index_file}.md")
-            os.remove(f"{python_index_file}.ipynb")
+            content += f"# [{github_repo_name}]({github_pages_url})\n"
+            content += "\n## Index of Python Libraries used in this Repository\n"
+            for key in sorted(python_index.keys(), key=str.casefold):
+                if python_index[key]:
+                    content += f"\n### {key}\n"
+                    for link in python_index[key]:
+                        content += f"* {link}\n"
+        self.write_md2html("python_index", content)
 
-
-    def write_tag_index(self, dst):
+    def write_tag_index(self):
         """Write tag index file for a collection of notebooks."""
-        keywords = sorted(self.keyword_index.keys(), key=str.lower)
-        print("- writing tag index file")
-        TAG_INDEX = os.path.join(dst, "tag_index")
-        with open(f"{TAG_INDEX}.md", 'w') as f:
-            f.write(f"# [{github_repo_name}]({github_pages_url})\n")
-            if keywords:
-                print("\n## Keyword Index\n", file=f)
-                for keyword in keywords:
-                    f.write(f"* {keyword}\n")
-                    for link in self.keyword_index[keyword]:
-                        f.write(f"    - {link}\n")
+        content = ""
+        if self.tag_index:
+            print("- writing tag index file")
+            content += f"# [{github_repo_name}]({github_pages_url})\n"
+            content += "\n## Tag Index\n"
+            for tag in sorted(self.tag_index.keys(), key=str.casefold):
+                content += f"* <a name={tag}></a>{tag}\n"
+                for link in self.tag_index[tag]:
+                    content += f"    - {link}\n"
+        self.write_md2html("tag_index", content)
 
-            if self.tag_index:
-                print("\n## Tag Index\n", file=f)
-                for tag in sorted(self.tag_index.keys(), key=str.casefold):
-                    f.write(f"* <a name={tag}></a>{tag}\n")
-                    for link in self.tag_index[tag]:
-                        f.write(f"    - {link}\n")
-
-        os.system(f"notedown {TAG_INDEX}.md > {TAG_INDEX}.ipynb")
-        os.system(f"jupyter nbconvert {TAG_INDEX}.ipynb")
-        os.remove(f"{TAG_INDEX}.md")
-        os.remove(f"{TAG_INDEX}.ipynb")
-
-    def write_toc(self, dst):
+    def write_toc(self):
         """Write table of contents file for a collection of notebooks."""
-        print("- writing table of contents file")
-        TOC = os.path.join(dst, "toc")
-        with open(f"{TOC}.md", 'w') as f:
-            f.write(f"# [{github_repo_name}]({github_pages_url})\n")
+        content = ""
+        if self.notebooks:
+            print("- writing table of contents file")
+            content = f"# [{github_repo_name}]({github_pages_url})\n"
             for nb in self.notebooks:
-                f.write('\n' + '\n'.join(nb.toc) + '\n')
+                content += '\n' + '\n'.join(nb.toc) + '\n'
                 if nb.markdown_figs:
-                    f.write("* Markdown Figures\n")
+                    content += "* Markdown Figures\n"
                     for txt, url in nb.markdown_figs:
-                        f.write("    - [{0}]({1})\n".format(txt if txt else url, url))
+                        content += "    - [{0}]({1})\n".format(txt if txt else url, url)
                 if nb.markdown_links:
-                    f.write("* Markdown Links\n")
+                    content += "* Markdown Links\n"
                     for txt, url in nb.markdown_links:
-                        f.write(f"    - [{txt}]({url})\n")
+                        content += f"    - [{txt}]({url})\n"
                 if nb.tags:
-                    f.write("* Tags: " + ", ".join([tag for tag in nb.tags]) + "\n")
+                    content += "* Tags: " + ", ".join([tag for tag in nb.tags]) + "\n"
+        self.write_md2html("toc", content)
 
-        os.system(f"notedown {TOC}.md > {TOC}.ipynb")
-        os.system(f"jupyter nbconvert {TOC}.ipynb")
-        os.remove(f"{TOC}.md")
-        os.remove(f"{TOC}.ipynb")
+    def write_md2html(self, stem, content):
+        STEM = os.path.join(dst_dir, stem)
+        if content:
+            with open(f"{STEM}.md", 'w') as f:
+                f.write(content)
+            os.system(f"notedown {STEM}.md > {STEM}.ipynb")
+            os.system(f"jupyter nbconvert {STEM}.ipynb")
+            os.remove(f"{STEM}.md")
+            os.remove(f"{STEM}.ipynb")
+        else:
+            if os.path.isfile(f"{STEM}.html"):
+                os.remove(f"{STEM}.html")
