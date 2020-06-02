@@ -565,6 +565,7 @@ class NbCollection:
 
     def write_data_index(self):
         content = ""
+        self.remove(os.path.join(data_subdir, "*"))
         if self.data_index:
             print("- writing data index")
             content += f"# [{github_repo_name}]({github_pages_url})\n"
@@ -583,6 +584,7 @@ class NbCollection:
 
     def write_figure_index(self):
         content = ""
+        self.remove(os.path.join(figures_subdir, "*"))
         if self.figure_index:
             print("- writing figure index")
             content += f"# [{github_repo_name}]({github_pages_url})\n"
