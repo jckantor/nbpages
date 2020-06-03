@@ -145,21 +145,6 @@ class Nb:
         return toc
 
     @property
-    def keyword_index(self):
-        """Return keyword index and links for a notebook."""
-        index = dict()
-        headercells = (cell for cell in self.content.cells if cell.cell_type == "markdown" and cell.source.startswith("#"))
-        for headercell in headercells:
-            lines = headercell.source.splitlines()
-            header = lines[0].strip().split()
-            txt = ' '.join(header[1:])
-            url = '#'.join([self.html_url, '-'.join(header[1:])])
-            for keywordline in [line.strip() for line in lines[1:] if line.lower().startswith("keywords: ")]:
-                for word in keywordline.split(':')[1].split(','):
-                    index.setdefault(word.strip(), []).append(f"[{txt}]({url})")
-        return index
-
-    @property
     def tags(self):
         """Return a dictionary with tags as keys and a list of cell links as values."""
         tags = collections.defaultdict(list)
@@ -372,7 +357,6 @@ class NbCollection:
         self._data_index = {}
         self._figures = []
         self._figure_index = {}
-        self._keyword_index = {}
         self._tag_index = collections.defaultdict(list)
 
     @property
@@ -414,17 +398,6 @@ class NbCollection:
                 self._figure_index[figure] = [cell.metadata["nbpages"]["link"] \
                                      for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]
         return self._figure_index
-
-    @property
-    def keyword_index(self):
-        """Return keyword dictionary with list of links for a collection of notebooks."""
-        # use self._keyword_index to cache results
-        if not self._keyword_index:
-            for nb in self.notebooks:
-                for word, links in nb.keyword_index.items():
-                    for link in links:
-                        self._keyword_index.setdefault(word, []).append(link)
-        return self._keyword_index
 
     @property
     def tag_index(self):
@@ -480,7 +453,7 @@ class NbCollection:
             navbar = NAVBAR_TAG
             navbar += f"< [{prev_nb.title}]({prev_nb.html_url}) " if prev_nb else ""
             navbar += f"| [Contents](toc.html) |"
-            navbar += f" [Tag Index](tag_index.html) |" if self.tag_index or self.keyword_index else ""
+            navbar += f" [Tag Index](tag_index.html) |" if self.tag_index else ""
             navbar += f" [{next_nb.title}]({next_nb.html_url})" if next_nb else ""
             navbar += COLAB_LINK.format(dst=dst_dir, notebook_filename=nb.filename)
             navbar += DOWNLOAD_LINK.format(notebook_filename=nb.filename)
