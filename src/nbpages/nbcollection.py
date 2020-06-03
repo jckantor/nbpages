@@ -146,12 +146,12 @@ class Nb:
 
     @property
     def tags(self):
-        """Return a dictionary of tags indexing lists of cell links."""
-        tags = collections.defaultdict(list)
+        """Return a dictionary with tags as keys and a list of cell links as values."""
+        tags = dict()
         for cell in self.content.cells:
             if 'tags' in cell.metadata.keys():
                 for tag in cell.metadata['tags']:
-                    tags[tag].append(cell.metadata["nbpages"]["link"])
+                    tags.setdefault(tag, []).append(cell.metadata["nbpages"]["link"])
         return tags
 
     @property
@@ -243,7 +243,11 @@ class Nb:
 class FrontMatter(Nb):
     def __init__(self, filename, chapter, section):
         super().__init__(filename, chapter, section)
-        self.numbered_title = f"{self.title}"
+
+    @property
+    def numbered_title(self):
+        """Return formatted title with numbering for a notebook."""
+        return f"{self.title}"
 
     @property
     def toc(self):
@@ -256,7 +260,11 @@ class FrontMatter(Nb):
 class Chapter(Nb):
     def __init__(self, filename, chapter, section):
         super().__init__(filename, chapter, section)
-        self.numbered_title  = f"Chapter {self.title}"
+
+    @property
+    def numbered_title(self):
+        """Return formatted title with numbering for a notebook."""
+        return f"Chapter {self.title}"
 
     @property
     def toc(self):
@@ -269,7 +277,11 @@ class Chapter(Nb):
 class Appendix(Nb):
     def __init__(self, filename, chapter, section):
         super().__init__(filename, chapter, section)
-        self.numbered_title = f"Appendix {self.chapter}. {self.title}"
+
+    @property
+    def numbered_title(self):
+        """Return formatted title with numbering for a notebook."""
+        return f"Appendix {self.chapter}. {self.title}"
 
     @property
     def toc(self):
@@ -282,12 +294,16 @@ class Appendix(Nb):
 class Section(Nb):
     def __init__(self, filename, chapter, section):
         super().__init__(filename, chapter, section)
-        self.numbered_title = f"{self.title}"
 
     @property
     def readme(self):
         """Return formatted entry for this notebook in the repository readme file."""
         return "- " + self.link
+
+    @property
+    def numbered_title(self):
+        """Return formatted title with numbering for a notebook."""
+        return f"{self.title}"
 
     @property
     def toc(self):
