@@ -66,7 +66,7 @@ def nbsetup(config_file="nbpages.cfg"):
     git_config = configparser.ConfigParser(strict=False)
     git_config.read(os.path.join(".git", "config"))
     github_repo_url = git_config['remote "origin"']['url']
-    github_user_name = github_repo_url.rsplit('/')[-2]
+    github_user_name = github_repo_url.split(':')[-1].rsplit('/')[-2]
     github_repo_name = github_repo_url.rsplit('/')[-1].split('.')[0]
     github_pages_url = f"https://{github_user_name}.github.io/{github_repo_name}"
 
