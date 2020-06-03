@@ -58,14 +58,8 @@ class Nb:
         self.chapter = str(int(chapter)) if chapter.isdigit() else chapter
         self.section = str(int(section))
         self.content = nbformat.read(os.path.join(src_dir, filename), as_version=4)
-
-        #self.path_download = os.path.join("docs", filename)   # need to download from github pages
-        #self.path_html = os.path.join("docs", filename)
-
         self.html_filename = os.path.splitext(self.filename)[0] + ".html"
         self.html_url = f"{github_pages_url}/{self.html_filename}"
-        #self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
-        #self.download_link = DOWNLOAD_LINK.format(notebook_filename=os.path.basename(self.filename))
 
     def __gt__(self, nb):
         return self.filename > nb.filename
@@ -341,7 +335,7 @@ class NbCollection:
         self._figures = []
         self._data_index = {}
         self._figure_index = {}
-        self._tag_index = {}
+        self._tag_index = collections.defaultdict(list)
 
     @property
     def data(self):
@@ -387,12 +381,12 @@ class NbCollection:
     def tag_index(self):
         """Return of dictionary sorted links to tags indexed by tags."""
         if not self._tag_index:
-            self._tag_index = dict()
             for nb in self.notebooks:
                 for tag, links in nb.tags.items():
-                    self._tag_index.setdefault(tag, []).extend(links)
+                    self._tag_index[tag].extend(links)
+            fcn = lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', s)]
             for tag in self._tag_index.keys():
-                self._tag_index[tag] = list(sorted(set(self._tag_index[tag]), key=str.casefold))
+                self._tag_index[tag] = list(sorted(set(self._tag_index[tag]), key=fcn))
         return self._tag_index
 
     def get_cells(self, tag):
