@@ -1,15 +1,12 @@
-import re
-import nbformat
-from nbformat.v4.nbbase import new_markdown_cell, new_notebook
-import itertools
-import json
+import collections, itertools
 import configparser
+import json
+import glob, re, os, shutil
 
-import os
-import glob
-import shutil
-from jinja2 import Environment, FileSystemLoader
+import nbformat
 from nbconvert import HTMLExporter
+from nbformat.v4.nbbase import new_markdown_cell, new_notebook
+from jinja2 import Environment, FileSystemLoader
 
 # configuration file
 config_file = "nbpages.cfg"
@@ -146,21 +143,6 @@ class Nb:
             url = '#'.join([self.html_url, '-'.join(header[1:])])
             toc.append("    "*(len(header[0])-2) + f"- [{txt}]({url})")
         return toc
-
-    @property
-    def keyword_index(self):
-        """Return keyword index and links for a notebook."""
-        index = dict()
-        headercells = (cell for cell in self.content.cells if cell.cell_type == "markdown" and cell.source.startswith("#"))
-        for headercell in headercells:
-            lines = headercell.source.splitlines()
-            header = lines[0].strip().split()
-            txt = ' '.join(header[1:])
-            url = '#'.join([self.html_url, '-'.join(header[1:])])
-            for keywordline in [line.strip() for line in lines[1:] if line.lower().startswith("keywords: ")]:
-                for word in keywordline.split(':')[1].split(','):
-                    index.setdefault(word.strip(), []).append(f"[{txt}]({url})")
-        return index
 
     @property
     def tags(self):
@@ -372,10 +354,9 @@ class NbCollection:
 
         # property caches
         self._data = []
-        self._data_index = {}
         self._figures = []
+        self._data_index = {}
         self._figure_index = {}
-        self._keyword_index = {}
         self._tag_index = {}
 
     @property
@@ -417,17 +398,6 @@ class NbCollection:
                 self._figure_index[figure] = [cell.metadata["nbpages"]["link"] \
                                      for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]
         return self._figure_index
-
-    @property
-    def keyword_index(self):
-        """Return keyword dictionary with list of links for a collection of notebooks."""
-        # use self._keyword_index to cache results
-        if not self._keyword_index:
-            for nb in self.notebooks:
-                for word, links in nb.keyword_index.items():
-                    for link in links:
-                        self._keyword_index.setdefault(word, []).append(link)
-        return self._keyword_index
 
     @property
     def tag_index(self):
@@ -484,7 +454,7 @@ class NbCollection:
             navbar = NAVBAR_TAG
             navbar += f"< [{prev_nb.title}]({prev_nb.html_url}) " if prev_nb else ""
             navbar += f"| [Contents](toc.html) |"
-            navbar += f" [Tag Index](tag_index.html) |" if self.tag_index or self.keyword_index else ""
+            navbar += f" [Tag Index](tag_index.html) |" if self.tag_index else ""
             navbar += f" [{next_nb.title}]({next_nb.html_url})" if next_nb else ""
             navbar += COLAB_LINK.format(dst=dst_dir, notebook_filename=nb.filename)
             navbar += DOWNLOAD_LINK.format(notebook_filename=nb.filename)
@@ -636,7 +606,7 @@ class NbCollection:
                 readme_toc=index_toc, page_title=github_repo_name, github_url=github_repo_url))
 
     def write_python_index(self):
-        python_index = {}
+        python_index = collections.defaultdict(list)
         IMPORT = re.compile(r"^\s*import\s*(?P<txt>\S+)")
         FROM = re.compile(r"^\s*from\s*(?P<txt>\w[\w|.]*)\s*import\s*(?P<fcn>[*|\w+][,\s*\w+]*)")
         for nb in self.notebooks:
@@ -645,14 +615,14 @@ class NbCollection:
                     for line in cell.source.strip().splitlines():
                         m = IMPORT.match(line)
                         if m:
-                            python_index.setdefault(m.group("txt"), []).append(cell.metadata["nbpages"]["link"])
+                            python_index[m.group("txt")].append(cell.metadata["nbpages"]["link"])
                         m = FROM.match(line)
                         if m:
                             for fcn in list(filter(None, re.split('[,|\s+]', m.group("fcn")))):
                                 if fcn=='as':
                                     break
                                 key = m.group("txt") + "." + fcn
-                                python_index.setdefault(key, []).append(cell.metadata["nbpages"]["link"])
+                                python_index[key].append(cell.metadata["nbpages"]["link"])
 
         content = ""
         if python_index:
