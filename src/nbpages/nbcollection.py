@@ -1,15 +1,12 @@
 import re
-import nbformat
-from nbformat.v4.nbbase import new_markdown_cell, new_notebook
-import itertools
+import collections, itertools
 import json
 import configparser
-
-import os
-import glob
-import shutil
-from jinja2 import Environment, FileSystemLoader
+import glob, os, shutil
+import nbformat
+from nbformat.v4.nbbase import new_markdown_cell, new_notebook
 from nbconvert import HTMLExporter
+from jinja2 import Environment, FileSystemLoader
 
 # configuration file
 config_file = "nbpages.cfg"
@@ -165,11 +162,11 @@ class Nb:
     @property
     def tags(self):
         """Return a dictionary with tags as keys and a list of cell links as values."""
-        tags = dict()
+        tags = collections.defaultdict(list)
         for cell in self.content.cells:
             if 'tags' in cell.metadata.keys():
                 for tag in cell.metadata['tags']:
-                    tags.setdefault(tag, []).append(cell.metadata["nbpages"]["link"])
+                    tags[tag].append(cell.metadata["nbpages"]["link"])
         return tags
 
     @property
@@ -376,7 +373,7 @@ class NbCollection:
         self._figures = []
         self._figure_index = {}
         self._keyword_index = {}
-        self._tag_index = {}
+        self._tag_index = collections.defaultdict(list)
 
     @property
     def data(self):
@@ -433,10 +430,9 @@ class NbCollection:
     def tag_index(self):
         """Return of dictionary sorted links to tags indexed by tags."""
         if not self._tag_index:
-            self._tag_index = dict()
             for nb in self.notebooks:
                 for tag, links in nb.tags.items():
-                    self._tag_index.setdefault(tag, []).extend(links)
+                    self._tag_index[tag].extend(links)
             for tag in self._tag_index.keys():
                 self._tag_index[tag] = list(sorted(set(self._tag_index[tag]), key=str.casefold))
         return self._tag_index
@@ -636,7 +632,7 @@ class NbCollection:
                 readme_toc=index_toc, page_title=github_repo_name, github_url=github_repo_url))
 
     def write_python_index(self):
-        python_index = {}
+        python_index = collections.defaultdict(list)
         IMPORT = re.compile(r"^\s*import\s*(?P<txt>\S+)")
         FROM = re.compile(r"^\s*from\s*(?P<txt>\w[\w|.]*)\s*import\s*(?P<fcn>[*|\w+][,\s*\w+]*)")
         for nb in self.notebooks:
@@ -645,14 +641,14 @@ class NbCollection:
                     for line in cell.source.strip().splitlines():
                         m = IMPORT.match(line)
                         if m:
-                            python_index.setdefault(m.group("txt"), []).append(cell.metadata["nbpages"]["link"])
+                            python_index[m.group("txt")].append(cell.metadata["nbpages"]["link"])
                         m = FROM.match(line)
                         if m:
                             for fcn in list(filter(None, re.split('[,|\s+]', m.group("fcn")))):
                                 if fcn=='as':
                                     break
                                 key = m.group("txt") + "." + fcn
-                                python_index.setdefault(key, []).append(cell.metadata["nbpages"]["link"])
+                                python_index[key].append(cell.metadata["nbpages"]["link"])
 
         content = ""
         if python_index:
