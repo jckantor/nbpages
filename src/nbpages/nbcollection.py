@@ -50,6 +50,9 @@ MARKDOWN_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 SOLUTION_CODE = re.compile("### BEGIN SOLUTION(.*)### END SOLUTION", re.DOTALL)
 HIDDEN_TESTS = re.compile("### BEGIN HIDDEN TESTS(.*)### END HIDDEN TESTS", re.DOTALL)
 
+# function to sort numbered section headings in natural order
+natsort = lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', s)]
+
 
 class Nb:
 
@@ -378,15 +381,38 @@ class NbCollection:
         return self._figure_index
 
     @property
+    def python_index(self):
+        python_index = collections.defaultdict(list)
+        IMPORT = re.compile(r"^\s*import\s+(?P<txt>[*|\w+][,\s*\w+]*)")
+        FROM = re.compile(r"^\s*from\+(?P<txt>\w[\w|.]*)\s*import\s*(?P<fcn>[*|\w+][,\s*\w+]*)")
+        for nb in self.notebooks:
+            for cell  in nb.content.cells:
+                if cell.cell_type == "code":
+                    for line in cell.source.strip().splitlines():
+                        m = IMPORT.match(line)
+                        if m:
+                            for lib in list(filter(None, re.split('[,|\s+]', m.group("txt")))):
+                                if lib=='as':
+                                    break
+                                python_index[lib].append(cell.metadata["nbpages"]["link"])
+                        m = FROM.match(line)
+                        if m:
+                            for fcn in list(filter(None, re.split('[,|\s+]', m.group("fcn")))):
+                                if fcn=='as':
+                                    break
+                                key = m.group("txt") + "." + fcn
+                                python_index[key].append(cell.metadata["nbpages"]["link"])
+        return python_index
+
+    @property
     def tag_index(self):
         """Return of dictionary sorted links to tags indexed by tags."""
         if not self._tag_index:
             for nb in self.notebooks:
                 for tag, links in nb.tags.items():
                     self._tag_index[tag].extend(links)
-            fcn = lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', s)]
             for tag in self._tag_index.keys():
-                self._tag_index[tag] = list(sorted(set(self._tag_index[tag]), key=fcn))
+                self._tag_index[tag] = list(sorted(set(self._tag_index[tag]), key=natsort))
         return self._tag_index
 
     def get_cells(self, tag):
@@ -518,7 +544,7 @@ class NbCollection:
             print("- writing data index")
             content += f"# [{github_repo_name}]({github_pages_url})\n"
             content += "\n## Index of Data files in this Repository\n"
-            for data, links in sorted(self.data_index.items(), key=lambda x: str.casefold(x[0])):
+            for data, links in sorted(self.data_index.items(), key=lambda x: natsort(x[0])):
                 if links:
                     content += f"\n### {data}\n"
                     content += f"![{data}]({data_subdir}/{data})\n"
@@ -537,7 +563,7 @@ class NbCollection:
             print("- writing figure index")
             content += f"# [{github_repo_name}]({github_pages_url})\n"
             content += "\n## Index of Figures in this Repository\n"
-            for figure, links in sorted(self.figure_index.items(), key=lambda x: str.casefold(x[0])):
+            for figure, links in sorted(self.figure_index.items(), key=lambda x: natsort(x[0])):
                 if links:
                     content += f"\n### {figure}\n"
                     content += f"![{figure}]({figures_subdir}/{figure})\n"
@@ -584,35 +610,15 @@ class NbCollection:
                 readme_toc=index_toc, page_title=github_repo_name, github_url=github_repo_url))
 
     def write_python_index(self):
-        python_index = collections.defaultdict(list)
-        IMPORT = re.compile(r"^\s*import\s*(?P<txt>\S+)")
-        FROM = re.compile(r"^\s*from\s*(?P<txt>\w[\w|.]*)\s*import\s*(?P<fcn>[*|\w+][,\s*\w+]*)")
-        for nb in self.notebooks:
-            for cell  in nb.content.cells:
-                if cell.cell_type == "code":
-                    for line in cell.source.strip().splitlines():
-                        m = IMPORT.match(line)
-                        if m:
-                            python_index[m.group("txt")].append(cell.metadata["nbpages"]["link"])
-                        m = FROM.match(line)
-                        if m:
-                            for fcn in list(filter(None, re.split('[,|\s+]', m.group("fcn")))):
-                                if fcn=='as':
-                                    break
-                                key = m.group("txt") + "." + fcn
-                                python_index[key].append(cell.metadata["nbpages"]["link"])
-
         content = ""
-        if python_index:
+        if self.python_index:
             print("- writing python index")
-            python_index_file = os.path.join(dst_dir, "python_index")
-
             content += f"# [{github_repo_name}]({github_pages_url})\n"
             content += "\n## Index of Python Libraries used in this Repository\n"
-            for key in sorted(python_index.keys(), key=str.casefold):
-                if python_index[key]:
+            for key in sorted(self.python_index.keys(), key=str.casefold):
+                if self.python_index[key]:
                     content += f"\n### {key}\n"
-                    for link in python_index[key]:
+                    for link in self.python_index[key]:
                         content += f"* {link}\n"
         self.write_md2html("python_index", content)
 
