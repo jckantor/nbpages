@@ -74,7 +74,7 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 ### [Tag Index](https://jckantor.github.io/nbpages/tag_index.html)
 
 
-### [Chapter 1.0 Style Guide](https://jckantor.github.io/nbpages/01.00-Style-Guide.html)
+###[Chapter 1.0 Style Guide](https://jckantor.github.io/nbpages/01.00-Style-Guide.html)
 
 - [1.1 Notebook naming and ancillary/generated files](https://jckantor.github.io/nbpages/01.01-Notebook-Naming-and-Ancillary-Files.html)
 
@@ -85,7 +85,7 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 - [1.4 Coding Style](https://jckantor.github.io/nbpages/01.04-Coding.html)
 
 
-### [Chapter 2.0 Usage](https://jckantor.github.io/nbpages/02.00-Usage.html)
+###[Chapter 2.0 Usage](https://jckantor.github.io/nbpages/02.00-Usage.html)
 
 - [2.1 Tagging](https://jckantor.github.io/nbpages/02.01-Tagging.html)
 

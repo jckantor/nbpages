@@ -60,14 +60,8 @@ class Nb:
         self.chapter = str(int(chapter)) if chapter.isdigit() else chapter
         self.section = str(int(section))
         self.content = nbformat.read(os.path.join(src_dir, filename), as_version=4)
-
-        #self.path_download = os.path.join("docs", filename)   # need to download from github pages
-        #self.path_html = os.path.join("docs", filename)
-
         self.html_filename = os.path.splitext(self.filename)[0] + ".html"
         self.html_url = f"{github_pages_url}/{self.html_filename}"
-        #self.colab_link = COLAB_LINK.format(notebook_filename=os.path.basename(self.filename))
-        #self.download_link = DOWNLOAD_LINK.format(notebook_filename=os.path.basename(self.filename))
 
     def __gt__(self, nb):
         return self.filename > nb.filename
@@ -123,16 +117,6 @@ class Nb:
     def link(self):
         """Return a markdown link to the html view of this notebook."""
         return f"[{self.numbered_title}]({self.html_url})"
-
-    @property
-    def html_link(self):
-        """Return a markdown link to the  html view of this notebook."""
-        return f"[{self.numbered_title}]({self.html})"
-
-    @property
-    def readme(self):
-        """Return formatted entry for this notebook in the repository readme file."""
-        return "\n### " + self.link
 
     @property
     def toc(self):
@@ -296,11 +280,6 @@ class Appendix(Nb):
 class Section(Nb):
     def __init__(self, filename, chapter, section):
         super().__init__(filename, chapter, section)
-
-    @property
-    def readme(self):
-        """Return formatted entry for this notebook in the repository readme file."""
-        return "- " + self.link
 
     @property
     def numbered_title(self):
@@ -624,7 +603,7 @@ class NbCollection:
             index_toc += [f"### [Python Module Index]({github_pages_url}/python_index.html)"]
         if os.path.isfile(os.path.join(dst_dir, "tag_index.html")):
             index_toc += [f"### [Tag Index]({github_pages_url}/tag_index.html)"]
-        index_toc += [nb.readme for nb in self.notebooks]
+        index_toc += [f"- {nb.link}" if type(nb)== Section else f"\n### {nb.link}" for nb in self.notebooks]
         env = Environment(loader=FileSystemLoader("templates"))
         with open(os.path.join(dst_dir, "index.md"), 'w') as file:
             file.write(env.get_template('index.md.tpl').render(
