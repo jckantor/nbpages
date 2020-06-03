@@ -50,6 +50,8 @@ MARKDOWN_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 SOLUTION_CODE = re.compile("### BEGIN SOLUTION(.*)### END SOLUTION", re.DOTALL)
 HIDDEN_TESTS = re.compile("### BEGIN HIDDEN TESTS(.*)### END HIDDEN TESTS", re.DOTALL)
 
+# function to sort numbered section headings in natural order
+natsort = lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', s)]
 
 class Nb:
 
@@ -407,7 +409,7 @@ class NbCollection:
                 for tag, links in nb.tags.items():
                     self._tag_index[tag].extend(links)
             for tag in self._tag_index.keys():
-                self._tag_index[tag] = list(sorted(set(self._tag_index[tag]), key=str.casefold))
+                self._tag_index[tag] = list(sorted(set(self._tag_index[tag]), key=natsort))
         return self._tag_index
 
     def get_cells(self, tag):
@@ -539,7 +541,7 @@ class NbCollection:
             print("- writing data index")
             content += f"# [{github_repo_name}]({github_pages_url})\n"
             content += "\n## Index of Data files in this Repository\n"
-            for data, links in sorted(self.data_index.items(), key=lambda x: str.casefold(x[0])):
+            for data, links in sorted(self.data_index.items(), key=lambda x: natsort(x[0])):
                 if links:
                     content += f"\n### {data}\n"
                     content += f"![{data}]({data_subdir}/{data})\n"
@@ -558,7 +560,7 @@ class NbCollection:
             print("- writing figure index")
             content += f"# [{github_repo_name}]({github_pages_url})\n"
             content += "\n## Index of Figures in this Repository\n"
-            for figure, links in sorted(self.figure_index.items(), key=lambda x: str.casefold(x[0])):
+            for figure, links in sorted(self.figure_index.items(), key=lambda x: natsort(x[0])):
                 if links:
                     content += f"\n### {figure}\n"
                     content += f"![{figure}]({figures_subdir}/{figure})\n"
