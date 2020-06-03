@@ -383,6 +383,7 @@ class NbCollection:
     @property
     def python_index(self):
         python_index = collections.defaultdict(list)
+        IMPORT_AS = re.compile(r"^\s*import\s+((?P<module>\w[\w|\.]*)\s+as\s+(?P<name>\w+))")
         IMPORT = re.compile(r"^\s*import\s+(?P<txt>[*|\w+][,\s*\w+]*)")
         FROM = re.compile(r"^\s*from\+(?P<txt>\w[\w|.]*)\s*import\s*(?P<fcn>[*|\w+][,\s*\w+]*)")
         for nb in self.notebooks:
