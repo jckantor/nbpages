@@ -89,6 +89,6 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 
 - [2.1 Tagging](https://jckantor.github.io/nbpages/02.01-Tagging.html)
 
-- [2.5 Examples](https://jckantor.github.io/nbpages/02.05-Examples.html)
+- [2.2 Examples](https://jckantor.github.io/nbpages/02.02-Examples.html)
 
-- [2.6 Heirarchical Tagging](https://jckantor.github.io/nbpages/02.06-Heirarchical-Tagging.html)
+- [2.3 Heirarchical Tagging](https://jckantor.github.io/nbpages/02.03-Heirarchical-Tagging.html)
