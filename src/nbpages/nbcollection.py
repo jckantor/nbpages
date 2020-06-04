@@ -582,6 +582,8 @@ class NbCollection:
         html_exporter.template_file = os.path.join(templates_dir, 'notebook.tpl')
         for nb in self.notebooks:
             (body, resources) = html_exporter.from_notebook_node(nb.content)
+            body = re.sub('{github_user_name}', github_user_name, body)
+            body = re.sub('{github_repo_name}', github_repo_name, body)
             html_path = os.path.join(dst_dir,  os.path.splitext(nb.filename)[0] + ".html")
             print(f"- writing {html_path}")
             with open(html_path, 'w') as f:
