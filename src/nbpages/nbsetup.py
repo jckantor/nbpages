@@ -30,7 +30,15 @@ notebook_tpl = """
         &nbsp; <a href="https://{github_user_name}.github.io/{github_repo_name}/tag_index.html#{{ tag }}">{{ tag }}</a>
     {% endfor %}
     </div>
-    {{ super() }}
+    {% if 'home-activity' in cell['metadata'].get('tags', []) %}
+        <div style="background-color: rgba(0,255,0,0.05) ; padding: 10px; margin-left:95px; margin-right:6px; border: 1px solid darkgreen;"> <b>Home Activity</b>: {{ super() }} </div>
+    {% elif 'class-activity' in cell['metadata'].get('tags', []) %}
+        <div style="background-color: rgba(0,0,255,0.05) ; padding: 10px; margin-left:95px; margin-right:6px; border: 1px solid darkgreen;"> <b>Class Activity</b>: {{ super() }} </div>
+    {% elif 'important-note' in cell['metadata'].get('tags', []) %}
+        <div style="background-color: rgba(255,0,0,0.05) ; padding: 10px; margin-left:95px; margin-right:6px; border: 1px solid darkgreen;"> <b>Important Note</b>: {{ super() }} </div>
+    {% else %}
+        {{ super () }}
+    {% endif %}
 {% else %}
     {{ super() }}
 {% endif %}
@@ -54,7 +62,16 @@ def write_template_if_needed(dir, filename, content):
         with open(path, 'w') as file:
             file.write(content)
     else:
-        print(f"- {path} already exists")
+        if content == open(path).read():
+            print(f"- {path} exists and no update required.")
+        else:
+            print(f"- {path} changed since last setup.")
+            backup_path = path + datetime.datetime.now().strftime(".backup-%Y-%m-%d-%H-%M-%S")
+            print(f"- backing up {path} to {backup_path}")
+            shutil.copy2(path, backup_path)
+            print(f"- writing {path}")
+            with open(path, 'w') as file:
+                file.write(content)
 
 def nbsetup(config_file="nbpages.cfg"):
     """Setup directories if needed with default configuration and templates."""
