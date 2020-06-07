@@ -99,6 +99,7 @@ def nbsetup(config_file="nbpages.cfg"):
                 "data_subdir": "data",
                 }
 
+    config_file_backup = ""
     if os.path.isfile(config_file):
         config_file_backup = config_file + datetime.datetime.now().strftime(".backup-%Y-%m-%d-%H-%M-%S")
         print(f"- backing up existing {config_file} to {config_file_backup}")
@@ -109,6 +110,11 @@ def nbsetup(config_file="nbpages.cfg"):
     config["nbpages"] = nbpages
     with open(config_file, "w") as f:
         config.write(f)
+
+    if config_file_backup:
+        if open(config_file).read() == open(config_file_backup).read():
+            print(f"- {config_file} unchanged, backup deleted.")
+            os.remove(config_file_backup)
 
     # create directories if needed
     print(f"creating templates directory")
