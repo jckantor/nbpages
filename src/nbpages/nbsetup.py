@@ -56,6 +56,7 @@ def make_dir_if_needed(path):
     return
 
 def create_backup(path):
+    """Create backup file with date and time stamp. Return path to backup."""
     backup_path = None
     if os.path.isfile(path):
         backup_path = path + datetime.datetime.now().strftime(".backup-%Y-%m-%d-%H%M%S")
@@ -64,19 +65,21 @@ def create_backup(path):
     return backup_path
 
 def write_content(path, content):
+    """Write content to path name."""
     print(f"- writing {path}")
     with open(path, 'w') as file:
         file.write(content)
     return path
 
 def compare_and_remove_backup(path, backup_path):
+    """Compare path to backup path, remove backup path if redundant."""
     if  os.path.isfile(path) and os.path.isfile(backup_path):
         if open(path).read() == open(backup_path).read():
             print(f"- {path} content unchanged, {backup_path} deleted.")
             os.remove(backup_path)
 
 def write_with_backup(directory, filename, content):
-    """Write file with backup if needed"""
+    """Backup, write, and delete backup if there are no changes."""
     path = os.path.join(directory, filename)
     backup_path = create_backup(path)
     write_content(path, content)
