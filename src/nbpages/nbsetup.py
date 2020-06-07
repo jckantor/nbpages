@@ -62,9 +62,8 @@ def write_template_if_needed(dir, filename, content):
         if content == open(path).read():
             print(f"- {path} exists and no update required.")
         else:
-            print(f"- {path} changed since last setup.")
-            backup_path = path + datetime.datetime.now().strftime(".backup-%Y-%m-%d-%H-%M-%S")
             print(f"- backing up {path} to {backup_path}")
+            backup_path = path + datetime.datetime.now().strftime(".backup-%Y-%m-%d-%H-%M-%S")
             shutil.copy2(path, backup_path)
             os.remove(path)
     if not os.path.isfile(path):
@@ -72,7 +71,6 @@ def write_template_if_needed(dir, filename, content):
         with open(path, 'w') as file:
             file.write(content)
     return
-
 
 def nbsetup(config_file="nbpages.cfg"):
     """Setup directories if needed with default configuration and templates."""
