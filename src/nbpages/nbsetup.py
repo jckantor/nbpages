@@ -53,15 +53,12 @@ def make_dir_if_needed(path):
         os.mkdir(path)
     else:
         print(f"- {path} directory already exists")
+    return
 
 def write_template_if_needed(dir, filename, content):
     """Create template file if needed, and verify that it exists."""
     path = os.path.join(dir, filename)
-    if not os.path.isfile(path):
-        print(f"- writing {path}")
-        with open(path, 'w') as file:
-            file.write(content)
-    else:
+    if os.path.isfile(path):
         if content == open(path).read():
             print(f"- {path} exists and no update required.")
         else:
@@ -69,9 +66,13 @@ def write_template_if_needed(dir, filename, content):
             backup_path = path + datetime.datetime.now().strftime(".backup-%Y-%m-%d-%H-%M-%S")
             print(f"- backing up {path} to {backup_path}")
             shutil.copy2(path, backup_path)
-            print(f"- writing {path}")
-            with open(path, 'w') as file:
-                file.write(content)
+            os.remove(path)
+    if not os.path.isfile(path):
+        print(f"- writing {path}")
+        with open(path, 'w') as file:
+            file.write(content)
+    return
+
 
 def nbsetup(config_file="nbpages.cfg"):
     """Setup directories if needed with default configuration and templates."""
