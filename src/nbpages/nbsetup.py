@@ -65,7 +65,7 @@ def create_backup(path):
     return backup_path
 
 def write_content(path, content):
-    """Write content to path name."""
+    """Write string content to path name."""
     print(f"- writing {path}")
     with open(path, 'w') as file:
         file.write(content)
@@ -77,6 +77,8 @@ def compare_and_remove_backup(path, backup_path):
         if open(path).read() == open(backup_path).read():
             print(f"- {path} content unchanged, {backup_path} deleted.")
             os.remove(backup_path)
+    else:
+        print(f"- {path} or {backup_path} not found.")
 
 def write_with_backup(directory, filename, content):
     """Backup, write, and delete backup if there are no changes."""
@@ -110,15 +112,13 @@ def nbsetup(config_file="nbpages.cfg"):
                 "data_subdir": "data",
                 }
 
-
-    config_file_backup = create_backup(config_file)
-
+    # write configuration info to config file
     config = configparser.ConfigParser()
     config["nbpages"] = nbpages
+    config_file_backup = create_backup(config_file)
     with open(config_file, "w") as f:
         print(f"- writing {config_file}")
         config.write(f)
-
     compare_and_remove_backup(config_file, config_file_backup)
 
     # create directories if needed
@@ -140,9 +140,7 @@ def nbsetup(config_file="nbpages.cfg"):
 
     # create an initial index.md if none exists
     if "index.md" not in os.listdir(nbpages["dst_dir"]):
-        print("- writing index.md to {0}".format(nbpages["dst_dir"]))
-        with open(os.path.join(nbpages["dst_dir"], "index.md"), "w") as f:
-            f.write(f"# {github_repo_name}\n")
+        write_content(os.path.join(nbpages["dst_dir"], "index.md"), f"# {github_repo_name}\n")
 
     return 0
 
