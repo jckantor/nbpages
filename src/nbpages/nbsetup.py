@@ -57,7 +57,7 @@ def make_dir_if_needed(path):
 
 def create_backup(path):
     """Create backup file with date and time stamp. Return path to backup."""
-    backup_path = None
+    backup_path = ""
     if os.path.isfile(path):
         backup_path = path + datetime.datetime.now().strftime(".backup-%Y-%m-%d-%H%M%S")
         print(f"- backing up {path} to {backup_path}")
@@ -73,7 +73,7 @@ def write_content(path, content):
 
 def compare_and_remove_backup(path, backup_path):
     """Compare path to backup path, remove backup path if redundant."""
-    if  os.path.isfile(path) and os.path.isfile(backup_path):
+    if  path and os.path.isfile(path) and backup_path and os.path.isfile(backup_path):
         if open(path).read() == open(backup_path).read():
             print(f"- {path} content unchanged, {backup_path} deleted.")
             os.remove(backup_path)
@@ -83,9 +83,13 @@ def compare_and_remove_backup(path, backup_path):
 def write_with_backup(directory, filename, content):
     """Backup, write, and delete backup if there are no changes."""
     path = os.path.join(directory, filename)
-    backup_path = create_backup(path)
-    write_content(path, content)
-    compare_and_remove_backup(path,  backup_path)
+    confirm = lambda: input(f"- {path} will be overwritten by new content. Proceed [y/n]? ").lower() in ['y', 'yes']
+    if not os.path.isfile(path) or (content != open(path).read() and confirm()):
+        backup_path = create_backup(path)
+        write_content(path, content)
+        compare_and_remove_backup(path,  backup_path)
+    else:
+        print(f"- {path} not overwritten.")
 
 def nbsetup(config_file="nbpages.cfg"):
     """Setup directories if needed with default configuration and templates."""
