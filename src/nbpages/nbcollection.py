@@ -367,7 +367,7 @@ class NbCollection:
     @property
     def figures(self):
         """Return list of figure files in the figures directory."""
-        dirparth = os.path.join(src_dir, figures_subdir)
+        dirpath = os.path.join(src_dir, figures_subdir)
         assert os.path.exists(dirpath), f"- figures subdirectory {dirpath} was not found"
         if not self._figures:
             self._figures = [f for f in os.listdir(dirpath) if os.path.isfile(os.path.join(dirpath, f))
