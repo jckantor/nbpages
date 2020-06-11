@@ -1,8 +1,11 @@
 import re
-import collections, itertools
+import collections
+import itertools
 import json
 import configparser
-import glob, os, shutil
+import glob
+import os
+import shutil
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell, new_notebook
 from nbconvert import HTMLExporter
@@ -18,7 +21,7 @@ if not os.path.exists(config_file):
 
 config = configparser.ConfigParser()
 config.read(config_file)
-config =  config["nbpages"]
+config = config["nbpages"]
 
 # extract configuration information
 github_user_name = config['github_user_name']
@@ -51,7 +54,9 @@ SOLUTION_CODE = re.compile("### BEGIN SOLUTION(.*)### END SOLUTION", re.DOTALL)
 HIDDEN_TESTS = re.compile("### BEGIN HIDDEN TESTS(.*)### END HIDDEN TESTS", re.DOTALL)
 
 # function to sort numbered section headings in natural order
-natsort = lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', s)]
+def natsort(s):
+    return [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', s)]
+
 
 class Nb:
 
@@ -162,7 +167,6 @@ class Nb:
                             output_errors.append(f"{output['name']}: {output['text'].splitlines()[0]}")
         return output_errors
 
-
     def insert_subsection_numbers(self):
         subsection_number_root = f"{self.chapter}.{self.section}"
         subsection_level = 0
@@ -217,7 +221,7 @@ class Nb:
 
     def remove_solution_code(self):
         for cell in self.content.cells:
-            if cell.cell_type=='code':
+            if cell.cell_type == 'code':
                 if SOLUTION_CODE.findall(cell.source):
                     cell.source = SOLUTION_CODE.sub("# YOUR SOLUTION HERE", cell.source)
                     print("- remove solution code from", self.filename)
@@ -346,7 +350,7 @@ class NbCollection:
         path = os.path.join(src_dir, data_subdir)
         assert os.path.exists(path), f"- data subdirectory {path} was not found"
         if not self._data:
-            self._data = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f)) \
+            self._data = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))
                           and not f.startswith('.') and (f.endswith('.csv') or f.endswith('.txt'))]
         return self._data
 
@@ -356,17 +360,17 @@ class NbCollection:
         if not self._data_index:
             for data in self.data:
                 regex = re.compile(data)
-                self._data_index[data] = [cell.metadata["nbpages"]["link"] \
+                self._data_index[data] = [cell.metadata["nbpages"]["link"]
                                      for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]
         return self._data_index
 
     @property
     def figures(self):
         """Return list of figure files in the figures directory."""
-        dir = os.path.join(src_dir, figures_subdir)
-        assert os.path.exists(dir), f"- figures subdirectory {dir} was not found"
+        dirparth = os.path.join(src_dir, figures_subdir)
+        assert os.path.exists(dirpath), f"- figures subdirectory {dirpath} was not found"
         if not self._figures:
-            self._figures = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f)) \
+            self._figures = [f for f in os.listdir(dirpath) if os.path.isfile(os.path.join(dirpath, f))
                              and not f.startswith('.') and not f.endswith('.tex') and not f.endswith('.pdf')]
         return self._figures
 
@@ -376,7 +380,7 @@ class NbCollection:
         if not self._figure_index:
             for figure in self.figures:
                 regex = re.compile(figure)
-                self._figure_index[figure] = [cell.metadata["nbpages"]["link"] \
+                self._figure_index[figure] = [cell.metadata["nbpages"]["link"]
                                      for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]
         return self._figure_index
 
@@ -534,9 +538,9 @@ class NbCollection:
     def remove(self, pattern):
         assert dst_dir != src_dir, "destination directory must be different than the source directory"
         html_files = glob.glob(os.path.join(dst_dir, pattern))
-        for file in html_files:
-            print(f"- removing {file}")
-            os.remove(file)
+        for f in html_files:
+            print(f"- removing {f}")
+            os.remove(f)
 
     def write_data_index(self):
         """Write data_index.html and copy data files to destination directory"""
@@ -607,10 +611,10 @@ class NbCollection:
             index_toc += [f"### [Python Module Index]({github_pages_url}/python_index.html)"]
         if os.path.isfile(os.path.join(dst_dir, "tag_index.html")):
             index_toc += [f"### [Tag Index]({github_pages_url}/tag_index.html)"]
-        index_toc += [f"- {nb.link}" if type(nb)== Section else f"\n### {nb.link}" for nb in self.notebooks]
+        index_toc += [f"- {nb.link}" if type(nb) == Section else f"\n### {nb.link}" for nb in self.notebooks]
         env = Environment(loader=FileSystemLoader("templates"))
-        with open(os.path.join(dst_dir, "index.md"), 'w') as file:
-            file.write(env.get_template('index.md.tpl').render(
+        with open(os.path.join(dst_dir, "index.md"), 'w') as f:
+            f.write(env.get_template('index.md.tpl').render(
                 readme_toc=index_toc, page_title=github_repo_name, github_url=github_repo_url))
 
     def write_python_index(self):
