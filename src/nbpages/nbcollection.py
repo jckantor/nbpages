@@ -539,6 +539,7 @@ class NbCollection:
             os.remove(file)
 
     def write_data_index(self):
+        """Write data_index.html and copy data files to destination directory"""
         content = ""
         self.remove(os.path.join(data_subdir, "*"))
         if self.data_index:
