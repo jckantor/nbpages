@@ -467,18 +467,17 @@ class NbCollection:
                     nb.content.cells.insert(2, new_code_cell())
                     import_cell = nb.content.cells[2]
                 content = f"{DATA_IMPORT_TAG}" "\n"
-                content += "import os,  requests, urllib\n\n"
-                content += f"url = \"{github_pages_url}\"\n"
-                content += f"filepaths = [" + ",\n    ".join([f"\"{path}\"" for (path, url) in nb.data_import_links]) + "]\n"
+                content += "import os,  requests\n\n"
+                content += f"file_links = [" + ",\n    ".join([f"(\"{path}\", \"{url}\")" for (path, url) in nb.data_import_links]) + "]\n"
                 content += """
-for file_path in file_paths:
-    stem, filename = os.path.split(file_path)
+for filepath, fileurl in file_links:
+    stem, filename = os.path.split(filepath)
     if stem:
         if not os.path.exists(stem):
             os.mkdir(stem)
-    if not os.path.isfile(file_path):
-        with open(file_path, 'wb') as f:
-            response = requests.get(urllib.parse.urljoin(url, urllib.request.pathname2url(file_path)))
+    if not os.path.isfile(filepath):
+        with open(filepath, 'wb') as f:
+            response = requests.get(fileurl)
             f.write(response.content)
 """
                 import_cell.source = content
