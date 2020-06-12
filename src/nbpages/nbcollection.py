@@ -7,7 +7,7 @@ import glob
 import os
 import shutil
 import nbformat
-from nbformat.v4.nbbase import new_markdown_cell, new_notebook
+from nbformat.v4.nbbase import new_markdown_cell, new_notebook, new_code_cell
 from nbconvert import HTMLExporter
 from jinja2 import Environment, FileSystemLoader
 
@@ -42,6 +42,7 @@ assert os.path.exists(dst_dir), f"notebook destination directory '{dst_dir}' not
 # tags
 NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 NAVBAR_TAG = "<!--NAVIGATION-->\n"
+DATA_IMPORT_TAG = "# IMPORT DATA FILES USED BY THIS NOTEBOOK"
 
 # regular expressions
 NB_FILENAME = re.compile(r'(\d\d|[A-Z])\.(\d\d)-(.*)\.ipynb')
@@ -73,6 +74,26 @@ class Nb:
 
     def __str__(self):
         return self.filename
+
+    @property
+    def data_import_links(self):
+        """Return list of (datapath, url) pairs found in this notebook."""
+        dirpath = os.path.join(src_dir, data_subdir)
+        assert os.path.exists(dirpath), f"- data subdirectory {dirpath} was not found"
+        data = [f for f in os.listdir(dirpath) if os.path.isfile(os.path.join(dirpath, f))
+                   and not f.startswith('.') and f.endswith('.csv') or f.endswith('.txt')]
+        data = filter(lambda f: any([re.search(f, cell.source) for cell in self.content.cells]), data)
+        return [(os.path.join(data_subdir, f), f"{github_pages_url}/data/{f}") for f in data]
+
+    @property
+    def figure_links(self):
+        """Return list of (fig, url) pairs found in this notebook."""
+        dirpath = os.path.join(src_dir, figures_subdir)
+        assert os.path.exists(dirpath), f"- figures subdirectory {dirpath} was not found"
+        figures = [f for f in os.listdir(dirpath) if os.path.isfile(os.path.join(dirpath, f))
+                    and not f.startswith('.') and not f.endswith('.tex') and not f.endswith('.pdf')]
+        figures = filter(lambda f: any([re.search(f, cell.source) for cell in self.content.cells]), figures)
+        return [(os.path.join(figures_subdir, figure), f"{github_pages_url}/figures/{figure}") for figure in figures]
 
     @property
     def html_anchor_tags(self):
@@ -362,7 +383,7 @@ class NbCollection:
             for data in self.data:
                 regex = re.compile(data)
                 self._data_index[data] = [cell.metadata["nbpages"]["link"]
-                                     for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]
+                                     for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source) if "nbpages" in cell.metadata.keys()]
         return self._data_index
 
     @property
@@ -394,20 +415,21 @@ class NbCollection:
         for nb in self.notebooks:
             for cell in nb.content.cells:
                 if cell.cell_type == "code":
-                    for line in cell.source.strip().splitlines():
-                        m = IMPORT.match(line)
-                        if m:
-                            for lib in list(filter(None, re.split('[,|\s+]', m.group("txt")))):
-                                if lib == 'as':
-                                    break
-                                python_index[lib].append(cell.metadata["nbpages"]["link"])
-                        m = FROM.match(line)
-                        if m:
-                            for fcn in list(filter(None, re.split('[,|\s+]', m.group("fcn")))):
-                                if fcn == 'as':
-                                    break
-                                key = m.group("txt") + "." + fcn
-                                python_index[key].append(cell.metadata["nbpages"]["link"])
+                    if "nbpages" in cell.metadata.keys():
+                        for line in cell.source.strip().splitlines():
+                            m = IMPORT.match(line)
+                            if m:
+                                for lib in list(filter(None, re.split('[,|\s+]', m.group("txt")))):
+                                    if lib == 'as':
+                                        break
+                                    python_index[lib].append(cell.metadata["nbpages"]["link"])
+                            m = FROM.match(line)
+                            if m:
+                                for fcn in list(filter(None, re.split('[,|\s+]', m.group("fcn")))):
+                                    if fcn == 'as':
+                                        break
+                                    key = m.group("txt") + "." + fcn
+                                    python_index[key].append(cell.metadata["nbpages"]["link"])
         return python_index
 
     @property
@@ -429,6 +451,37 @@ class NbCollection:
         print(cells)
         nb.format.write(new_notebook(cells=cells).content, 'ma.ipynb')
         return
+
+    def insert_data_imports(self):
+        """Insert code cell to import data files required by notebooks."""
+        for nb in self.notebooks:
+            if nb.data_import_links:
+                import_cell = None
+                for cell in nb.content.cells:
+                    if cell.cell_type == "code" and cell.source.startswith(DATA_IMPORT_TAG):
+                        print(f"- amending data import for {nb.filename}")
+                        import_cell = cell
+                        break
+                if import_cell is None:
+                    print(f"- inserting data import for {nb.filename}")
+                    nb.content.cells.insert(2, new_code_cell())
+                    import_cell = nb.content.cells[2]
+                content = f"{DATA_IMPORT_TAG}" "\n"
+                content += "import os,  requests, urllib\n\n"
+                content += f"url = \"{github_pages_url}\"\n"
+                content += f"filepaths = [" + ",\n    ".join([f"\"{path}\"" for (path, url) in nb.data_import_links]) + "]\n"
+                content += """
+for file_path in file_paths:
+    stem, filename = os.path.split(file_path)
+    if stem:
+        if not os.path.exists(stem):
+            os.mkdir(stem)
+    if not os.path.isfile(file_path):
+        with open(file_path, 'wb') as f:
+            response = requests.get(urllib.parse.urljoin(url, urllib.request.pathname2url(file_path)))
+            f.write(response.content)
+"""
+                import_cell.source = content
 
     def insert_headers(self):
         """Insert a common header into a collection of notebooks."""
@@ -662,6 +715,11 @@ class NbCollection:
                         content += f"    - [{txt}]({url})\n"
                 if nb.tags:
                     content += "* Tags: " + ", ".join([tag for tag in nb.tags]) + "\n"
+                if nb.figure_links:
+                    content += "* Figure files used\n"
+                    for txt, url in nb.figure_links:
+                        content += f"    - [{txt}]({url})\n"
+
         self.write_md2html("toc", content)
 
     def write_md2html(self, stem, content):

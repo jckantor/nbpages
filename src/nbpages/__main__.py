@@ -67,6 +67,7 @@ def main():
             notebooks.insert_subsection_numbers()
             notebooks.insert_headers()
             notebooks.insert_navbars()
+            notebooks.insert_data_imports()
             notebooks.remove("*.html")
             notebooks.remove("*.ipynb")
             notebooks.write_ipynb()
