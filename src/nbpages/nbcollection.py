@@ -75,34 +75,6 @@ class Nb:
         return self.filename
 
     @property
-    def title(self):
-        """Return notebook title by extracting the first level one header."""
-        for cell in self.content.cells:
-            if cell.cell_type == "markdown":
-                m = MARKDOWN_HEADER.match(cell.source)
-                if m and len(m.group('level')) == 1:
-                    return m.group('header').strip()
-        return None
-
-    @property
-    def markdown_figs(self):
-        """Return a list of markdown figures in the markdown cells of this notebook."""
-        figs = []
-        for cell in self.content.cells[2:-1]:
-            if cell.cell_type == "markdown":
-                figs.extend(MARKDOWN_FIG.findall(cell.source))
-        return figs
-
-    @property
-    def markdown_links(self):
-        """Return a list of markdown links in the markdown cells of this notebook."""
-        links = []
-        for cell in self.content.cells[2:-1]:
-            if cell.cell_type == "markdown":
-                links.extend(MARKDOWN_LINK.findall(cell.source))
-        return links
-
-    @property
     def html_anchor_tags(self):
         """Return a list of html anchor tags appearing in this notebook."""
         tags = []
@@ -124,26 +96,22 @@ class Nb:
         return f"[{self.numbered_title}]({self.html_url})"
 
     @property
-    def toc(self):
-        """Return formatted list of markdown links to cells starting with a markdown header."""
-        toc = []
-        header_cells = (cell for cell in self.content.cells if cell.cell_type == "markdown" and cell.source.startswith("##"))
-        for header_cell in header_cells:
-            header = header_cell.source.splitlines()[0].strip().split()
-            txt = ' '.join(header[1:])
-            url = '#'.join([self.html_url, '-'.join(header[1:])])
-            toc.append("    "*(len(header[0])-2) + f"- [{txt}]({url})")
-        return toc
+    def markdown_figs(self):
+        """Return a list of markdown figures in the markdown cells of this notebook."""
+        figs = []
+        for cell in self.content.cells[2:-1]:
+            if cell.cell_type == "markdown":
+                figs.extend(MARKDOWN_FIG.findall(cell.source))
+        return figs
 
     @property
-    def tags(self):
-        """Return a dictionary with tags as keys and a list of cell links as values."""
-        tags = collections.defaultdict(list)
-        for cell in self.content.cells:
-            if 'tags' in cell.metadata.keys():
-                for tag in cell.metadata['tags']:
-                    tags[tag].append(cell.metadata["nbpages"]["link"])
-        return tags
+    def markdown_links(self):
+        """Return a list of markdown links in the markdown cells of this notebook."""
+        links = []
+        for cell in self.content.cells[2:-1]:
+            if cell.cell_type == "markdown":
+                links.extend(MARKDOWN_LINK.findall(cell.source))
+        return links
 
     @property
     def orphan_headers(self):
@@ -165,7 +133,40 @@ class Nb:
                     if "name" in output.keys():
                         if output["name"] == "stderr":
                             output_errors.append(f"{output['name']}: {output['text'].splitlines()[0]}")
-        return output_errors
+        return output_errors\
+
+    @property
+    def tags(self):
+        """Return a dictionary with tags as keys and a list of cell links as values."""
+        tags = collections.defaultdict(list)
+        for cell in self.content.cells:
+            if 'tags' in cell.metadata.keys():
+                for tag in cell.metadata['tags']:
+                    tags[tag].append(cell.metadata["nbpages"]["link"])
+        return tags
+
+    @property
+    def title(self):
+        """Return notebook title by extracting the first level one header."""
+        for cell in self.content.cells:
+            if cell.cell_type == "markdown":
+                m = MARKDOWN_HEADER.match(cell.source)
+                if m and len(m.group('level')) == 1:
+                    return m.group('header').strip()
+        return None
+
+    @property
+    def toc(self):
+        """Return formatted list of markdown links to cells starting with a markdown header."""
+        toc = []
+        header_cells = (cell for cell in self.content.cells if
+                        cell.cell_type == "markdown" and cell.source.startswith("##"))
+        for header_cell in header_cells:
+            header = header_cell.source.splitlines()[0].strip().split()
+            txt = ' '.join(header[1:])
+            url = '#'.join([self.html_url, '-'.join(header[1:])])
+            toc.append("    " * (len(header[0]) - 2) + f"- [{txt}]({url})")
+        return toc
 
     def insert_subsection_numbers(self):
         subsection_number_root = f"{self.chapter}.{self.section}"
