@@ -495,7 +495,7 @@ for filepath, fileurl in file_links:
             ' alt="Open in Colab" title="Open in Google Colaboratory"></a>'
 
         # download from github pages
-        DOWNLOAD_LINK = f'<p><a href="{config["github_pages_url"]}"' + \
+        DOWNLOAD_LINK = f'<p><a href="{config["github_pages_url"]}' + \
                         '/{notebook_filename}"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg"' + \
                         ' alt="Download" title="Download Notebook"></a>'
 
