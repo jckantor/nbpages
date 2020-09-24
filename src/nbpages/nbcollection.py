@@ -231,7 +231,7 @@ class Nb:
         self.replace_code(HIDDEN_TESTS, "")
 
     def replace_code(self, pattern, repl):
-        regex = re.compile(pattern re.DOTALL)
+        regex = re.compile(pattern, re.DOTALL)
         for cell in self.content.cells:
             if cell.cell_type == "code" and regex.findall(cell.source):
                 cell.source = regex.sub(repl, cell.source)
