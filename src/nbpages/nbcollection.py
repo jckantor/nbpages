@@ -356,7 +356,7 @@ class NbCollection:
 
     @property
     def data(self):
-        """Return list of .txt and .csv data files in data directory."""
+        """List of all .txt and .csv files in the data subdirectory."""
         path = os.path.join(config["src_dir"], config["data_subdir"])
         assert os.path.exists(path), f"- data subdirectory {path} was not found"
         if not self._data:
@@ -366,32 +366,32 @@ class NbCollection:
 
     @property
     def data_index(self):
-        """Return dictionary of data files and link appearing in a collection of notebooks."""
+        """Deduplicated dictionary of data files and links appearing in the notebook collection."""
         if not self._data_index:
             for data in self.data:
                 regex = re.compile(data)
-                self._data_index[data] = [cell.metadata["nbpages"]["link"]
-                                     for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source) if "nbpages" in cell.metadata.keys()]
+                self._data_index[data] = list(dict.fromkeys([cell.metadata["nbpages"]["link"]
+                    for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source) if "nbpages" in cell.metadata.keys()]))
         return self._data_index
 
     @property
     def figures(self):
         """Return list of figure files in the figures directory."""
-        dirpath = os.path.join(config["src_dir"], config["figures_subdir"])
-        assert os.path.exists(dirpath), f"- figures subdirectory {dirpath} was not found"
+        path = os.path.join(config["src_dir"], config["figures_subdir"])
+        assert os.path.exists(path), f"- figures subdirectory {path} was not found"
         if not self._figures:
-            self._figures = [f for f in os.listdir(dirpath) if os.path.isfile(os.path.join(dirpath, f))
+            self._figures = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))
                              and not f.startswith('.') and not f.endswith('.tex') and not f.endswith('.pdf')]
         return self._figures
 
     @property
     def figure_index(self):
-        """Return dictionary of figures and links appearing in a collection of notebooks."""
+        """Deduplicated dictionary of figures and links appearing in the notebook collection."""
         if not self._figure_index:
             for figure in self.figures:
                 regex = re.compile(figure)
-                self._figure_index[figure] = [cell.metadata["nbpages"]["link"]
-                                     for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]
+                self._figure_index[figure] = list(dict.fromkeys([cell.metadata["nbpages"]["link"]
+                    for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]))
         return self._figure_index
 
     @property
