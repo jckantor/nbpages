@@ -462,6 +462,8 @@ class NbCollection:
                 content += "import os,  requests\n\n"
                 content += f"file_links = [" + ",\n    ".join([f"(\"{path}\", \"{url}\")" for (path, url) in nb.data_import_links]) + "]\n"
                 content += """
+# This cell has been added by nbpages. Run this cell to download data files required for this notebook.
+
 for filepath, fileurl in file_links:
     stem, filename = os.path.split(filepath)
     if stem:
