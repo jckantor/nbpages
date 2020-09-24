@@ -24,12 +24,12 @@ An editable installation will allow you keep your installation of nbpages in syn
 Setting up the notebook repository
 ----------------------------------
 
-Step 1. The first step in publishing a collection of notebooks on Github Pages is to
-[create a repository on Github.com](https://help.github.com/en/articles/creating-a-new-repository). The repository
-should include a .gitignore (typically the python option), a suitable license, and README.md. Once created, clone the
-repository to a local directory.
+Step 1. [Create a repository on Github.com](https://help.github.com/en/articles/creating-a-new-repository). A minimal
+repository will include README.md, .gitignore (typically the python option), and a license. Clone the
+repository to a local directory using either the command line or the "Code > Open with Github Desktop" menu option.
 
-Step 2. Then from the command line, navigate to the top level directory of the local repository and issue the command
+Step 2. Open a terminal/command window on your laptop, and navigate to the top level directory of the local repository
+created in Step 1. Issue the command
 
     nbpages --setup
 

@@ -6,6 +6,7 @@ import configparser
 import glob
 import os
 import shutil
+import sys
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell, new_notebook, new_code_cell
 from nbconvert import HTMLExporter
@@ -15,9 +16,9 @@ from jinja2 import Environment, FileSystemLoader
 config_file = "nbpages.cfg"
 
 # read configuration file
-if not os.path.exists(config_file):
-    print(f"configuration file not founds. Run nbpages --setup to create a config file.")
-    sys.exit(1)
+#if not os.path.exists(config_file):
+#    print(f"configuration file not founds. Run nbpages --setup to create a config file.")
+#    sys.exit(1)
 
 config = configparser.ConfigParser()
 config.read(config_file)
@@ -431,6 +432,10 @@ class NbCollection:
                                     key = m.group("txt") + "." + fcn
                                     python_index[key].append(cell.metadata["nbpages"]["link"])
         return python_index
+
+    @property
+    def resources(self):
+        pass
 
     @property
     def tag_index(self):
