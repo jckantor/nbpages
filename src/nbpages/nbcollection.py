@@ -14,11 +14,7 @@ from jinja2 import Environment, FileSystemLoader
 
 # configuration file
 config_file = "nbpages.cfg"
-
-# read configuration file
-#if not os.path.exists(config_file):
-#    print(f"configuration file not founds. Run nbpages --setup to create a config file.")
-#    sys.exit(1)
+assert os.path.exists(config_file), f"configuration file {config_file} not found. Run nbpages --setup"
 
 config = configparser.ConfigParser()
 config.read(config_file)
