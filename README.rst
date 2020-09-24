@@ -74,6 +74,32 @@ additions to the notebooks and prior to a github commit. The command will
 * write a keyword index
 * write index.md using the template file
 
+Removing solution and hidden code
+---------------------------------
+
+`nbpages` can be used to manage a collection of notebooks that serve as course notes that incorporate exercises
+and homework assignments. For that purpose, the command line
+
+    nbpages --remove_code --publish
+
+will selectively remove code segments from code cells. Code segments beginning and ending with
+
+    ### BEGIN SOLUTION
+    ... python code ...
+    ### END SOLUTION
+
+are replaced with
+
+    # YOUR SOLUTION HERE
+
+Code segments beginning and ending with
+
+    ### BEGIN HIDDEN TESTS
+    ... python code ...
+    ### END HIDDEN TESTS
+
+are removed with no replacement text.
+
 Utilities
 ---------
 
@@ -88,6 +114,9 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 A summary of notebook metadata, such as python version last used to run the notebooks, is printed to stdout with
 
     nbpages  --metadata
+
+
+
 
 
 Documentation

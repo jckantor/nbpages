@@ -20,7 +20,7 @@ parser.add_argument("--search", help="show notebooks containing a regular expres
 # commands that do write to the destination directory
 parser.add_argument("--publish", help="publish notebooks to the distination directory for github pages", action="store_true")
 parser.add_argument("--remove_cells", help="remove tagged cells", nargs="+")
-parser.add_argument("--remove_solution_code", help="remove solution code from code cells", action="store_true")
+parser.add_argument("--remove_code", help="remove hidden and solution code from code cells", action="store_true")
 
 # parse command line arguments
 args = parser.parse_args()
@@ -61,8 +61,8 @@ def main():
         if args.remove_cells:
             for tag in args.remove_cells:
                 notebooks.remove_cells(tag)
-        if args.remove_solution_code:
-            notebooks.remove_solution_code()
+        if args.remove_code:
+            notebooks.remove_code()
         if args.publish:
             notebooks.insert_subsection_numbers()
             notebooks.insert_headers()
