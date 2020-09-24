@@ -6,7 +6,6 @@ import configparser
 import glob
 import os
 import shutil
-import sys
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell, new_notebook, new_code_cell
 from nbconvert import HTMLExporter
