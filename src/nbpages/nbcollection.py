@@ -29,7 +29,7 @@ NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 NAVBAR_TAG = "<!--NAVIGATION-->\n"
 DATA_IMPORT_TAG = "# IMPORT DATA FILES USED BY THIS NOTEBOOK"
 
-# regular expressions
+# regular expressions and patterns
 NB_FILENAME = re.compile(r'(\d\d|[A-Z])\.(\d\d)-(.*)\.ipynb')
 HTML_ANCHOR = re.compile(r'<a [^>]*>')
 HTML_IMG = re.compile(r'<img[^>]*>')
