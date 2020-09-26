@@ -11,23 +11,29 @@ from nbformat.v4.nbbase import new_markdown_cell, new_notebook, new_code_cell
 from nbconvert import HTMLExporter
 from jinja2 import Environment, FileSystemLoader
 
-# configuration file
-config_file = "nbpages.cfg"
-assert os.path.exists(config_file), f"configuration file {config_file} not found. Run nbpages --setup"
+def read_config():
 
-config = configparser.ConfigParser()
-config.read(config_file)
-config = config["nbpages"]
+    global config
 
-# source and destination directories
-assert config["src_dir"] != config["dst_dir"], "notebook source and destination directories must be different"
-assert os.path.exists(config["src_dir"]), f"notebook source directory '{config['src_dir']}' not found"
-assert os.path.exists(config["dst_dir"]), f"notebook destination directory '{config['dst_dir']}' not found"
+    # configuration file
+    config_file = "nbpages.cfg"
+    assert os.path.exists(config_file), f"configuration file {config_file} not found. Run nbpages --setup"
+
+    config = configparser.ConfigParser()
+    config.read(config_file)
+    config = config["nbpages"]
+
+    # source and destination directories
+    assert config["src_dir"] != config["dst_dir"], "notebook source and destination directories must be different"
+    assert os.path.exists(config["src_dir"]), f"notebook source directory '{config['src_dir']}' not found"
+    assert os.path.exists(config["dst_dir"]), f"notebook destination directory '{config['dst_dir']}' not found"
 
 # tags
 NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 NAVBAR_TAG = "<!--NAVIGATION-->\n"
 DATA_IMPORT_TAG = "# IMPORT DATA FILES USED BY THIS NOTEBOOK"
+SOLUTION_CODE = "### BEGIN SOLUTION(.*)### END SOLUTION"
+HIDDEN_TESTS = "### BEGIN HIDDEN TESTS(.*)### END HIDDEN TESTS"
 
 # regular expressions and patterns
 NB_FILENAME = re.compile(r'(\d\d|[A-Z])\.(\d\d)-(.*)\.ipynb')
@@ -36,8 +42,6 @@ HTML_IMG = re.compile(r'<img[^>]*>')
 MARKDOWN_FIG = re.compile(r'(?:!\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 MARKDOWN_HEADER = re.compile(r'(^|\n)(?P<level>#{1,6})(?P<header>.*?)#*(\n|$)')
 MARKDOWN_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
-SOLUTION_CODE = "### BEGIN SOLUTION(.*)### END SOLUTION"
-HIDDEN_TESTS = "### BEGIN HIDDEN TESTS(.*)### END HIDDEN TESTS"
 
 # function to sort numbered section headings in natural order
 def natsort(s):
@@ -62,17 +66,17 @@ class Nb:
 
     @property
     def data_import_links(self):
-        """Return list of (datapath, url) pairs found in this notebook."""
+        """Return list of (datapath, url) pairs."""
         dirpath = os.path.join(config["src_dir"], config["data_subdir"])
         assert os.path.exists(dirpath), f"- data subdirectory {dirpath} was not found"
         data = [f for f in os.listdir(dirpath) if os.path.isfile(os.path.join(dirpath, f))
-                   and not f.startswith('.') and f.endswith('.csv') or f.endswith('.txt')]
+                and not f.startswith('.') and f.endswith('.csv') or f.endswith('.txt')]
         data = filter(lambda f: any([re.search(f, cell.source) for cell in self.content.cells]), data)
         return [(os.path.join(config["data_subdir"], f), f"{config['github_pages_url']}/data/{f}") for f in data]
 
     @property
     def figure_links(self):
-        """Return list of (fig, url) pairs found in this notebook."""
+        """Return list of (fig, url) pairs."""
         dirpath = os.path.join(config["src_dir"], config["figures_subdir"])
         assert os.path.exists(dirpath), f"- figures subdirectory {dirpath} was not found"
         figures = [f for f in os.listdir(dirpath) if os.path.isfile(os.path.join(dirpath, f))
@@ -82,7 +86,7 @@ class Nb:
 
     @property
     def html_anchor_tags(self):
-        """Return a list of html anchor tags appearing in this notebook."""
+        """Return a list of html anchor tags."""
         tags = []
         for cell in self.content.cells[2:-1]:
             tags.extend(HTML_ANCHOR.findall(cell.source))
@@ -90,7 +94,7 @@ class Nb:
 
     @property
     def html_img_tags(self):
-        """Return a list of html img tags appearing in this notebook."""
+        """Return a list of html img tags."""
         tags = []
         for cell in self.content.cells[2:-1]:
             tags.extend(HTML_IMG.findall(cell.source))
@@ -98,12 +102,12 @@ class Nb:
 
     @property
     def link(self):
-        """Return a markdown link to the html view of this notebook."""
+        """Return a markdown link to the html view."""
         return f"[{self.numbered_title}]({self.html_url})"
 
     @property
     def markdown_figs(self):
-        """Return a list of markdown figures in the markdown cells of this notebook."""
+        """Return a list of markdown figures in the markdown cells."""
         figs = []
         for cell in self.content.cells[2:-1]:
             if cell.cell_type == "markdown":
@@ -112,7 +116,7 @@ class Nb:
 
     @property
     def markdown_links(self):
-        """Return a list of markdown links in the markdown cells of this notebook."""
+        """Return a list of markdown links in the markdown cells."""
         links = []
         for cell in self.content.cells[2:-1]:
             if cell.cell_type == "markdown":
@@ -121,7 +125,7 @@ class Nb:
 
     @property
     def orphan_headers(self):
-        """"Return a list of headers not in the first line of a cell) in a notebook."""
+        """"Return a list of headers not in the first line of a cell."""
         orphans = []
         for cell in self.content.cells:
             if cell.cell_type == "markdown":
@@ -139,7 +143,7 @@ class Nb:
                     if "name" in output.keys():
                         if output["name"] == "stderr":
                             output_errors.append(f"{output['name']}: {output['text'].splitlines()[0]}")
-        return output_errors\
+        return output_errors
 
     @property
     def tags(self):
@@ -188,8 +192,8 @@ class Nb:
                     header_numbers[subsection_level - 1] += 1
                     header_numbers[subsection_level:] = [0] * (6 - subsection_level)
                     subsection_header = subsection_number_root \
-                                    + "".join(f".{int(n)}" for n in header_numbers[1:] if n > 0) \
-                                    + m.group("header")
+                                        + "".join(f".{int(n)}" for n in header_numbers[1:] if n > 0) \
+                                        + m.group("header")
                     subsection_url = '#'.join([self.html_url, '-'.join(subsection_header.strip().split())])
                     cell.source = cell.source[:m.start("header")] + " " + subsection_header + cell.source[m.end("header"):]
             cell.metadata["nbpages"] = {
@@ -199,14 +203,11 @@ class Nb:
             }
 
     def get_cells(self, tag):
-        """return a list of cells with a specified tag"""
-        cells = []
-        for cell in self.content.cells:
-            if 'tags' in cell.metadata.keys() and tag in cell.metadata['tags']:
-                cells.append(cell)
+        """Return a list of all cells with a specified tag."""
         return [cell for cell in self.content.cells if 'tags' in cell.metadata.keys() and tag in cell.metadata['tags']]
 
     def lint(self):
+        """Print list of lint items."""
         lint_list = (
             (self.html_anchor_tags, "Remove or replace HTML anchor tags with markdown links."),
             (self.html_img_tags, "Replace HTML img tags with markdown image links."),
@@ -221,24 +222,23 @@ class Nb:
                         print(f"        {s}")
 
     def remove_cells(self, tag):
-        for cell in self.content.cells:
-            if 'tags' in cell.metadata.keys() and tag in cell.metadata['tags']:
-                print("- remove cell tagged", tag, "from", self.filename)
-        self.content.cells = [c for c in self.content.cells if 'tags' not in c.metadata.keys() or tag not in c.metadata['tags']]
-
-    def remove_code(self):
-        self.replace_code(SOLUTION_CODE, "# YOUR SOLUTION HERE")
-        self.replace_code(HIDDEN_TESTS, "")
+        """Remove cells with a specified tag."""
+        tagged_cells = self.get_cells(tag)
+        if tagged_cells:
+            print(f"- removing cells tagged {tag} from {self.filename}")
+            self.content.cells = filter(lambda cell: cell not in tagged_cells, self.content.cells)
 
     def replace_code(self, pattern, repl):
+        """Find and replace a regular expression from code cells."""
         regex = re.compile(pattern, re.DOTALL)
         for cell in self.content.cells:
             if cell.cell_type == "code" and regex.findall(cell.source):
                 cell.source = regex.sub(repl, cell.source)
-                print("- code removed from", self.filename)
+                print(f"- code removed from {self.filename}")
 
 
 class FrontMatter(Nb):
+
     def __init__(self, filename, chapter, section):
         super().__init__(filename, chapter, section)
 
@@ -256,6 +256,7 @@ class FrontMatter(Nb):
 
 
 class Chapter(Nb):
+
     def __init__(self, filename, chapter, section):
         super().__init__(filename, chapter, section)
 
@@ -273,6 +274,7 @@ class Chapter(Nb):
 
 
 class Appendix(Nb):
+
     def __init__(self, filename, chapter, section):
         super().__init__(filename, chapter, section)
 
@@ -290,6 +292,7 @@ class Appendix(Nb):
 
 
 class Section(Nb):
+
     def __init__(self, filename, chapter, section):
         super().__init__(filename, chapter, section)
 
@@ -317,9 +320,7 @@ class NbHeader:
         self.source = NOTEBOOK_HEADER_TAG + self.content
 
     def insert(self, nb):
-        """
-        Insert header to notebook contents.
-        """
+        """Insert header to notebook contents."""
         if nb.content.cells[0].source.startswith(NOTEBOOK_HEADER_TAG):
             print('- amending header for {0}'.format(nb.filename))
             nb.content.cells[0].source = self.source
@@ -332,7 +333,7 @@ class NbHeader:
 class NbCollection:
 
     def __init__(self):
-
+        read_config()
         self.notebooks = []
         for filename in sorted(os.listdir(config["src_dir"])):
             if NB_FILENAME.match(filename):
@@ -356,7 +357,7 @@ class NbCollection:
 
     @property
     def data(self):
-        """List of all .txt and .csv files in the data subdirectory."""
+        """Return list of .txt and .csv files in the data subdirectory."""
         path = os.path.join(config["src_dir"], config["data_subdir"])
         assert os.path.exists(path), f"- data subdirectory {path} was not found"
         if not self._data:
@@ -366,7 +367,7 @@ class NbCollection:
 
     @property
     def data_index(self):
-        """Deduplicated dictionary of data files and links appearing in the notebook collection."""
+        """Return deduplicated dictionary of links indexed by data file names."""
         if not self._data_index:
             for data in self.data:
                 regex = re.compile(data)
@@ -386,7 +387,7 @@ class NbCollection:
 
     @property
     def figure_index(self):
-        """Deduplicated dictionary of figures and links appearing in the notebook collection."""
+        """Return deduplicated dictionary of links indexed by figure file names."""
         if not self._figure_index:
             for figure in self.figures:
                 regex = re.compile(figure)
@@ -426,7 +427,7 @@ class NbCollection:
 
     @property
     def tag_index(self):
-        """Return of dictionary sorted links to tags indexed by tags."""
+        """Return dictionary of sorted list of links to cells indexed by tags."""
         if not self._tag_index:
             for nb in self.notebooks:
                 for tag, links in nb.tags.items():
@@ -440,9 +441,9 @@ class NbCollection:
         cells = []
         for nb in self.notebooks:
             cells.extend(nb.get_cells(tag))
-        print(cells)
-        nb.format.write(new_notebook(cells=cells).content, 'ma.ipynb')
-        return
+        nb = new_notebook(cells=cells)
+        nb["metadata"]["kernelspec"] = {"name": "python3"}
+        return nbformat.writes(nb)
 
     def insert_data_imports(self):
         """Insert code cell to import data files required by notebooks."""
@@ -477,12 +478,12 @@ for filepath, fileurl in file_links:
                 import_cell.source = content
 
     def insert_headers(self):
-        """Insert a common header into a collection of notebooks."""
+        """Insert a common header."""
         for nb in self.notebooks:
             self.nbheader.insert(nb)
 
     def insert_navbars(self):
-        """Insert navigation bars into a collection of notebooks."""
+        """Insert navigation bars."""
 
         # navigation bar templates for notebook pages
         PREV_TEMPLATE = "< [{title}]({url}) "
@@ -532,7 +533,7 @@ for filepath, fileurl in file_links:
             nb.insert_subsection_numbers()
 
     def lint(self):
-        """Report style issues interfering with nbpages in a collection of notebooks."""
+        """Report style issues."""
         for nb in self.notebooks:
             nb.lint()
         for data in sorted(self.data, key=str.casefold):
@@ -561,7 +562,7 @@ for filepath, fileurl in file_links:
                 print(f"    Figure not used in any notebook: {figure}")
 
     def metadata(self):
-        """Print selected metadata for a collection of notebooks."""
+        """Print metadata."""
         for nb in self.notebooks:
             print(f"\n{nb.filename}")
             print(json.dumps(nb.content['metadata'], sort_keys=True, indent=4))
@@ -572,7 +573,8 @@ for filepath, fileurl in file_links:
 
     def remove_code(self):
         for nb in self.notebooks:
-            nb.remove_code()
+            nb.replace_code(SOLUTION_CODE, "# YOUR SOLUTION HERE")
+            nb.replace_code(HIDDEN_TESTS, "")
 
     def search(self, pattern):
         regex = re.compile(pattern)
@@ -583,14 +585,14 @@ for filepath, fileurl in file_links:
                     break
 
     def remove(self, pattern):
-        assert config["dst_dir"] != config["src_dir"], "destination directory must be different than the source directory"
+        assert config["dst_dir"] != config["src_dir"], "destination directory must be different than source"
         html_files = glob.glob(os.path.join(config["dst_dir"], pattern))
         for f in html_files:
             print(f"- removing {f}")
             os.remove(f)
 
     def write_data_index(self):
-        """Write data_index.html and copy data files to destination directory"""
+        """Write data_index.html and copy data files to destination directory."""
         content = ""
         self.remove(os.path.join(config["data_subdir"], "*"))
         if self.data_index:
@@ -629,7 +631,7 @@ for filepath, fileurl in file_links:
         self.write_md2html("figure_index", content)
 
     def write_html(self):
-        """Write html files for a collection of notebooks to a specified directory."""
+        """Create and write html files to the destination directory."""
         html_exporter = HTMLExporter()
         html_exporter.template_file = os.path.join(config["templates_dir"], "notebook.tpl")
         for nb in self.notebooks:
@@ -642,7 +644,7 @@ for filepath, fileurl in file_links:
                 f.write(body)
 
     def write_ipynb(self):
-        """Write notebooks to a specified directory."""
+        """Write notebooks to the destination directory."""
         for nb in self.notebooks:
             nbformat.write(nb.content, os.path.join(config["dst_dir"], nb.filename))
 
@@ -678,7 +680,7 @@ for filepath, fileurl in file_links:
         self.write_md2html("python_index", content)
 
     def write_tag_index(self):
-        """Write tag index file for a collection of notebooks."""
+        """Write tag index."""
         content = ""
         if self.tag_index:
             print("- writing tag index file")
@@ -691,7 +693,7 @@ for filepath, fileurl in file_links:
         self.write_md2html("tag_index", content)
 
     def write_toc(self):
-        """Write table of contents file for a collection of notebooks."""
+        """Write table of contents."""
         content = ""
         if self.notebooks:
             print("- writing table of contents file")

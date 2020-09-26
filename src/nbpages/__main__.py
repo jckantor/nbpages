@@ -53,10 +53,11 @@ def main():
     elif args.search:
         notebooks.search(args.search[0])
     elif args.tags:
+        notebooks.insert_subsection_numbers()
         for tag in list(sorted(notebooks.tag_index.keys(), key=str.casefold)):
             print(tag)
     elif args.get_cells:
-        notebooks.get_cells(args.get_cells[0])
+        print(notebooks.get_cells(args.get_cells[0]))
     else:
         if args.remove_cells:
             for tag in args.remove_cells:

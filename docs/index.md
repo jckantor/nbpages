@@ -82,4 +82,5 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 - [2.2 Examples](https://jckantor.github.io/nbpages/02.02-Examples.html)
 - [2.3 Heirarchical Tagging](https://jckantor.github.io/nbpages/02.03-Heirarchical-Tagging.html)
 - [2.4 Working with Data and Figures](https://jckantor.github.io/nbpages/02.04-Working-with-Data-and-Figures.html)
+- [2.5 Lint](https://jckantor.github.io/nbpages/02.05-Lint.html)
 
