@@ -304,11 +304,11 @@ class Section(Nb):
 
 class NbCollection:
 
-    def __init__(self):
+    def __init__(self, src_dir=None, dst_dir=None):
         read_config()
         self.notebooks = []
-        self.src_dir = config["src_dir"]
-        self.dst_dir = config["dst_dir"]
+        self.src_dir = src_dir if src_dir else config["src_dir"]
+        self.dst_dir = dst_dir if dst_dir else config["dst_dir"]
         for filename in sorted(os.listdir(self.src_dir)):
             if NB_FILENAME.match(filename):
                 chapter, section, _ = NB_FILENAME.match(filename).groups()
@@ -328,44 +328,34 @@ class NbCollection:
         self._figure_index = {}
         self._tag_index = collections.defaultdict(list)
 
-    @property
-    def data(self):
-        """Return list of .txt and .csv files in the data subdirectory."""
-        path = os.path.join(self.src_dir, config["data_subdir"])
-        assert os.path.exists(path), f"- data subdirectory {path} was not found"
-        if not self._data:
-            self._data = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))
-                          and not f.startswith('.') and (f.endswith('.csv') or f.endswith('.txt'))]
-        return self._data
+    def get_files(self, sub_dir, suffixes):
+        """Return an iterator over the file names in a notebooks subdirectory which have any of the given suffixes"""
+        path = os.path.join(self.src_dir, sub_dir)
+        for f in os.listdir(path):
+            if os.path.isfile(os.path.join(path, f)) and not f.startswith('.') and any(list(map(f.endswith, suffixes))):
+                yield f
+
+    def index_terms(self, terms):
+        """Return a dictionary of deduplicated links to cells indexed by the entries in terms."""
+        index = dict()
+        for term in terms:
+            links = [cell.metadata["nbpages"]["link"] for nb in self.notebooks
+                     for cell in nb.content.cells if re.search(term, cell.source) if "nbpages" in cell.metadata.keys()]
+            index[term] = list(dict.fromkeys(links))
+        return index
 
     @property
     def data_index(self):
         """Return deduplicated dictionary of links indexed by data file names."""
         if not self._data_index:
-            for data in self.data:
-                regex = re.compile(data)
-                self._data_index[data] = list(dict.fromkeys([cell.metadata["nbpages"]["link"]
-                    for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source) if "nbpages" in cell.metadata.keys()]))
+            self._data_index = self.index_terms(self.get_files(config["data_subdir"], ['.csv', '.txt']))
         return self._data_index
-
-    @property
-    def figures(self):
-        """Return list of figure files in the figures directory."""
-        path = os.path.join(self.src_dir, config["figures_subdir"])
-        assert os.path.exists(path), f"- figures subdirectory {path} was not found"
-        if not self._figures:
-            self._figures = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))
-                             and not f.startswith('.') and not f.endswith('.tex') and not f.endswith('.pdf')]
-        return self._figures
 
     @property
     def figure_index(self):
         """Return deduplicated dictionary of links indexed by figure file names."""
         if not self._figure_index:
-            for figure in self.figures:
-                regex = re.compile(figure)
-                self._figure_index[figure] = list(dict.fromkeys([cell.metadata["nbpages"]["link"]
-                        for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]))
+            self._figure_index  = self.index_terms(self.get_files(config["figures_subdir"], ['.png', '.jpg']))
         return self._figure_index
 
     @property
@@ -510,7 +500,7 @@ for filepath, fileurl in file_links:
         """Report style issues."""
         for nb in self.notebooks:
             nb.lint()
-        for data in sorted(self.data, key=str.casefold):
+        for data in sorted(list(self.get_files(config["data_subdir"], ['.csv', '.txt'])), key=str.casefold):
             regex = re.compile(data)
             found = False
             for nb in self.notebooks:
@@ -522,7 +512,7 @@ for filepath, fileurl in file_links:
                     break
             if not found:
                 print(f"    Data file not used in any notebook: {data}")
-        for figure in sorted(self.figures, key=str.casefold):
+        for figure in sorted(list(self.get_files(config["figures_subdir"], ['.png', '.jpg'])), key=str.casefold):
             regex = re.compile(figure)
             found = False
             for nb in self.notebooks:
