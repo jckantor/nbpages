@@ -13096,7 +13096,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!--NAVIGATION-->
-&lt; <a href="https://jckantor.github.io/nbpages/02.04-Working-with-Data-and-Figures.html">2.4 Working with Data and Figures</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> |<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/docs/02.05-Lint.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/02.05-Lint.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
+&lt; <a href="https://jckantor.github.io/nbpages/02.04-Working-with-Data-and-Figures.html">2.4 Working with Data and Figures</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/docs/02.05-Lint.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/02.05-Lint.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
 
 </div>
 </div>
@@ -13108,7 +13108,10 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="2.5-Lint">2.5 Lint<a class="anchor-link" href="#2.5-Lint">&#182;</a></h1>
+<h1 id="2.5-Lint">2.5 Lint<a class="anchor-link" href="#2.5-Lint">&#182;</a></h1><p>This notebook includes examples of 'lint' that is detected and reported by</p>
+
+<pre><code>nbpages --lint</code></pre>
+
 </div>
 </div>
 </div>
@@ -13119,8 +13122,32 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="2.5.1-Output-errors">2.5.1 Output errors<a class="anchor-link" href="#2.5.1-Output-errors">&#182;</a></h2><p>E</p>
+<h2 id="2.5.1-Orphan-headers">2.5.1 Orphan headers<a class="anchor-link" href="#2.5.1-Orphan-headers">&#182;</a></h2><p><code>nbpages</code> looks for headers in the first line of a markdown cell. Headers that don't appear in the first line are called 'orphans' and reported as lint.  Here's an example of an orphan header:</p>
+<h3 id="This-is-an-orphan-header">This is an orphan header<a class="anchor-link" href="#This-is-an-orphan-header">&#182;</a></h3>
+</div>
+</div>
+</div>
 
+
+
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="2.5.2-Embedded-HTML">2.5.2 Embedded HTML<a class="anchor-link" href="#2.5.2-Embedded-HTML">&#182;</a></h2><p>HTML image tags and HTML figure tags should be replaced by the equivalent Markdown tags. The lint command reports a list of these HTML tags.</p>
+<p><img src="figures/Stock_Data.png"></p>
+
+</div>
+</div>
+</div>
+
+
+
+    
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="2.5.3-Output-errors">2.5.3 Output errors<a class="anchor-link" href="#2.5.3-Output-errors">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13130,7 +13157,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
     
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># deliberate python error</span>
@@ -13155,7 +13182,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 <pre>
 <span class="ansi-red-fg">---------------------------------------------------------------------------</span>
 <span class="ansi-red-fg">ZeroDivisionError</span>                         Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-1-a82aa784e791&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-fg">&lt;ipython-input-2-a82aa784e791&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
 <span class="ansi-green-intense-fg ansi-bold">      1</span> <span class="ansi-red-fg"># deliberate python error</span>
 <span class="ansi-green-intense-fg ansi-bold">      2</span> 
 <span class="ansi-green-fg">----&gt; 3</span><span class="ansi-red-fg"> </span>a <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">1.0</span><span class="ansi-blue-fg">/</span><span class="ansi-cyan-fg">0.0</span>
@@ -13193,7 +13220,7 @@ The code is released under the <a href="https://opensource.org/licenses/MIT">MIT
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><!--NAVIGATION-->
-&lt; <a href="https://jckantor.github.io/nbpages/02.04-Working-with-Data-and-Figures.html">2.4 Working with Data and Figures</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> |<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/docs/02.05-Lint.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/02.05-Lint.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
+&lt; <a href="https://jckantor.github.io/nbpages/02.04-Working-with-Data-and-Figures.html">2.4 Working with Data and Figures</a> | <a href="toc.html">Contents</a> | <a href="tag_index.html">Tag Index</a> | &gt;<p><a href="https://colab.research.google.com/github/jckantor/nbpages/blob/master/docs/02.05-Lint.ipynb"> <img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open in Google Colaboratory"></a><p><a href="https://jckantor.github.io/nbpages/02.05-Lint.ipynb"> <img align="left" src="https://img.shields.io/badge/Github-Download-blue.svg" alt="Download" title="Download Notebook"></a></p>
 
 </div>
 </div>

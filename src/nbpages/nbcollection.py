@@ -491,6 +491,7 @@ for filepath, fileurl in file_links:
             navbar += f"| [Contents](toc.html) |"
             navbar += f" [Tag Index](tag_index.html) |" if self.tag_index else ""
             navbar += f" [{next_nb.title}]({next_nb.html_url})" if next_nb else ""
+            navbar += " >"
             navbar += COLAB_LINK.format(dst=config["dst_dir"], notebook_filename=nb.filename)
             navbar += DOWNLOAD_LINK.format(notebook_filename=nb.filename)
             if nb.content.cells[1].source.startswith(NAVBAR_TAG):
