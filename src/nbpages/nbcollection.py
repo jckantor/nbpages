@@ -309,27 +309,6 @@ class Section(Nb):
         return toc
 
 
-class NbHeader:
-
-    def __init__(self):
-        env = Environment(loader=FileSystemLoader(config["templates_dir"]))
-        template = env.get_template('notebook_header.tpl')
-        self.content = template.render(page_title=config["github_repo_name"],
-                                       page_url=config["github_pages_url"],
-                                       github_url=config["github_repo_url"])
-        self.source = NOTEBOOK_HEADER_TAG + self.content
-
-    def insert(self, nb):
-        """Insert header to notebook contents."""
-        if nb.content.cells[0].source.startswith(NOTEBOOK_HEADER_TAG):
-            print('- amending header for {0}'.format(nb.filename))
-            nb.content.cells[0].source = self.source
-        else:
-            print('- inserting header for {0}'.format(nb.filename))
-            # print('- inserting header for {0}'.format(nb.filenapatth_srme))
-            nb.content.cells.insert(0, new_markdown_cell(self.source))
-
-
 class NbCollection:
 
     def __init__(self):
@@ -346,7 +325,6 @@ class NbCollection:
                     self.notebooks.append(Chapter(filename, chapter, section))
                 else:
                     self.notebooks.append(Appendix(filename, chapter, section))
-        self.nbheader = NbHeader()
 
         # property caches
         self._data = []
@@ -422,10 +400,6 @@ class NbCollection:
         return python_index
 
     @property
-    def resources(self):
-        pass
-
-    @property
     def tag_index(self):
         """Return dictionary of sorted list of links to cells indexed by tags."""
         if not self._tag_index:
@@ -478,18 +452,22 @@ for filepath, fileurl in file_links:
                 import_cell.source = content
 
     def insert_headers(self):
-        """Insert a common header."""
+        env = Environment(loader=FileSystemLoader(config["templates_dir"]))
+        template = env.get_template('notebook_header.tpl')
+        source = NOTEBOOK_HEADER_TAG + template.render(page_title=config["github_repo_name"],
+                                                       page_url=config["github_pages_url"],
+                                                       github_url=config["github_repo_url"])
         for nb in self.notebooks:
-            self.nbheader.insert(nb)
+            """Insert header to notebook contents."""
+            if nb.content.cells[0].source.startswith(NOTEBOOK_HEADER_TAG):
+                print('- amending header for {0}'.format(nb.filename))
+                nb.content.cells[0].source = source
+            else:
+                print('- inserting header for {0}'.format(nb.filename))
+                nb.content.cells.insert(0, new_markdown_cell(source))
 
     def insert_navbars(self):
         """Insert navigation bars."""
-
-        # navigation bar templates for notebook pages
-        PREV_TEMPLATE = "< [{title}]({url}) "
-        CONTENTS = "| [Contents](toc.html) |"
-        INDEX = " [Tag Index](tag_index.html) |"
-        NEXT_TEMPLATE = " [{title}]({url}) >"
 
         # colab opens from github repository
         COLAB_LINK = f'<p><a href="https://colab.research.google.com/github/{config["github_user_name"]}/{config["github_repo_name"]}' + \
