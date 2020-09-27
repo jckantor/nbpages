@@ -37,8 +37,6 @@ HIDDEN_TESTS = "### BEGIN HIDDEN TESTS(.*)### END HIDDEN TESTS"
 
 # regular expressions and patterns
 NB_FILENAME = re.compile(r'(\d\d|[A-Z])\.(\d\d)-(.*)\.ipynb')
-HTML_ANCHOR = re.compile(r'<a [^>]*>')
-HTML_IMG = re.compile(r'<img[^>]*>')
 MARKDOWN_FIG = re.compile(r'(?:!\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 MARKDOWN_HEADER = re.compile(r'(^|\n)(?P<level>#{1,6})(?P<header>.*?)#*(\n|$)')
 MARKDOWN_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
@@ -87,18 +85,12 @@ class Nb:
     @property
     def html_anchor_tags(self):
         """Return a list of html anchor tags."""
-        tags = []
-        for cell in self.content.cells[2:-1]:
-            tags.extend(HTML_ANCHOR.findall(cell.source))
-        return tags
+        return self.findall_markdown_cells(r'<a [^>]*>')
 
     @property
     def html_img_tags(self):
         """Return a list of html img tags."""
-        tags = []
-        for cell in self.content.cells[2:-1]:
-            tags.extend(HTML_IMG.findall(cell.source))
-        return tags
+        return self.findall_markdown_cells(r'<img[^>]*>')
 
     @property
     def link(self):
@@ -108,28 +100,19 @@ class Nb:
     @property
     def markdown_figs(self):
         """Return a list of markdown figures in the markdown cells."""
-        figs = []
-        for cell in self.content.cells[2:-1]:
-            if cell.cell_type == "markdown":
-                figs.extend(MARKDOWN_FIG.findall(cell.source))
-        return figs
+        return self.findall_markdown_cells(MARKDOWN_FIG)
 
     @property
     def markdown_links(self):
         """Return a list of markdown links in the markdown cells."""
-        links = []
-        for cell in self.content.cells[2:-1]:
-            if cell.cell_type == "markdown":
-                links.extend(MARKDOWN_LINK.findall(cell.source))
-        return links
+        return self.findall_markdown_cells(MARKDOWN_LINK)
 
     @property
     def orphan_headers(self):
         """"Return a list of headers not in the first line of a cell."""
         orphans = []
-        for cell in self.content.cells:
-            if cell.cell_type == "markdown":
-                orphans.extend([line for line in cell.source.splitlines()[1:] if MARKDOWN_HEADER.match(line)])
+        for cell in self.markdown_cells():
+            orphans.extend([line for line in cell.source.splitlines()[1:] if MARKDOWN_HEADER.match(line)])
         return orphans
 
     @property
@@ -158,25 +141,26 @@ class Nb:
     @property
     def title(self):
         """Return notebook title by extracting the first level one header."""
-        for cell in self.content.cells:
-            if cell.cell_type == "markdown":
-                m = MARKDOWN_HEADER.match(cell.source)
-                if m and len(m.group('level')) == 1:
-                    return m.group('header').strip()
+        for cell in self.markdown_cells():
+            m = MARKDOWN_HEADER.match(cell.source)
+            if m and len(m.group('level')) == 1:
+                return m.group('header').strip()
         return None
 
     @property
     def toc(self):
         """Return formatted list of markdown links to cells starting with a markdown header."""
         toc = []
-        header_cells = (cell for cell in self.content.cells if
-                        cell.cell_type == "markdown" and cell.source.startswith("##"))
+        header_cells = (cell for cell in self.markdown_cells() if cell.source.startswith("##"))
         for header_cell in header_cells:
             header = header_cell.source.splitlines()[0].strip().split()
             txt = ' '.join(header[1:])
             url = '#'.join([self.html_url, '-'.join(header[1:])])
             toc.append("    " * (len(header[0]) - 2) + f"- [{txt}]({url})")
         return toc
+
+    def findall_markdown_cells(self, regex):
+        return [s for cell in self.markdown_cells() for s in re.findall(regex, cell.source)]
 
     def insert_subsection_numbers(self):
         subsection_number_root = f"{self.chapter}.{self.section}"
@@ -220,6 +204,13 @@ class Nb:
                     print(f"    {msg}")
                     for s in lint:
                         print(f"        {s}")
+
+    def markdown_cells(self):
+        """Iterator for all markdown cells excluding navbars and header"""
+        for cell in self.content.cells:
+            if cell.cell_type == "markdown" and not cell.source.startswith(NOTEBOOK_HEADER_TAG) \
+                    and not cell.source.startswith(NAVBAR_TAG):
+                yield cell
 
     def remove_cells(self, tag):
         """Remove cells with a specified tag."""
