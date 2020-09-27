@@ -28,6 +28,7 @@ def read_config():
     assert os.path.exists(config["src_dir"]), f"notebook source directory '{config['src_dir']}' not found"
     assert os.path.exists(config["dst_dir"]), f"notebook destination directory '{config['dst_dir']}' not found"
 
+
 # tags
 NOTEBOOK_HEADER_TAG = "<!--NOTEBOOK_HEADER-->"
 NAVBAR_TAG = "<!--NAVIGATION-->\n"
@@ -40,6 +41,7 @@ NB_FILENAME = re.compile(r'(\d\d|[A-Z])\.(\d\d)-(.*)\.ipynb')
 MARKDOWN_FIG = re.compile(r'(?:!\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 MARKDOWN_HEADER = re.compile(r'(^|\n)(?P<level>#{1,6})(?P<header>.*?)#*(\n|$)')
 MARKDOWN_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
+
 
 # function to sort numbered section headings in natural order
 def natsort(s):
@@ -78,7 +80,7 @@ class Nb:
         dirpath = os.path.join(config["src_dir"], config["figures_subdir"])
         assert os.path.exists(dirpath), f"- figures subdirectory {dirpath} was not found"
         figures = [f for f in os.listdir(dirpath) if os.path.isfile(os.path.join(dirpath, f))
-                    and not f.startswith('.') and not f.endswith('.tex') and not f.endswith('.pdf')]
+                and not f.startswith('.') and not f.endswith('.tex') and not f.endswith('.pdf')]
         figures = filter(lambda f: any([re.search(f, cell.source) for cell in self.content.cells]), figures)
         return [(os.path.join(config["figures_subdir"], figure), f"{config['github_pages_url']}/figures/{figure}") for figure in figures]
 
@@ -305,7 +307,9 @@ class NbCollection:
     def __init__(self):
         read_config()
         self.notebooks = []
-        for filename in sorted(os.listdir(config["src_dir"])):
+        self.src_dir = config["src_dir"]
+        self.dst_dir = config["dst_dir"]
+        for filename in sorted(os.listdir(self.src_dir)):
             if NB_FILENAME.match(filename):
                 chapter, section, _ = NB_FILENAME.match(filename).groups()
                 if section not in "00":
@@ -327,7 +331,7 @@ class NbCollection:
     @property
     def data(self):
         """Return list of .txt and .csv files in the data subdirectory."""
-        path = os.path.join(config["src_dir"], config["data_subdir"])
+        path = os.path.join(self.src_dir, config["data_subdir"])
         assert os.path.exists(path), f"- data subdirectory {path} was not found"
         if not self._data:
             self._data = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))
@@ -347,7 +351,7 @@ class NbCollection:
     @property
     def figures(self):
         """Return list of figure files in the figures directory."""
-        path = os.path.join(config["src_dir"], config["figures_subdir"])
+        path = os.path.join(self.src_dir, config["figures_subdir"])
         assert os.path.exists(path), f"- figures subdirectory {path} was not found"
         if not self._figures:
             self._figures = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))
@@ -361,7 +365,7 @@ class NbCollection:
             for figure in self.figures:
                 regex = re.compile(figure)
                 self._figure_index[figure] = list(dict.fromkeys([cell.metadata["nbpages"]["link"]
-                    for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]))
+                        for nb in self.notebooks for cell in nb.content.cells if regex.search(cell.source)]))
         return self._figure_index
 
     @property
@@ -483,7 +487,7 @@ for filepath, fileurl in file_links:
             navbar += f" [Tag Index](tag_index.html) |" if self.tag_index else ""
             navbar += f" [{next_nb.title}]({next_nb.html_url})" if next_nb else ""
             navbar += " >"
-            navbar += COLAB_LINK.format(dst=config["dst_dir"], notebook_filename=nb.filename)
+            navbar += COLAB_LINK.format(dst=self.dst_dir, notebook_filename=nb.filename)
             navbar += DOWNLOAD_LINK.format(notebook_filename=nb.filename)
             if nb.content.cells[1].source.startswith(NAVBAR_TAG):
                 print(f"- amending navbar for {nb.filename}")
@@ -555,8 +559,8 @@ for filepath, fileurl in file_links:
                     break
 
     def remove(self, pattern):
-        assert config["dst_dir"] != config["src_dir"], "destination directory must be different than source"
-        html_files = glob.glob(os.path.join(config["dst_dir"], pattern))
+        assert self.dst_dir != self.src_dir, "destination directory must be different than source"
+        html_files = glob.glob(os.path.join(self.dst_dir, pattern))
         for f in html_files:
             print(f"- removing {f}")
             os.remove(f)
@@ -575,8 +579,8 @@ for filepath, fileurl in file_links:
                     content += f"![{data}]({config['data_subdir']}/{data})\n"
                     for link in links:
                         content += f"* {link}\n"
-                    data_src = os.path.join(config["src_dir"], config["data_subdir"], data)
-                    data_dst = os.path.join(config["dst_dir"], config["data_subdir"], data)
+                    data_src = os.path.join(self.src_dir, config["data_subdir"], data)
+                    data_dst = os.path.join(self.dst_dir, config["data_subdir"], data)
                     print(f"- copying {data_src} to {data_dst}")
                     shutil.copy(data_src, data_dst)
         self.write_md2html("data_index", content)
@@ -594,8 +598,8 @@ for filepath, fileurl in file_links:
                     content += f"![{figure}]({config['figures_subdir']}/{figure})\n"
                     for link in links:
                         content += f"* {link}\n"
-                    figure_src = os.path.join(config["src_dir"], config["figures_subdir"], figure)
-                    figure_dst = os.path.join(config["dst_dir"], config["figures_subdir"], figure)
+                    figure_src = os.path.join(self.src_dir, config["figures_subdir"], figure)
+                    figure_dst = os.path.join(self.dst_dir, config["figures_subdir"], figure)
                     print(f"- copying {figure_src} to {figure_dst}")
                     shutil.copy(figure_src, figure_dst)
         self.write_md2html("figure_index", content)
@@ -608,7 +612,7 @@ for filepath, fileurl in file_links:
             (body, resources) = html_exporter.from_notebook_node(nb.content)
             body = re.sub('{github_user_name}', config["github_user_name"], body)
             body = re.sub('{github_repo_name}', config["github_repo_name"], body)
-            html_path = os.path.join(config["dst_dir"],  os.path.splitext(nb.filename)[0] + ".html")
+            html_path = os.path.join(self.dst_dir,  os.path.splitext(nb.filename)[0] + ".html")
             print(f"- writing {html_path}")
             with open(html_path, 'w') as f:
                 f.write(body)
@@ -616,23 +620,23 @@ for filepath, fileurl in file_links:
     def write_ipynb(self):
         """Write notebooks to the destination directory."""
         for nb in self.notebooks:
-            nbformat.write(nb.content, os.path.join(config["dst_dir"], nb.filename))
+            nbformat.write(nb.content, os.path.join(self.dst_dir, nb.filename))
 
     def write_index_html(self):
         """Write index.md using the index.md.tpl template."""
         print("- writing index.md")
         index_toc = [f"### [Table of Contents]({config['github_pages_url']}/toc.html)"] if self.notebooks else []
-        if os.path.isfile(os.path.join(config["dst_dir"], "data_index.html")):
+        if os.path.isfile(os.path.join(self.dst_dir, "data_index.html")):
             index_toc += [f"### [Data Index]({config['github_pages_url']}/data_index.html)"]
-        if os.path.isfile(os.path.join(config["dst_dir"], "figure_index.html")):
+        if os.path.isfile(os.path.join(self.dst_dir, "figure_index.html")):
             index_toc += [f"### [Figure Index]({config['github_pages_url']}/figure_index.html)"]
-        if os.path.isfile(os.path.join(config["dst_dir"], "python_index.html")):
+        if os.path.isfile(os.path.join(self.dst_dir, "python_index.html")):
             index_toc += [f"### [Python Module Index]({config['github_pages_url']}/python_index.html)"]
-        if os.path.isfile(os.path.join(config["dst_dir"], "tag_index.html")):
+        if os.path.isfile(os.path.join(self.dst_dir, "tag_index.html")):
             index_toc += [f"### [Tag Index]({config['github_pages_url']}/tag_index.html)"]
         index_toc += [f"- {nb.link}" if type(nb) == Section else f"\n### {nb.link}" for nb in self.notebooks]
         env = Environment(loader=FileSystemLoader("templates"))
-        with open(os.path.join(config["dst_dir"], "index.md"), 'w') as f:
+        with open(os.path.join(self.dst_dir, "index.md"), 'w') as f:
             f.write(env.get_template('index.md.tpl').render(
                 readme_toc=index_toc, page_title=config['github_repo_name'], github_url=config['github_repo_url']))
 
@@ -688,7 +692,7 @@ for filepath, fileurl in file_links:
         self.write_md2html("toc", content)
 
     def write_md2html(self, stem, content):
-        STEM = os.path.join(config["dst_dir"], stem)
+        STEM = os.path.join(self.dst_dir, stem)
         if content:
             with open(f"{STEM}.md", 'w') as f:
                 f.write(content)
