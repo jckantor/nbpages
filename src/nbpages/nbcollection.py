@@ -45,7 +45,7 @@ MARKDOWN_LINK = re.compile(r'(?:[^!]\[(?P<txt>.*?)\]\((?P<url>.*?)\))')
 
 # function to sort numbered section headings in natural order
 def natsort(s):
-    return [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', s)]
+    return [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', s)]
 
 
 class Nb:
@@ -306,6 +306,8 @@ class NbCollection:
 
     def __init__(self, src_dir=None, dst_dir=None):
         read_config()
+        for k in config.keys():
+            print(k, config[k])
         self.notebooks = []
         self.src_dir = src_dir if src_dir else config["src_dir"]
         self.dst_dir = dst_dir if dst_dir else config["dst_dir"]
@@ -371,13 +373,13 @@ class NbCollection:
                         for line in cell.source.strip().splitlines():
                             m = IMPORT.match(line)
                             if m:
-                                for lib in list(filter(None, re.split('[,|\s+]', m.group("txt")))):
+                                for lib in list(filter(None, re.split(r'[,|\s+]', m.group("txt")))):
                                     if lib == 'as':
                                         break
                                     python_index[lib].append(cell.metadata["nbpages"]["link"])
                             m = FROM.match(line)
                             if m:
-                                for fcn in list(filter(None, re.split('[,|\s+]', m.group("fcn")))):
+                                for fcn in list(filter(None, re.split(r'[,|\s+]', m.group("fcn")))):
                                     if fcn == 'as':
                                         break
                                     key = m.group("txt") + "." + fcn
@@ -682,14 +684,15 @@ for filepath, fileurl in file_links:
         self.write_md2html("toc", content)
 
     def write_md2html(self, stem, content):
-        STEM = os.path.join(self.dst_dir, stem)
+        dir_stem = os.path.join(self.dst_dir, stem)
         if content:
-            with open(f"{STEM}.md", 'w') as f:
+            with open(f"{dir_stem}.md", 'w') as f:
                 f.write(content)
-            os.system(f"notedown {STEM}.md > {STEM}.ipynb")
-            os.system(f"jupyter nbconvert {STEM}.ipynb")
-            os.remove(f"{STEM}.md")
-            os.remove(f"{STEM}.ipynb")
+            os.system(f"notedown {dir_stem}.md > {dir_stem}.ipynb")
+            os.system(f"jupyter nbconvert {dir_stem}.ipynb")
+            os.remove(f"{dir_stem}.md")
+            os.remove(f"{dir_stem}.ipynb")
         else:
-            if os.path.isfile(f"{STEM}.html"):
-                os.remove(f"{STEM}.html")
+            # if no content, remove old file
+            if os.path.isfile(f"{dir_stem}.html"):
+                os.remove(f"{dir_stem}.html")
