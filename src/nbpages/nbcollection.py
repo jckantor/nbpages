@@ -597,8 +597,7 @@ for filepath, fileurl in file_links:
 
     def write_html(self):
         """Create and write html files to the destination directory."""
-        html_exporter = HTMLExporter()
-        html_exporter.template_file = os.path.join(config["templates_dir"], "notebook.tpl")
+        html_exporter = HTMLExporter(template_file=os.path.join(config["templates_dir"], "notebook.tpl"))
         for nb in self.notebooks:
             (body, resources) = html_exporter.from_notebook_node(nb.content)
             body = re.sub('{github_user_name}', config["github_user_name"], body)
