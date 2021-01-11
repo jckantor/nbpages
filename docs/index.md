@@ -66,6 +66,10 @@ to locate some forms of notebook 'lint'.  A current list of additional features 
 [//]: # (The following template code is used to insert a list of notebook links.)
 
 ### [Table of Contents](https://jckantor.github.io/nbpages/toc.html)
+### [Data Index](https://jckantor.github.io/nbpages/data_index.html)
+### [Figure Index](https://jckantor.github.io/nbpages/figure_index.html)
+### [Python Module Index](https://jckantor.github.io/nbpages/python_index.html)
+### [Tag Index](https://jckantor.github.io/nbpages/tag_index.html)
 
 ### [Chapter 1.0 Style Guide](https://jckantor.github.io/nbpages/01.00-Style-Guide.html)
 - [1.1 Notebook naming and ancillary/generated files](https://jckantor.github.io/nbpages/01.01-Notebook-Naming-and-Ancillary-Files.html)

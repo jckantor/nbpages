@@ -687,7 +687,7 @@ for filepath, fileurl in file_links:
             with open(f"{dir_stem}.md", 'w') as f:
                 f.write(content)
             os.system(f"notedown {dir_stem}.md > {dir_stem}.ipynb")
-            os.system(f"jupyter nbconvert {dir_stem}.ipynb")
+            os.system(f"jupyter nbconvert --to html {dir_stem}.ipynb")
             os.remove(f"{dir_stem}.md")
             os.remove(f"{dir_stem}.ipynb")
         else:
