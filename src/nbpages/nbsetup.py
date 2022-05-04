@@ -119,6 +119,7 @@ def nbsetup(config_file="nbpages.cfg"):
                "dst_dir": "docs",
                "figures_subdir": "figures",
                "data_subdir": "data",
+               "code_subdir": "code",
                }
 
     # write configuration info to config file
@@ -146,6 +147,7 @@ def nbsetup(config_file="nbpages.cfg"):
     make_dir_if_needed(nbpages["dst_dir"])
     make_dir_if_needed(os.path.join(nbpages["dst_dir"], nbpages["figures_subdir"]))
     make_dir_if_needed(os.path.join(nbpages["dst_dir"], nbpages["data_subdir"]))
+    make_dir_if_needed(os.path.join(nbpages["dst_dir"], nbpages["code_subdir"]))
 
     # create an initial index.md if none exists
     if "index.md" not in os.listdir(nbpages["dst_dir"]):

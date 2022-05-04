@@ -550,7 +550,8 @@ for filepath, fileurl in file_links:
                     break
 
     def remove(self, pattern):
-        assert self.dst_dir != self.src_dir, "destination directory must be different than source"
+        assert self.dst_dir != self.src_dir, "destination directory must be different from source directory"
+
         html_files = glob.glob(os.path.join(self.dst_dir, pattern))
         for f in html_files:
             print(f"- removing {f}")
@@ -689,7 +690,6 @@ for filepath, fileurl in file_links:
             os.system(f"notedown {dir_stem}.md > {dir_stem}.ipynb")
             os.system(f"jupyter nbconvert --to html {dir_stem}.ipynb")
             os.remove(f"{dir_stem}.md")
-            os.remove(f"{dir_stem}.ipynb")
         else:
             # if no content, remove old file
             if os.path.isfile(f"{dir_stem}.html"):
