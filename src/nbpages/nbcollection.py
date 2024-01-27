@@ -164,36 +164,36 @@ class Nb:
     def findall_markdown_cells(self, regex):
         return [s for cell in self.markdown_cells() for s in re.findall(regex, cell.source)]
 
-    def insert_subsection_numbers(self):
-        subsection_number_root = f"{self.chapter}."
-        subsection_level = 0
-        header_numbers = [0] * 6
-        subsection_header = ""
-        subsection_url = self.html_url
-        for cell in self.content.cells:
-            if cell.cell_type == "markdown":
-                m = MARKDOWN_HEADER.match(cell.source)
-                if m:
-                    subsection_level = len(m.group('level'))
-                    header_numbers[subsection_level - 1] += 1
-                    header_numbers[subsection_level:] = [0] * (6 - subsection_level)
+def insert_subsection_numbers(self):
+    subsection_number_root = f"{self.chapter}."
+    subsection_level = 0
+    header_numbers = [0] * 6
+    subsection_header = ""
+    subsection_url = self.html_url
+    for cell in self.content.cells:
+        if cell.cell_type == "markdown":
+            m = MARKDOWN_HEADER.match(cell.source)
+            if m:
+                subsection_level = len(m.group('level'))
+                header_numbers[subsection_level - 1] += 1
+                header_numbers[subsection_level:] = [0] * (6 - subsection_level)
 
-                    # If it's an appendix, we modify the header format
-                    if self.chapter.isalpha():
-                        subsection_header = f"{subsection_number_root} {m.group('header').strip()}"
-                    else:
-                        subsection_header = subsection_number_root \
-                                            + "".join(f".{int(n)}" for n in header_numbers[1:] if n > 0) \
-                                            + m.group("header")
+                # If it's an appendix, we modify the header format
+                if self.chapter.isalpha():
+                    subsection_header = f"{subsection_number_root} {m.group('header').strip()}"
+                else:
+                    subsection_header = subsection_number_root \
+                                        + "".join(f".{int(n)}" for n in header_numbers[1:] if n > 0) \
+                                        + m.group("header")
 
-                    subsection_url = '#'.join([self.html_url, '-'.join(subsection_header.strip().split())])
-                    cell.source = cell.source[:m.start("header")] + " " + subsection_header + cell.source[m.end("header"):]
+                subsection_url = '#'.join([self.html_url, '-'.join(subsection_header.strip().split())])
+                cell.source = cell.source[:m.start("header")] + " " + subsection_header + cell.source[m.end("header"):]
 
-        cell.metadata["nbpages"] = {
-            "level": subsection_level,
-            "section": subsection_header,
-            "link": f"[{subsection_header}]({subsection_url})"
-        }
+    cell.metadata["nbpages"] = {
+        "level": subsection_level,
+        "section": subsection_header,
+        "link": f"[{subsection_header}]({subsection_url})"
+    }
 
     def get_cells(self, tag):
         """Return a list of all cells with a specified tag."""
