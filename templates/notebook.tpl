@@ -1,6 +1,6 @@
 
 <!-- jinja2 template extends `full` to include cell tags in the html rendering of notebooks -->
-{% extends 'full.tpl'%}
+{% extends 'index.html.j2'%}
 {% block any_cell %}
 {% if cell['metadata'].get('tags', []) %}
     <div style="background-color:white; border:thin solid grey; margin-left:95px; margin-right:6px">
